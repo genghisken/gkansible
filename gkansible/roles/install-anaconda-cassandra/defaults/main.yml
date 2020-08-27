@@ -1,0 +1,71 @@
+---
+
+# Cassandra server
+cassandra_server: https://www.apache.org/dist/cassandra
+
+# main Anaconda download server
+anaconda_mirror: https://repo.continuum.io/archive
+
+# version of python (2|3)
+anaconda_python_ver: 3
+
+# anaconda version
+anaconda_ver: '2020.07'
+
+# when downloading the anaconda binary it might take a while
+# don't let you less great network connection cause the role to falter
+anaconda_timeout_seconds: 600
+
+
+# install a a list of packages into the root conda env. please consider using conda envs effectively!
+#anaconda_install_packages:
+#  - package1
+#  - package2
+
+# control the install channels
+#anaconda_install_channels: "defaults conda-forge bioconda"
+
+# additional control over windows-installer specific options
+win_anaconda_installation_type: JustMe
+win_anaconda_add_to_path: True
+
+# anaconda checksums...
+# https://repo.continuum.io/archive/
+anaconda_checksums:
+  # https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-ppc64le.sh
+  Anaconda3-2020.07-Linux-ppc64le.sh: sha256:0df7c3784973ab46a9ef9848aced01311d08a71d79a18d5ed79dccdae8c8dea7
+  # https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-x86_64.sh
+  Anaconda3-2020.07-Linux-x86_64.sh: sha256:38ce717758b95b3bd0b1797cc6ccfb76f29a90c25bdfa50ee45f11e583edfdbf
+  # https://repo.anaconda.com/archive/Anaconda3-2020.07-MacOSX-x86_64.sh
+  Anaconda3-2020.07-MacOSX-x86_64.sh: sha256:3980c2a57fde5de2ccfdf0d7973f95ac1a3fa63351642e6735c50fc3791ef0f1
+  # https://repo.anaconda.com/archive/Anaconda3-2020.07-Windows-x86_64.exe
+  Anaconda3-2020.07-Windows-x86_64.exe: sha256:66acb9bdf7d2d5925df8762311a85ad72f57dfd340447bf00636d35a28454244
+
+# add the anaconda python onto the front of your path.
+# Caveat Emptor: if your OS package manager is python based careful about jamming it
+anaconda_make_sys_default: False
+
+anaconda_parent_dir: "{{ ansible_env.HOME }}"
+anaconda_link_subdir: anaconda
+
+anaconda_pkg_update: True
+
+# install a a list of packages into the root conda env. please consider using conda envs effectively!
+#anaconda_install_packages:
+#  - package1
+#  - package2
+
+# control the install channels
+#anaconda_install_channels: "defaults conda-forge bioconda"
+
+anaconda_os_installer_discriminator: '{{ ansible_system }}'
+anaconda_platform: '{{ anaconda_os_installer_discriminator }}-{{ ansible_machine }}'
+anaconda_name: 'Anaconda{{ anaconda_python_ver }}-{{ anaconda_ver }}-{{ anaconda_platform }}'
+anaconda_installer_sh: '{{ anaconda_name }}.sh'
+anaconda_installer_url: '{{ anaconda_mirror }}/{{ anaconda_installer_sh }}'
+anaconda_checksum: '{{ anaconda_checksums[anaconda_installer_sh] }}'
+
+anaconda_install_dir: '{{ anaconda_parent_dir }}/anaconda'
+anaconda_link_dir: '{{ anaconda_parent_dir }}/{{ anaconda_link_subdir }}'
+
+anaconda_conda_bin: '{{ anaconda_link_dir }}/bin/conda'
