@@ -1,6 +1,11 @@
 ---
 # MAIN TASKS TO BE EXECUTED BY install-anaconda ROLE
 
+- name: "Update packages"
+  become: true
+  apt:
+    update_cache: yes # apt-get update
+
 - name: install Open JDK
   apt:
     name: openjdk-8-jdk
