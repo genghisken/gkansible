@@ -1,0 +1,57 @@
+---
+# MAIN TASKS TO BE EXECUTED BY install-anaconda ROLE
+
+#- name: install Open JDK
+#  apt:
+#    name: openjdk-8-jdk
+#    state: present
+#  become: true
+#
+#- name: install HTTPS transport (not sure why yet)
+#  apt:
+#    name: apt-transport-https
+#    state: present
+#  become: true
+#
+#- name: get cassandra repo
+#  shell: 'wget -q -O - {{ cassandra_server }}/KEYS | sudo apt-key add -'
+#  become: true
+#
+#- name: add cassandra
+#  shell: 'echo "deb {{ cassandra_server }}/debian 311x main" > /etc/apt/sources.list.d/cassandra.list'
+#  become: true
+#
+#- name: "Update packages"
+#  become: true
+#  apt:
+#    update_cache: yes # apt-get update
+#
+#- name: install Cassandra
+#  apt:
+#    name: cassandra
+#    state: present
+#  become: true
+
+# The following tasks now need to be done.
+# 1. Shut down cassandra
+# 2. Remove the cassandra datafiles: sudo rm -rf /var/lib/cassandra/*
+# 3. Get list of IP addresses from the hosts.yaml file.
+# 4. Get list of Seed servers (usually 2 or 3 out of N, where N >= 5.)
+# 5. Copy the template Cassandra file in place (/etc/cassandra/) and EDIT in place:
+#    - set broadcast_rpc_address to IP address of the target server (ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}')
+#    - set the server list to the list of addresses in the hosts.yaml file
+#    - set the seed list to 2 or 3 of the list of addresses in the hosts.yaml file.
+# 6. Copy the template rackdc properties file (cassandra-rackdc.properties) in place to /etc/cassandra (no changes necessary)
+# 7. Remove the topology properties file. sudo rm -f /etc/cassandra/cassandra-topology.properties
+# 8. Copy the (modified) cassandra.yaml file in place to /etc/cassandra
+# DO NOT START THE SERVICE. This should be done manually (seeds first, then other nodes).
+
+- name: main configuration (cassandra.yaml)
+  template:
+    src: cassandra.yaml.j2
+    dest: '{{ cassandra_config_dir }}/conf/cassandra.yaml'
+    mode: 0644
+    #owner: '{{ cassandra_user }}'
+    #group: '{{ cassandra_group }}'
+    backup: true
+

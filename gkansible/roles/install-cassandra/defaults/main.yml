@@ -1,0 +1,9 @@
+---
+
+# Cassandra server
+cassandra_server: https://www.apache.org/dist/cassandra
+cassandra_cluster_name: 'Lasair'
+cassandra_data_dir: '/var/lib/cassandra/data'
+cassandra_commitlog_dir: '/var/lib/cassandra/commitlog'
+cassandra_seed1: {{ groups['cassandranodes'][0] }}
+cassandra_seed2: {{ groups['cassandranodes'][0] }}
