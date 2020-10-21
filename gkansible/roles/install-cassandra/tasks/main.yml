@@ -50,8 +50,8 @@
   template:
     src: cassandra.yaml.j2
     dest: '{{ cassandra_config_dir }}/conf/cassandra.yaml'
-    mode: 0644
-    #owner: '{{ cassandra_user }}'
-    #group: '{{ cassandra_group }}'
-    backup: true
+    #mode: 0644
+    #owner: atls
+    #group: atls
+    #backup: true
 
