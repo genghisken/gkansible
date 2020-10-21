@@ -30,6 +30,8 @@ build
 
 # Settings files and compiled binaries
 settings.py
+hosts.yml
+ansible.cfg
 wsgi.py
 config.yaml
 PS1TransientClassifier
