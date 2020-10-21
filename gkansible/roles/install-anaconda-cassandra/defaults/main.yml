@@ -2,6 +2,9 @@
 
 # Cassandra server
 cassandra_server: https://www.apache.org/dist/cassandra
+cassandra_cluster_name: 'Lasair'
+cassandra_data_dir: '/var/lib/cassandra/data'
+cassandra_commitlog_dir: '/var/lib/cassandra/commitlog'
 
 # main Anaconda download server
 anaconda_mirror: https://repo.continuum.io/archive

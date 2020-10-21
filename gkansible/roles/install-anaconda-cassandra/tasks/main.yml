@@ -55,6 +55,20 @@
     state: present
   become: true
 
+# The following tasks now need to be done.
+# 1. Shut down cassandra
+# 2. Remove the cassandra datafiles: sudo rm -rf /var/lib/cassandra/*
+# 3. Get list of IP addresses from the hosts.yaml file.
+# 4. Get list of Seed servers (usually 2 or 3 out of N, where N >= 5.)
+# 5. Copy the template Cassandra file in place (/etc/cassandra/) and EDIT in place:
+#    - set broadcast_rpc_address to IP address of the target server (ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}')
+#    - set the server list to the list of addresses in the hosts.yaml file
+#    - set the seed list to 2 or 3 of the list of addresses in the hosts.yaml file.
+# 6. Copy the template rackdc properties file (cassandra-rackdc.properties) in place to /etc/cassandra (no changes necessary)
+# 7. Remove the topology properties file. sudo rm -f /etc/cassandra/cassandra-topology.properties
+# 8. Copy the (modified) cassandra.yaml file in place to /etc/cassandra
+# DO NOT START THE SERVICE. This should be done manually (seeds first, then other nodes).
+
 - name: Insert line in .bashrc file
   lineinfile:
     dest: "{{ ansible_env.HOME }}/.bashrc"
@@ -95,6 +109,9 @@
   with_items:
     - cassandra-driver
     - mysqlclient
+    - docopt
+    - pyyaml
+    - datetime
     - gkhtm
     - gkutils
     - gkdbutils
