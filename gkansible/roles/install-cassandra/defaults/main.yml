@@ -2,7 +2,9 @@
 
 # Cassandra server
 cassandra_server: https://www.apache.org/dist/cassandra
-cassandra_rpm_code: http://rpm.datastax.com/community
+#cassandra_rpm_code: http://rpm.datastax.com/community
+cassandra_rpm_code: https://www.apache.org/dist/cassandra/redhat/311x/
+cassandra_rpm_gpg_key: https://www.apache.org/dist/cassandra/KEYS
 cassandra_cluster_name: 'Lasair'
 cassandra_data_dir: '/var/lib/cassandra/data'
 cassandra_config_dir: '/tmp'
