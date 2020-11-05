@@ -6,21 +6,21 @@
 #    name: openjdk-8-jdk
 #    state: present
 #  become: true
-#  when: ansible_facts['ansible_os_family'] == "Debian"
+#  when: ansible_os_family == "Debian"
 
 #- name: install Open JDK CentOS
 #  apt:
 #    name: java-1.8.0-openjdk
 #    state: present
 #  become: true
-#  when: ansible_facts['ansible_os_family'] == "RedHat"
+#  when: ansible_os_family == "RedHat"
 
 #- name: install HTTPS transport (not sure why yet)
 #  apt:
 #    name: apt-transport-https
 #    state: present
 #  become: true
-#  when: ansible_facts['ansible_os_family'] == "Debian"
+#  when: ansible_os_family == "Debian"
 
 #- name: install Cassandra
 #  apt:
@@ -51,6 +51,7 @@
     #group: atls
     #backup: true
 
+- name: main configuration (cassandra-rackdc.properties)
   template:
     src: cassandra-rackdc.properties.j2
     dest: '{{ cassandra_config_dir }}/conf/cassandra-rackdc.properties'
@@ -59,27 +60,28 @@
     #group: atls
     #backup: true
 
+- name: main configuration (cassandra.repo)
   template:
     src: cassandra.yum.repo.j2
     dest: '/tmp/cassandra.repo'
-    mode: 0644
-    owner: root
-    group: root
-    when: ansible_facts['ansible_os_family'] == "RedHat"
+    #mode: 0644
+    #owner: root
+    #group: root
+  when: ansible_os_family == "RedHat"
 
 #- name: get cassandra repo
 #  shell: 'wget -q -O - {{ cassandra_server }}/KEYS | sudo apt-key add -'
 #  become: true
-#  when: ansible_facts['ansible_os_family'] == "Debian"
+#  when: ansible_os_family == "Debian"
 
 #- name: add cassandra
 #  shell: 'echo "deb {{ cassandra_server }}/debian 311x main" > /etc/apt/sources.list.d/cassandra.list'
 #  become: true
-#  when: ansible_facts['ansible_os_family'] == "Debian"
+#  when: ansible_os_family == "Debian"
 
 #- name: "Update packages"
 #  become: true
 #  apt:
 #    update_cache: yes # apt-get update
-#  when: ansible_facts['ansible_os_family'] == "Debian"
+#  when: ansible_os_family == "Debian"
 
