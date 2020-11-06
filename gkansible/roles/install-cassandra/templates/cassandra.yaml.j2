@@ -188,7 +188,7 @@ partitioner: org.apache.cassandra.dht.Murmur3Partitioner
 # the configured compaction strategy.
 # If not set, the default directory is $CASSANDRA_HOME/data/data.
 data_file_directories:
-    - {{ cassandra_data_dir }}
+    - {% if ansible_facts['ansible_hostname'] == 'db0' or ansible_facts['ansible_hostname'] == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_facts['ansible_hostname'] == 'db3' or ansible_facts['ansible_hostname'] == 'db4' %}{{ cassandra_data_dir_satassd }}{% else %}{{ cassandra_data_dir }}{% endif %}
 
 # commit log.  when running on magnetic HDD, this should be a
 # separate spindle than the data directories.
