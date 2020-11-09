@@ -13,6 +13,6 @@ cassandra_data_dir_pcissd: '/oczssd/cassandra'
 #cassandra_config_dir: '/tmp'
 cassandra_config_dir: '/etc/cassandra'
 cassandra_seed1: "{{ groups['cassandranodes'][0] }}"
-cassandra_seed2: "{{ groups['cassandranodes'][0] }}"
+cassandra_seed2: "{{ groups['cassandranodes'][2] }}"
 datacenter: 'DC1'
 rack: 'RACK1'
