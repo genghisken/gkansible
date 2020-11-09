@@ -12,7 +12,7 @@
 # Cassandra via yum. Leaving it in just in case we decide to
 # install Cassandra from source.
 - name: install Open JDK CentOS
-  apt:
+  yum:
     name: java-1.8.0-openjdk
     state: present
   become: true
@@ -51,11 +51,19 @@
     update_cache: yes # apt-get update
   when: ansible_os_family == "Debian"
 
-- name: install Cassandra
+- name: install Cassandra on Debian systems
   apt:
     name: cassandra
     state: present
   become: true
+  when: ansible_os_family == "Debian"
+
+- name: install Cassandra on RedHat systems
+  yum:
+    name: cassandra
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
 
 # The apt-get service in Ubuntu automatically starts an installed service.
 # Shut it down!
@@ -65,7 +73,55 @@
     state: stopped
   become: true
 
+- name: Create the new Cassandra data directory
+  file:
+    path: "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% else %}{{ cassandra_data_dir }}{% endif %}/data"
+    state: directory
+    owner: cassandra
+    group: cassandra
+    mode: 0775
+    recurse: yes
+  become: true
 
+- name: Create the new Cassandra commitlog directory
+  file:
+    path: "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% else %}{{ cassandra_data_dir }}{% endif %}/commitlog"
+    state: directory
+    owner: cassandra
+    group: cassandra
+    mode: 0775
+    recurse: yes
+  become: true
+
+- name: Create the new Cassandra hints directory
+  file:
+    path: "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% else %}{{ cassandra_data_dir }}{% endif %}/hints"
+    state: directory
+    owner: cassandra
+    group: cassandra
+    mode: 0775
+    recurse: yes
+  become: true
+
+- name: Create the new Cassandra cdc_raw directory
+  file:
+    path: "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% else %}{{ cassandra_data_dir }}{% endif %}/cdc_raw"
+    state: directory
+    owner: cassandra
+    group: cassandra
+    mode: 0775
+    recurse: yes
+  become: true
+
+- name: Create the new Cassandra saved_caches directory
+  file:
+    path: "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% else %}{{ cassandra_data_dir }}{% endif %}/saved_caches"
+    state: directory
+    owner: cassandra
+    group: cassandra
+    mode: 0775
+    recurse: yes
+  become: true
 
 # The following tasks now need to be done.
 # 1. Shut down cassandra
