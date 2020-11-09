@@ -70,7 +70,7 @@ max_hints_delivery_threads: 2
 
 # Directory where Cassandra should store hints.
 # If not set, the default directory is $CASSANDRA_HOME/data/hints.
-# hints_directory: {% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% else %}{{ cassandra_data_dir }}{% endif %}/hints
+hints_directory: {% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% else %}{{ cassandra_data_dir }}{% endif %}/hints
 
 # How often hints should be flushed from the internal buffers to disk.
 # Will *not* trigger fsync.
