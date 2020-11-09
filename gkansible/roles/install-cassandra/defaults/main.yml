@@ -10,7 +10,8 @@ cassandra_data_dir: '/var/lib/cassandra'
 cassandra_data_dir_nvmessd: '/nvme/16/cassandra'
 cassandra_data_dir_satassd: '/ssdraid0/cassandra'
 cassandra_data_dir_pcissd: '/oczssd/cassandra'
-cassandra_config_dir: '/tmp'
+#cassandra_config_dir: '/tmp'
+cassandra_config_dir: '/etc/cassandra'
 cassandra_seed1: "{{ groups['cassandranodes'][0] }}"
 cassandra_seed2: "{{ groups['cassandranodes'][0] }}"
 datacenter: 'DC1'
