@@ -3,5 +3,5 @@
 ---
 - hosts: cassandranodes
   roles:
-    - install-anaconda-cassandra
+    - install-anaconda
 
