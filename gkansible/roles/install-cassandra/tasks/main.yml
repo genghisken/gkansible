@@ -1,6 +1,12 @@
 ---
 # MAIN TASKS TO BE EXECUTED BY install-anaconda ROLE
 
+- name: Update packages
+  become: true
+  apt:
+    update_cache: yes # apt-get update
+  when: ansible_os_family == "Debian"
+
 - name: install Open JDK Debian
   apt:
     name: openjdk-8-jdk
@@ -45,7 +51,7 @@
   become: true
   when: ansible_os_family == "Debian"
 
-- name: "Update packages"
+- name: Update packages now cassandra repo added
   become: true
   apt:
     update_cache: yes # apt-get update
@@ -140,7 +146,7 @@
 - name: main configuration (cassandra.yaml)
   template:
     src: cassandra.yaml.j2
-    dest: '{{ cassandra_config_dir }}/conf/cassandra.yaml'
+    dest: '{{ cassandra_config_dir }}{% if ansible_os_family == "RedHat" %}/conf{% endif %}/cassandra.yaml'
     mode: 0644
     owner: cassandra
     group: cassandra
@@ -149,7 +155,7 @@
 - name: main configuration (cassandra-rackdc.properties)
   template:
     src: cassandra-rackdc.properties.j2
-    dest: '{{ cassandra_config_dir }}/conf/cassandra-rackdc.properties'
+    dest: '{{ cassandra_config_dir }}{% if ansible_os_family == "RedHat" %}/conf{% endif %}/cassandra-rackdc.properties'
     mode: 0644
     owner: cassandra
     group: cassandra
