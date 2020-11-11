@@ -79,6 +79,13 @@
     state: stopped
   become: true
 
+- name: Remove old Cassandra data
+  file:
+    state: absent
+    path: "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% else %}{{ cassandra_data_dir }}{% endif %}"
+  become: true
+  when: ansible_os_family == "Debian"
+
 - name: Create the new Cassandra data directory
   file:
     path: "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% else %}{{ cassandra_data_dir }}{% endif %}/data"
