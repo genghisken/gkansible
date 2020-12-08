@@ -1,0 +1,132 @@
+# Example MySQL config file for very large systems.
+#
+# This is for a large system with memory of 1G-2G where the system runs mainly
+# MySQL.
+#
+# You can copy this file to
+# /etc/my.cnf to set global options,
+# mysql-data-dir/my.cnf to set server-specific options (in this
+# installation this directory is /var/lib/mysql) or
+# ~/.my.cnf to set user-specific options.
+#
+# In this file, you can use all long options that a program supports.
+# If you want to know which options a program supports, run the program
+# with the "--help" option.
+
+# The following options will be passed to all MySQL clients
+[client]
+port		= 3306
+socket		= {{ defaultdir }}mysql.sock
+
+# The MySQL server
+[mysqld]
+# 2013-06-25 KWS Added read/write network timeouts to stop mysqldump from
+#                failing.
+# 2016-09-14 KWS Increased this to 2 hours (7200 seconds) because of timeouts
+#                during mysqdump onto NFS partition.  Real solution here is
+#                to dump onto local disk, not NFS.
+net_read_timeout=7200
+net_write_timeout=7200
+
+# 2018-02-06 KWS Increased max connections to 2048 from default 151.
+max_connections = 2048
+
+# 2014-01-15 KWS Added max_connect_errors to change from default of 10 to 10000.
+max_connect_errors=10000
+
+# 2016-09-14 KWS Set secure file priv off so we can load catalogs.  Need to restart
+#                the server for this to take effect.
+secure_file_priv=
+
+# 2018-02-06 KWS Increase open_files_limit from default of 5000 to 10000
+open_files_limit=10000
+
+#log-bin = /data/mysql/mysqllogs/mysql-bin
+
+# 2016-05-31 KWS log_slow_queries is now deprecated.
+slow-query-log-file={{ logdir }}slow_query.log
+expire_logs_days=28
+datadir = {{ datadir }}
+port		= 3306
+socket		= {{ defaultdir }}mysql.sock
+key_buffer_size = 2G
+# 2017-10-19 KWS Increased range_optimizer_max_mem_size to 10 * default for HmPtY HTMs.
+range_optimizer_max_mem_size=80M
+# 2016-12-01 KWS Requested by Dave (1M was the default)
+max_allowed_packet=500M
+# 2018-02-06 KWS table_open_cache increased from 512 to 2048
+table_open_cache = 2048
+sort_buffer_size = 2M
+read_buffer_size = 2M
+read_rnd_buffer_size = 8M
+myisam_sort_buffer_size = 128M
+thread_cache_size = 8
+# 2012-08-04 KWS Increase cache size to 256M
+query_cache_size = 256M
+tmp_table_size=10G
+
+# 2019-05-28 KWS Increased max_heap_table_size to 2G from the default of 16M in an
+#                attemp to stave off "closing tables" system lock.
+max_heap_table_size=2G
+
+# 2013-06-25 KWS Increased to 10 days to facilitate very large imports from backup files.  Note that
+#                "interactive_timeout" overrides wait_timout on startup, so BOTH variables must be set. 
+interactive_timeout=864000
+wait_timeout=864000
+
+# Disable Federated by default
+skip-federated
+
+# Replication Master Server (default)
+# binary logging is required for replication
+#log-bin=mysql-bin
+
+# required unique id between 1 and 2^32 - 1
+# defaults to 1 if master-host is not set
+# but will not function as a master if omitted
+server-id	= 1
+
+tmpdir		= {{ tmpdir }}		
+
+# KWS - Setup (initally) a 1GB InnoDB Tablespace - Large not really necessary
+innodb_data_home_dir = {{ datadir }}
+innodb_data_file_path = ibdata1:1G:autoextend
+innodb_log_group_home_dir = {{ datadir }}
+innodb_buffer_pool_size = 1G
+innodb_log_file_size = 100M
+innodb_log_buffer_size = 8M
+innodb_flush_log_at_trx_commit = 1
+innodb_lock_wait_timeout = 50
+
+# 2018-10-23 KWS Added innodb_temp_data_file_path
+innodb_temp_data_file_path = ibtmp1:1G:autoextend:max:500G
+
+# 2012-07-17 KWS Added Server language settings
+skip-character-set-client-handshake
+collation-server=utf8_unicode_ci
+character-set-server=utf8
+
+[mysqldump]
+quick
+max_allowed_packet = 16M
+
+[mysql]
+no-auto-rehash
+# Remove the next comment character if you are not familiar with SQL
+#safe-updates
+
+[isamchk]
+key_buffer = 1G
+sort_buffer_size = 1G
+read_buffer = 1G
+write_buffer = 1G
+
+[myisamchk]
+key_buffer = 1G
+sort_buffer_size = 1G
+read_buffer = 1G
+write_buffer = 1G
+tmpdir		= {{ tmpdir }}		
+
+[mysqlhotcopy]
+interactive-timeout

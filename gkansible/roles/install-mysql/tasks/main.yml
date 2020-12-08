@@ -1,0 +1,186 @@
+---
+
+# 1. Install all the MySQL components:
+# mysql-client-5.7
+# mysql-server-5.7
+
+
+# For RedHat - need to get the Yum repos, then install.
+
+
+yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
+
+- name: Install Oracle MySQL yum repository RedHat Family.
+  yum:
+    name: "{{ mysql_redhat_repo }}"
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Oracle MySQL server RedHat Family.
+  yum:
+    name: "{{ mysql_redhat_server }}"
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Oracle MySQL client for RedHat Family.
+  yum:
+    name: "{{ mysql_redhat_client }}"
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Oracle MySQL common for RedHat Family.
+  yum:
+    name: "{{ mysql_redhat_common }}"
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Oracle MySQL devel for RedHat Family.
+  yum:
+    name: "{{ mysql_redhat_devel }}"
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Oracle MySQL libs for RedHat Family.
+  yum:
+    name: "{{ mysql_redhat_libs }}"
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Oracle MySQL libs-compat for RedHat Family.
+  yum:
+    name: "{{ mysql_redhat_libs_compat }}"
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Oracle MySQL test for RedHat Family.
+  yum:
+    name: "{{ mysql_redhat_test }}"
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Oracle MySQL server for Debian.
+  apt:
+    name: "{{ mysql_ubuntu_server }}"
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Install Oracle MySQL client for Debian.
+  apt:
+    name: "{{ mysql_ubuntu_client }}"
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Install Oracle MySQL client core for Debian.
+  apt:
+    name: "{{ mysql_ubuntu_client_core }}"
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Install Oracle MySQL common for Debian.
+  apt:
+    name: "{{ mysql_ubuntu_common }}"
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+# The apt-get service in Ubuntu automatically starts an installed service.
+# Shut it down!
+- name: Stop service mysql, if started
+  service:
+    name: mysqld
+    state: stopped
+  become: true
+
+- name: mysql configuration file (my.cnf)
+  template:
+    src: my_medium.cnf.j2
+    dest: '/etc/my.cnf'
+    mode: 0644
+    owner: mysql
+    group: mysql
+  become: true
+
+- name: start and enable mysql
+  service:
+    name: "{{ mysql_service }}"
+    state: started
+    enabled: yes
+  become: true
+
+- name: test mysql_secure_installation
+  mysql_secure_installation:
+    login_password: ''
+    new_password: "{{ mysql_root_password }}"
+    user: root
+    login_host: localhost
+    hosts: ['localhost', '127.0.0.1', '::1']
+    change_root_password: true
+    remove_anonymous_user: true
+    disallow_root_login_remotely: true
+    remove_test_db: true
+  become: true
+  register: mysql_secure
+
+
+
+
+
+
+
+#- name: Set a new root password
+#  mysql_user: check_implicit_admin=yes
+#              login_user=root
+#              login_password={{ mysql_root_password }}
+#              user=root
+#              password={{ NEW_mysql_root_password }}
+#              host={{ item }}
+#              priv='*.*:ALL,GRANT'
+
+- name: create databases
+  mysql_db:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    target: "{{ item.target | default(omit) }}"
+    encoding: "{{ item.encoding | default(omit) }}"
+    collation: "{{ item.collation | default(omit) }}"
+    login_unix_socket: "{{ mysql_socket }}"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  loop: "{{ mysql_databases }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_databases is defined
+  no_log: yes
+
+- name: create users
+  mysql_user:
+    name: "{{ item.name }}"
+    state: present
+    password: "{{ item.password | default(omit) }}"
+    priv: "{{ item.priv | default(omit) }}"
+    host: "{{ item.host | default(omit) }}"
+    update_password: "{{ item.update_password | default('on_create') }}"
+    login_unix_socket: "{{ mysql_socket }}"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  loop: "{{ mysql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_users is defined
+  no_log: yes
+
+- name: flush handlers
+  meta: flush_handlers
