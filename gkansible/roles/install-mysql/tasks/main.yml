@@ -137,7 +137,7 @@
   become: true
 
 - name: Move the default installation file to new directory 
-  shell: 'mv {{ defaultdir }}* {{ datadir }}'
+  shell: 'mv {{ defaultdir }}/* {{ datadir }}'
   become: true
   when: ansible_os_family == "Debian"
 
