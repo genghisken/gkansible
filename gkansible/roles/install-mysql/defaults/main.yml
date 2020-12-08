@@ -1,9 +1,9 @@
 ---
 
-tmpdir: '/data/mysql/mysqltmp/'
-datadir: '/data/mysql/mysqldata/'
-logdir: '/data/mysql/mysqllog/'
-defaultdir: '/var/lib/mysql/'
+tmpdir: '/data/mysql/mysqltmp'
+datadir: '/data/mysql/mysqldata'
+logdir: '/data/mysql/mysqllog'
+defaultdir: '/var/lib/mysql'
 
 mysql_ubuntu_server: 'mysql-server-5.7'
 mysql_ubuntu_client: 'mysql-client-5.7'
@@ -19,7 +19,8 @@ mysql_redhat_libs: 'mysql-community-libs'
 mysql_redhat_libs_compat: 'mysql-community-libs-compat'
 mysql_redhat_test: 'mysql-community-test'
 
-mysql_service: 'mysqld'
+mysql_service_redhat: 'mysqld'
+mysql_service_ubuntu: 'mysql'
 
 mysql_root_password: 'OPV537'
 

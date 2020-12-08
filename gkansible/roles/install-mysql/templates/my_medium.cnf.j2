@@ -16,7 +16,7 @@
 # The following options will be passed to all MySQL clients
 [client]
 port		= 3306
-socket		= {{ defaultdir }}mysql.sock
+socket		= {{ defaultdir }}/mysql.sock
 
 # The MySQL server
 [mysqld]
@@ -44,11 +44,11 @@ open_files_limit=10000
 #log-bin = /data/mysql/mysqllogs/mysql-bin
 
 # 2016-05-31 KWS log_slow_queries is now deprecated.
-slow-query-log-file={{ logdir }}slow_query.log
+slow-query-log-file={{ logdir }}/slow_query.log
 expire_logs_days=28
 datadir = {{ datadir }}
 port		= 3306
-socket		= {{ defaultdir }}mysql.sock
+socket		= {{ defaultdir }}/mysql.sock
 key_buffer_size = 2G
 # 2017-10-19 KWS Increased range_optimizer_max_mem_size to 10 * default for HmPtY HTMs.
 range_optimizer_max_mem_size=80M

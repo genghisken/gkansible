@@ -5,10 +5,14 @@
 # mysql-server-5.7
 
 
+- name: Update packages
+  become: true
+  apt:
+    update_cache: yes # apt-get update
+  when: ansible_os_family == "Debian"
+
+
 # For RedHat - need to get the Yum repos, then install.
-
-
-yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
 
 - name: Install Oracle MySQL yum repository RedHat Family.
   yum:
@@ -98,14 +102,49 @@ yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarc
 # Shut it down!
 - name: Stop service mysql, if started
   service:
-    name: mysqld
+    name: '{% if ansible_os_family == "Debian" %}{{ mysql_service_ubuntu }}{% else %}{{ mysql_service_redhat }}{% endif %}'
     state: stopped
   become: true
+
+- name: Create the mysql data directory
+  file:
+    path: "{{ datadir }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 0775
+    recurse: yes
+  become: true
+
+- name: Create the mysql tmp directory
+  file:
+    path: "{{ tmpdir }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 0775
+    recurse: yes
+  become: true
+
+- name: Create the mysql log directory
+  file:
+    path: "{{ logdir }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 0775
+    recurse: yes
+  become: true
+
+- name: Move the default installation file to new directory 
+  shell: 'mv {{ defaultdir }}* {{ datadir }}'
+  become: true
+  when: ansible_os_family == "Debian"
 
 - name: mysql configuration file (my.cnf)
   template:
     src: my_medium.cnf.j2
-    dest: '/etc/my.cnf'
+    dest: '/etc{% if ansible_os_family == "Debian" %}/mysql{% endif %}/my.cnf'
     mode: 0644
     owner: mysql
     group: mysql
@@ -113,24 +152,25 @@ yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarc
 
 - name: start and enable mysql
   service:
-    name: "{{ mysql_service }}"
+    name: '{% if ansible_os_family == "Debian" %}{{ mysql_service_ubuntu }}{% else %}{{ mysql_service_redhat }}{% endif %}'
     state: started
     enabled: yes
   become: true
 
-- name: test mysql_secure_installation
-  mysql_secure_installation:
-    login_password: ''
-    new_password: "{{ mysql_root_password }}"
-    user: root
-    login_host: localhost
-    hosts: ['localhost', '127.0.0.1', '::1']
-    change_root_password: true
-    remove_anonymous_user: true
-    disallow_root_login_remotely: true
-    remove_test_db: true
-  become: true
-  register: mysql_secure
+
+#- name: MySQL Secure Installation 
+#  mysql_secure_installation:
+#    login_password: ''
+#    new_password: '{{ mysql_root_password }}'
+#    user: root
+#    login_host: localhost
+#    hosts: ['localhost', '127.0.0.1', '::1']
+#    change_root_password: true
+#    remove_anonymous_user: true
+#    disallow_root_login_remotely: true
+#    remove_test_db: true
+#  become: true
+#  register: mysql_secure
 
 
 
@@ -146,6 +186,13 @@ yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarc
 #              password={{ NEW_mysql_root_password }}
 #              host={{ item }}
 #              priv='*.*:ALL,GRANT'
+
+- name: Set root user password
+  # If .my.cnf already exists, this will cause an mysql-root-password update.
+  mysql_user:
+    name: root
+    password: "{{ mysql_root_password}}"
+    check_implicit_admin: true
 
 - name: create databases
   mysql_db:
