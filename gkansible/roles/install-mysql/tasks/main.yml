@@ -98,6 +98,13 @@
   become: true
   when: ansible_os_family == "Debian"
 
+- name: Install python-mysqldb in the default setup on the client - so we can do root password config
+  apt:
+    name: python-mysqldb
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
 # The apt-get service in Ubuntu automatically starts an installed service.
 # Shut it down!
 - name: Stop service mysql, if started
@@ -136,10 +143,19 @@
     recurse: yes
   become: true
 
+- name: Check that the old mysql directory data exists     
+  stat:
+    path: '{{ defaultdir }}/mysql'
+  register: stat_result
+  become: true
+  when: ansible_os_family == "Debian"
+
+
 - name: Move the default installation file to new directory 
   shell: 'mv {{ defaultdir }}/* {{ datadir }}'
   become: true
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and stat_result.stat.exists
+
 
 - name: mysql configuration file (my.cnf)
   template:
@@ -150,6 +166,27 @@
     group: mysql
   become: true
 
+
+- name: apparmor configuration file (alias)
+  template:
+    src: apparmor_alias.j2
+    dest: /etc/apparmor.d/tunables/alias
+    mode: 0644
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Restart apparmor
+  service:
+    name: apparmor
+    state: restarted
+    enabled: yes
+  become: true
+
+- name: Remove the default created innodb tablespace 
+  shell: 'rm -f {{ datadir }}/ib*'
+  become: true
+  when: ansible_os_family == "Debian"
+
 - name: start and enable mysql
   service:
     name: '{% if ansible_os_family == "Debian" %}{{ mysql_service_ubuntu }}{% else %}{{ mysql_service_redhat }}{% endif %}'
@@ -157,20 +194,54 @@
     enabled: yes
   become: true
 
+- name: Set the root password
+  mysql_user:
+    #login_host: 'localhost'
+    login_user: 'root'
+    login_password: ''
+    user: 'root'
+    password: '{{ mysql_root_password }}'
+    state: present
+  become: true
 
-#- name: MySQL Secure Installation 
-#  mysql_secure_installation:
-#    login_password: ''
-#    new_password: '{{ mysql_root_password }}'
-#    user: root
-#    login_host: localhost
-#    hosts: ['localhost', '127.0.0.1', '::1']
-#    change_root_password: true
-#    remove_anonymous_user: true
-#    disallow_root_login_remotely: true
-#    remove_test_db: true
-#  become: true
-#  register: mysql_secure
+- name: Secure the root user for IPV6 localhost (::1)
+  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user=root password="{{ mysql_root_password }}" host="::1"
+  become: true
+
+- name: Secure the root user for IPV4 localhost (127.0.0.1)
+  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user=root password="{{ mysql_root_password }}" host="127.0.0.1"
+  become: true
+
+- name: Secure the root user for localhost domain
+  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user=root password="{{ mysql_root_password }}" host="localhost"
+  become: true
+
+- name: Secure the root user for server_hostname domain
+  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user=root password="{{ mysql_root_password }}" host="{{ ansible_fqdn }}"
+  become: true
+
+- name: Deletes anonymous server user
+  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user="" host_all=yes state=absent
+  become: true
+
+- name: Removes the test database
+  mysql_db: login_user=root login_password="{{ mysql_root_password }}" db=test state=absent
+  become: true
+
+
+# - name: MySQL Secure Installation 
+#   mysql_secure_installation:
+#     login_password: ''
+#   new_password: '{{ mysql_root_password }}'
+#   user: root
+#   login_host: localhost
+#   hosts: ['localhost', '127.0.0.1', '::1']
+#   change_root_password: true
+#   remove_anonymous_user: true
+#   disallow_root_login_remotely: true
+#   remove_test_db: true
+#   become: true
+#   register: mysql_secure
 
 
 

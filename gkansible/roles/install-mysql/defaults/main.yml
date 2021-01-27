@@ -1,8 +1,9 @@
 ---
 
-tmpdir: '/data/mysql/mysqltmp'
-datadir: '/data/mysql/mysqldata'
-logdir: '/data/mysql/mysqllog'
+dataroot: '/data/mysql/'
+tmpdir: '{{ dataroot }}mysqltmp'
+datadir: '{{ dataroot }}mysqldata'
+logdir: '{{ dataroot }}mysqllog'
 defaultdir: '/var/lib/mysql'
 
 mysql_ubuntu_server: 'mysql-server-5.7'

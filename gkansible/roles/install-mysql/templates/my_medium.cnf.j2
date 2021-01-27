@@ -20,6 +20,9 @@ socket		= {{ defaultdir }}/mysql.sock
 
 # The MySQL server
 [mysqld]
+# 2021-01-27 KWS Added this so that we can log into the database as root with just the socket.
+plugin-load-add = auth_socket.so
+
 # 2013-06-25 KWS Added read/write network timeouts to stop mysqldump from
 #                failing.
 # 2016-09-14 KWS Increased this to 2 hours (7200 seconds) because of timeouts
