@@ -112,6 +112,13 @@
   become: true
   when: ansible_os_family == "Debian"
 
+# 2021-01-27 KWS Update packages again - hopefully Ansible will now see the new packages.
+- name: Update packages
+  become: true
+  apt:
+    update_cache: yes # apt-get update
+  when: ansible_os_family == "Debian"
+
 # The apt-get service in Ubuntu automatically starts an installed service.
 # Shut it down!
 - name: Stop service mysql, if started
@@ -202,9 +209,7 @@
   become: true
 
 - name: Set the root password
-  #mysql_user: login_user=root login_password="" user=root password="{{ mysql_root_password }}" host="localhost"
   mysql_user:
-    #host: '127.0.0.1'
     login_user: 'root'
     login_password: ''
     user: 'root'
@@ -214,27 +219,56 @@
   become: true
 
 - name: Secure the root user for IPV6 localhost (::1)
-  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user=root password="{{ mysql_root_password }}" host="::1"
+  mysql_user:
+    login_user: 'root'
+    login_password: '{{ mysql_root_password }}'
+    user: 'root'
+    password: '{{ mysql_root_password }}'
+    host: '::1'
   become: true
 
 - name: Secure the root user for IPV4 localhost (127.0.0.1)
-  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user=root password="{{ mysql_root_password }}" host="127.0.0.1"
+  mysql_user:
+    login_user: 'root'
+    login_password: '{{ mysql_root_password }}'
+    user: 'root'
+    password: '{{ mysql_root_password }}'
+    host: '127.0.0.1'
   become: true
 
 - name: Secure the root user for localhost domain
-  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user=root password="{{ mysql_root_password }}" host="localhost"
+  mysql_user:
+    login_user: 'root'
+    login_password: '{{ mysql_root_password }}'
+    user: 'root'
+    password: '{{ mysql_root_password }}'
+    host: 'localhost'
   become: true
 
 - name: Secure the root user for server_hostname domain
-  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user=root password="{{ mysql_root_password }}" host="{{ ansible_fqdn }}"
+  mysql_user:
+    login_user: 'root'
+    login_password: '{{ mysql_root_password }}'
+    user: 'root'
+    password: '{{ mysql_root_password }}'
+    host: '{{ ansible_fqdn }}'
   become: true
 
 - name: Deletes anonymous server user
-  mysql_user: login_user=root login_password="{{ mysql_root_password }}" user="" host_all=yes state=absent
+  mysql_user:
+    login_user: 'root'
+    login_password: '{{ mysql_root_password }}'
+    user: ''
+    host_all: yes
+    state: absent
   become: true
 
 - name: Removes the test database
-  mysql_db: login_user=root login_password="{{ mysql_root_password }}" db=test state=absent
+  mysql_db:
+    login_user: 'root'
+    login_password: '{{ mysql_root_password }}'
+    db: 'test'
+    state: absent
   become: true
 
 
@@ -245,7 +279,7 @@
     target: "{{ item.target | default(omit) }}"
     encoding: "{{ item.encoding | default(omit) }}"
     collation: "{{ item.collation | default(omit) }}"
-    login_unix_socket: "{{ mysql_socket }}"
+    login_unix_socket: '{{ defaultdir }}/mysql.sock'
     login_user: root
     login_password: "{{ mysql_root_password }}"
   loop: "{{ mysql_databases }}"
@@ -253,7 +287,8 @@
     label: "{{ item.name }}"
   when:
     - mysql_databases is defined
-  no_log: yes
+  #no_log: yes
+  become: true
 
 - name: create users
   mysql_user:
@@ -263,7 +298,7 @@
     priv: "{{ item.priv | default(omit) }}"
     host: "{{ item.host | default(omit) }}"
     update_password: "{{ item.update_password | default('on_create') }}"
-    login_unix_socket: "{{ mysql_socket }}"
+    login_unix_socket: '{{ defaultdir }}/mysql.sock'
     login_user: root
     login_password: "{{ mysql_root_password }}"
   loop: "{{ mysql_users }}"
@@ -271,7 +306,8 @@
     label: "{{ item.name }}"
   when:
     - mysql_users is defined
-  no_log: yes
+  #no_log: yes
+  become: true
 
 - name: flush handlers
   meta: flush_handlers
