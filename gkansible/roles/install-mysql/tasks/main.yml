@@ -105,6 +105,13 @@
   become: true
   when: ansible_os_family == "Debian"
 
+- name: Install python-pymysql in the default setup on the client - so we can do root password config
+  apt:
+    name: python-pymysql
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
 # The apt-get service in Ubuntu automatically starts an installed service.
 # Shut it down!
 - name: Stop service mysql, if started
@@ -195,12 +202,14 @@
   become: true
 
 - name: Set the root password
+  #mysql_user: login_user=root login_password="" user=root password="{{ mysql_root_password }}" host="localhost"
   mysql_user:
-    #login_host: 'localhost'
+    #host: '127.0.0.1'
     login_user: 'root'
     login_password: ''
     user: 'root'
     password: '{{ mysql_root_password }}'
+    login_unix_socket: '{{ defaultdir }}/mysql.sock'
     state: present
   become: true
 
@@ -228,42 +237,6 @@
   mysql_db: login_user=root login_password="{{ mysql_root_password }}" db=test state=absent
   become: true
 
-
-# - name: MySQL Secure Installation 
-#   mysql_secure_installation:
-#     login_password: ''
-#   new_password: '{{ mysql_root_password }}'
-#   user: root
-#   login_host: localhost
-#   hosts: ['localhost', '127.0.0.1', '::1']
-#   change_root_password: true
-#   remove_anonymous_user: true
-#   disallow_root_login_remotely: true
-#   remove_test_db: true
-#   become: true
-#   register: mysql_secure
-
-
-
-
-
-
-
-#- name: Set a new root password
-#  mysql_user: check_implicit_admin=yes
-#              login_user=root
-#              login_password={{ mysql_root_password }}
-#              user=root
-#              password={{ NEW_mysql_root_password }}
-#              host={{ item }}
-#              priv='*.*:ALL,GRANT'
-
-- name: Set root user password
-  # If .my.cnf already exists, this will cause an mysql-root-password update.
-  mysql_user:
-    name: root
-    password: "{{ mysql_root_password}}"
-    check_implicit_admin: true
 
 - name: create databases
   mysql_db:
