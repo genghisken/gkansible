@@ -1,7 +1,7 @@
 ## RUN THIS PLAYBOOK WITH
 ## > ansible-playbook install-anaconda.yml --ask-vault-pass
 ---
-- hosts: cassandranodes
+- hosts: anacondanodes
   roles:
     - install-anaconda
 
