@@ -98,26 +98,19 @@
   become: true
   when: ansible_os_family == "Debian"
 
-- name: Install python-mysqldb in the default setup on the client - so we can do root password config
+- name: Install python3-mysqldb in the default setup on the client - so we can do root password config
   apt:
-    name: python-mysqldb
+    name: python3-mysqldb
     state: present
   become: true
   when: ansible_os_family == "Debian"
 
-- name: Install python-pymysql in the default setup on the client - so we can do root password config
-  apt:
-    name: python-pymysql
-    state: present
-  become: true
-  when: ansible_os_family == "Debian"
-
-# 2021-01-27 KWS Update packages again - hopefully Ansible will now see the new packages.
-- name: Update packages
-  become: true
-  apt:
-    update_cache: yes # apt-get update
-  when: ansible_os_family == "Debian"
+#- name: Install python-pymysql in the default setup on the client - so we can do root password config
+#  apt:
+#    name: python-pymysql
+#    state: present
+#  become: true
+#  when: ansible_os_family == "Debian"
 
 # The apt-get service in Ubuntu automatically starts an installed service.
 # Shut it down!
@@ -214,7 +207,7 @@
     login_password: ''
     user: 'root'
     password: '{{ mysql_root_password }}'
-    login_unix_socket: '{{ defaultdir }}/mysql.sock'
+    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     state: present
   become: true
 
@@ -279,7 +272,6 @@
     target: "{{ item.target | default(omit) }}"
     encoding: "{{ item.encoding | default(omit) }}"
     collation: "{{ item.collation | default(omit) }}"
-    login_unix_socket: '{{ defaultdir }}/mysql.sock'
     login_user: root
     login_password: "{{ mysql_root_password }}"
   loop: "{{ mysql_databases }}"
@@ -298,7 +290,6 @@
     priv: "{{ item.priv | default(omit) }}"
     host: "{{ item.host | default(omit) }}"
     update_password: "{{ item.update_password | default('on_create') }}"
-    login_unix_socket: '{{ defaultdir }}/mysql.sock'
     login_user: root
     login_password: "{{ mysql_root_password }}"
   loop: "{{ mysql_users }}"

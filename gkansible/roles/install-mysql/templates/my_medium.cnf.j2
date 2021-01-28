@@ -16,7 +16,8 @@
 # The following options will be passed to all MySQL clients
 [client]
 port		= 3306
-socket		= {{ defaultdir }}/mysql.sock
+socket		= {% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}
+
 
 # The MySQL server
 [mysqld]
@@ -51,7 +52,8 @@ slow-query-log-file={{ logdir }}/slow_query.log
 expire_logs_days=28
 datadir = {{ datadir }}
 port		= 3306
-socket		= {{ defaultdir }}/mysql.sock
+socket		= {% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}
+
 key_buffer_size = 2G
 # 2017-10-19 KWS Increased range_optimizer_max_mem_size to 10 * default for HmPtY HTMs.
 range_optimizer_max_mem_size=80M
