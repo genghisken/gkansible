@@ -11,8 +11,8 @@
 
 - name: Copy the sql script for dropping the tablespaces to /tmp
   copy:
-    src: sherlock_drop_innodb_tablespaces.sql
-    dest: /tmp/sherlock_drop_innodb_tablespaces.sql
+    src: files/sherlock_innodb_discard_tablespaces.sql
+    dest: /tmp/sherlock_innodb_discard_tablespaces.sql
     owner: mysql
     group: mysql
     mode: 0644 
@@ -20,8 +20,8 @@
 
 - name: Copy the sql script for importing the tablespaces to /tmp
   copy:
-    src: sherlock_import_innodb_tablespaces.sql
-    dest: /tmp/sherlock_import_innodb_tablespaces.sql
+    src: files/sherlock_innodb_import_tablespaces.sql
+    dest: /tmp/sherlock_innodb_import_tablespaces.sql
     owner: mysql
     group: mysql
     mode: 0644 
@@ -89,7 +89,7 @@
     - mysql_users is defined
 
 - name: Copy the massive datafiles (over 4.5 TB)
-- copy:
+  copy:
     src: "{{ item }}"
     dest: "{{ datadir }}/crossmatch_catalogues"
     owner: mysql
