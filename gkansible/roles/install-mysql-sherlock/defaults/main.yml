@@ -20,7 +20,7 @@ sherlock_database_source_dir: '/mnt/cephfs/ken/sherlock_database_files/mysqldata
 sherlock_user: "sherlock"
 
 mysql_databases:
-  - name: crossmmatch_catalogues
+  - name: crossmatch_catalogues
     encoding: utf8mb4
     collation: utf8mb4_unicode_ci
  
