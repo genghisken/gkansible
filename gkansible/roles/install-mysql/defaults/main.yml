@@ -25,8 +25,7 @@ mysql_redhat_socket: '{{ defaultdir }}/mysql.sock'
 mysql_service_redhat: 'mysqld'
 mysql_service_ubuntu: 'mysql'
 
-mysql_root_password: 'OPV537'
-#mysql_root_password: 'root123password'
+mysql_root_password: 'root123password'
 
 mysql_port: 3306
 
