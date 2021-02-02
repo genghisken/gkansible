@@ -1,0 +1,117 @@
+---
+
+- name: Create database schema script
+  template:
+    src: crossmatch_catalogues_20201124_schema.sql.j2
+    dest: '/tmp/crossmatch_catalogues_20201124_schema.sql'
+    mode: 0644
+    owner: mysql
+    group: mysql
+  become: true
+
+- name: Copy the sql script for dropping the tablespaces to /tmp
+  copy:
+    src: sherlock_drop_innodb_tablespaces.sql
+    dest: /tmp/sherlock_drop_innodb_tablespaces.sql
+    owner: mysql
+    group: mysql
+    mode: 0644 
+  become: true
+
+- name: Copy the sql script for importing the tablespaces to /tmp
+  copy:
+    src: sherlock_import_innodb_tablespaces.sql
+    dest: /tmp/sherlock_import_innodb_tablespaces.sql
+    owner: mysql
+    group: mysql
+    mode: 0644 
+  become: true
+
+- name: create databases (in this case, the Sherlock database)
+  mysql_db:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    target: "{{ item.target | default(omit) }}"
+    encoding: "{{ item.encoding | default(omit) }}"
+    collation: "{{ item.collation | default(omit) }}"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  loop: "{{ mysql_databases }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_databases is defined
+  #no_log: yes
+  become: true
+
+- name: create users
+  mysql_user:
+    name: "{{ item.name }}"
+    state: present
+    password: "{{ item.password | default(omit) }}"
+    priv: "{{ item.priv | default(omit) }}"
+    host: "{{ item.host | default(omit) }}"
+    update_password: "{{ item.update_password | default('on_create') }}"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  loop: "{{ mysql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_users is defined
+  #no_log: yes
+  become: true
+
+- name: Run the schema create script
+  mysql_db:
+    name: "{{ item.name }}"
+    state: import
+    target: '/tmp/crossmatch_catalogues_20201124_schema.sql'
+    password: "{{ item.password | default(omit) }}"
+    host: "{{ item.host | default(omit) }}"
+  loop: "{{ mysql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_users is defined
+
+- name: Detach the InnoDB tablespaces from the newly created tables
+  mysql_db:
+    name: "{{ item.name }}"
+    state: import
+    target: /tmp/sherlock_innodb_drop_tablespaces.sql
+    password: "{{ item.password | default(omit) }}"
+    host: "{{ item.host | default(omit) }}"
+  loop: "{{ mysql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_users is defined
+
+- name: Copy the massive datafiles (over 4.5 TB)
+- copy:
+    src: "{{ item }}"
+    dest: "{{ datadir }}/crossmatch_catalogues"
+    owner: mysql
+    group: mysql
+    mode: preserve
+  with_fileglob:
+    - "{{ sherlock_database_source_dir }}/*"
+  become: true
+
+- name: Attach the InnoDB tablespaces from the newly created tables
+  mysql_db:
+    name: "{{ item.name }}"
+    state: import
+    target: /tmp/sherlock_innodb_attach_tablespaces.sql
+    password: "{{ item.password | default(omit) }}"
+    host: "{{ item.host | default(omit) }}"
+  loop: "{{ mysql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_users is defined
+
+
+- name: flush handlers
+  meta: flush_handlers

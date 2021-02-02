@@ -1,0 +1,31 @@
+---
+
+dataroot: '/data/mysql/'
+tmpdir: '{{ dataroot }}mysqltmp'
+datadir: '{{ dataroot }}mysqldata'
+logdir: '{{ dataroot }}mysqllog'
+defaultdir: '/var/lib/mysql'
+
+mysql_ubuntu_socket: '/var/run/mysqld/mysqld.sock'
+mysql_redhat_socket: '{{ defaultdir }}/mysql.sock'
+
+mysql_service_redhat: 'mysqld'
+mysql_service_ubuntu: 'mysql'
+
+mysql_root_password: 'root123password'
+
+mysql_port: 3306
+
+sherlock_database_source_dir: '/mnt/cephfs/ken/sherlock_database_files/mysqldata/crossmatch_catalogues'
+sherlock_user: "sherlock"
+
+mysql_databases:
+  - name: crossmmatch_catalogues
+    encoding: utf8mb4
+    collation: utf8mb4_unicode_ci
+ 
+mysql_users:
+  - name: sherlock
+    host: "%"
+    password: sherlock
+    priv: "crossmatch_catalogues.*:ALL"
