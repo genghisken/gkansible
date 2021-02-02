@@ -64,11 +64,12 @@
 
 - name: Run the schema create script
   mysql_db:
-    name: "{{ item.name }}"
+    name: "crossmatch_catalogues"
     state: import
     target: '/tmp/crossmatch_catalogues_20201124_schema.sql'
-    password: "{{ item.password | default(omit) }}"
-    host: "{{ item.host | default(omit) }}"
+    login_user: "{{ item.name }}"
+    login_password: "{{ item.password | default(omit) }}"
+    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
   loop: "{{ mysql_users }}"
   loop_control:
     label: "{{ item.name }}"
@@ -77,35 +78,44 @@
 
 - name: Detach the InnoDB tablespaces from the newly created tables
   mysql_db:
-    name: "{{ item.name }}"
+    name: "crossmatch_catalogues"
     state: import
-    target: /tmp/sherlock_innodb_drop_tablespaces.sql
-    password: "{{ item.password | default(omit) }}"
-    host: "{{ item.host | default(omit) }}"
+    target: /tmp/sherlock_innodb_discard_tablespaces.sql
+    login_user: "{{ item.name }}"
+    login_password: "{{ item.password | default(omit) }}"
+    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
   loop: "{{ mysql_users }}"
   loop_control:
     label: "{{ item.name }}"
   when:
     - mysql_users is defined
 
+- name: Get the Sherlock files on remote machine
+  find:
+    paths: "{{ sherlock_database_source_dir }}"
+  register: sherlock_db_files
+  become: true
+
 - name: Copy the massive datafiles (over 4.5 TB)
   copy:
-    src: "{{ item }}"
+    src: "{{ item.path }}"
     dest: "{{ datadir }}/crossmatch_catalogues"
     owner: mysql
     group: mysql
     mode: preserve
-  with_fileglob:
-    - "{{ sherlock_database_source_dir }}/*"
+    remote_src: yes
+  with_items:
+    - "{{ sherlock_db_files.files }}"
   become: true
 
 - name: Attach the InnoDB tablespaces from the newly created tables
   mysql_db:
-    name: "{{ item.name }}"
+    name: "crossmatch_catalogues"
     state: import
-    target: /tmp/sherlock_innodb_attach_tablespaces.sql
-    password: "{{ item.password | default(omit) }}"
-    host: "{{ item.host | default(omit) }}"
+    target: /tmp/sherlock_innodb_import_tablespaces.sql
+    login_user: "{{ item.name }}"
+    login_password: "{{ item.password | default(omit) }}"
+    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
   loop: "{{ mysql_users }}"
   loop_control:
     label: "{{ item.name }}"
