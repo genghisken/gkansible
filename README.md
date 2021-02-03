@@ -4,9 +4,7 @@ A repository of Ansible playbooks. These currently include:
 * Anaconda
 * Cassandra
 * MySQL 5.7
-
-Coming soon:
-* SherlockDB - A sherlock full database install
+* SherlockDB - A sherlock full database install (needs 6TB minimum partition)
 
 Make sure you can login to any newly created nodes from the control node before running these deployments.
 
@@ -20,4 +18,4 @@ Deployment is fairly straightforward.
 
 That's it.
 
-Note that some work is still required to make the scripts fully idempotent, but they should work first time on a virgin OS install. The current Anaconda and Cassandra installs have been tested on both RedHat and Ubuntu. The MySQL install is only fully tested on Ubuntu so far.
+Note that some work is still required to make the scripts fully idempotent, but they should work first time on a virgin OS install. The current Anaconda and Cassandra installs have been tested on both RedHat and Ubuntu. The MySQL and Sherlock installs are only fully tested on Ubuntu so far.  The Sherlock install also needs access to a filesystem that contains a snapshot of the Sherlock database.
