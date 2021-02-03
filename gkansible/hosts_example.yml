@@ -8,9 +8,6 @@ localhost
 192.168.0.9
 192.168.0.39
 
-[mysqlnodes]
-192.168.0.15
-
 [anacondanodes]
 192.168.0.20
 192.168.0.17
@@ -18,5 +15,19 @@ localhost
 192.168.0.9
 192.168.0.39
 
+[mysqlnodes]
+192.168.0.10
+192.168.0.26
+
 [sherlocknodes]
-192.168.0.15
+192.168.0.10
+192.168.0.26
+
+[mysqlnodes:vars]
+# Set the python interpreter for the remote machine.
+ansible_python_interpreter=/usr/bin/python3
+
+[sherlocknodes:vars]
+# Set the python interpreter for the remote machine.
+ansible_python_interpreter=/usr/bin/python3
+
