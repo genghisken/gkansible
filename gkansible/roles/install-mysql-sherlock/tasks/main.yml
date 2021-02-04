@@ -9,23 +9,23 @@
     group: mysql
   become: true
 
-- name: Copy the sql script for dropping the tablespaces to /tmp
-  copy:
-    src: files/sherlock_innodb_discard_tablespaces.sql
-    dest: /tmp/sherlock_innodb_discard_tablespaces.sql
-    owner: mysql
-    group: mysql
-    mode: 0644 
-  become: true
-
-- name: Copy the sql script for importing the tablespaces to /tmp
-  copy:
-    src: files/sherlock_innodb_import_tablespaces.sql
-    dest: /tmp/sherlock_innodb_import_tablespaces.sql
-    owner: mysql
-    group: mysql
-    mode: 0644 
-  become: true
+#- name: Copy the sql script for dropping the tablespaces to /tmp
+#  copy:
+#    src: files/sherlock_innodb_discard_tablespaces.sql
+#    dest: /tmp/sherlock_innodb_discard_tablespaces.sql
+#    owner: mysql
+#    group: mysql
+#    mode: 0644 
+#  become: true
+#
+#- name: Copy the sql script for importing the tablespaces to /tmp
+#  copy:
+#    src: files/sherlock_innodb_import_tablespaces.sql
+#    dest: /tmp/sherlock_innodb_import_tablespaces.sql
+#    owner: mysql
+#    group: mysql
+#    mode: 0644 
+#  become: true
 
 - name: create databases (in this case, the Sherlock database)
   mysql_db:
@@ -76,19 +76,19 @@
   when:
     - mysql_users is defined
 
-- name: Detach the InnoDB tablespaces from the newly created tables
-  mysql_db:
-    name: "crossmatch_catalogues"
-    state: import
-    target: /tmp/sherlock_innodb_discard_tablespaces.sql
-    login_user: "{{ item.name }}"
-    login_password: "{{ item.password | default(omit) }}"
-    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
-  loop: "{{ mysql_users }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when:
-    - mysql_users is defined
+#- name: Detach the InnoDB tablespaces from the newly created tables
+#  mysql_db:
+#    name: "crossmatch_catalogues"
+#    state: import
+#    target: /tmp/sherlock_innodb_discard_tablespaces.sql
+#    login_user: "{{ item.name }}"
+#    login_password: "{{ item.password | default(omit) }}"
+#    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
+#  loop: "{{ mysql_users }}"
+#  loop_control:
+#    label: "{{ item.name }}"
+#  when:
+#    - mysql_users is defined
 
 - name: Get the Sherlock files on remote machine
   find:
@@ -108,11 +108,34 @@
     - "{{ sherlock_db_files.files }}"
   become: true
 
-- name: Attach the InnoDB tablespaces from the newly created tables
+#- name: Attach the InnoDB tablespaces from the newly created tables
+#  mysql_db:
+#    name: "crossmatch_catalogues"
+#    state: import
+#    target: /tmp/sherlock_innodb_import_tablespaces.sql
+#    login_user: "{{ item.name }}"
+#    login_password: "{{ item.password | default(omit) }}"
+#    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
+#  loop: "{{ mysql_users }}"
+#  loop_control:
+#    label: "{{ item.name }}"
+#  when:
+#    - mysql_users is defined
+#
+
+- name: Restart MySQL - so we now recognise the newly copied MyISAM tables.
+  service:
+    name: '{% if ansible_os_family == "Debian" %}{{ mysql_service_ubuntu }}{% else %}{{ mysql_service_redhat }}{% endif %}'
+    state: restarted
+    enabled: yes
+  become: true
+
+
+- name: Import the InnoDB data.
   mysql_db:
     name: "crossmatch_catalogues"
     state: import
-    target: /tmp/sherlock_innodb_import_tablespaces.sql
+    target: "{{ sherlock_tables_sql_dir }}/sherlock_innodb_tables_20210204_no_ppmxl.sql"
     login_user: "{{ item.name }}"
     login_password: "{{ item.password | default(omit) }}"
     login_host: "{{ ansible_all_ipv4_addresses[0] }}"
@@ -121,7 +144,6 @@
     label: "{{ item.name }}"
   when:
     - mysql_users is defined
-
 
 - name: flush handlers
   meta: flush_handlers

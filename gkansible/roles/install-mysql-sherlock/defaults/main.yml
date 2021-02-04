@@ -17,6 +17,8 @@ mysql_root_password: 'root123password'
 mysql_port: 3306
 
 sherlock_database_source_dir: '/mnt/cephfs/ken/sherlock_database_files/mysqldata/crossmatch_catalogues'
+sherlock_tables_sql_dir: '/mnt/cephfs/ken/sherlock_innodb_tables'
+
 sherlock_user: "sherlock"
 
 mysql_databases:
