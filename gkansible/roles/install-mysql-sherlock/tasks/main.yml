@@ -9,6 +9,15 @@
     group: mysql
   become: true
 
+- name: Recreate views script
+  template:
+    src: crossmatch_catalogues_20201124_views.sql.j2
+    dest: '/tmp/crossmatch_catalogues_20201124_views.sql'
+    mode: 0644
+    owner: mysql
+    group: mysql
+  become: true
+
 #- name: Copy the sql script for dropping the tablespaces to /tmp
 #  copy:
 #    src: files/sherlock_innodb_discard_tablespaces.sql
@@ -144,6 +153,22 @@
     label: "{{ item.name }}"
   when:
     - mysql_users is defined
+
+
+- name: Run the recreate views script. 
+  mysql_db:
+    name: "crossmatch_catalogues"
+    state: import
+    target: '/tmp/crossmatch_catalogues_20201124_views.sql'
+    login_user: "{{ item.name }}"
+    login_password: "{{ item.password | default(omit) }}"
+    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
+  loop: "{{ mysql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_users is defined
+
 
 - name: flush handlers
   meta: flush_handlers
