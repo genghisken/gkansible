@@ -155,6 +155,23 @@
     - mysql_users is defined
 
 
+# 2021-05-21 KWS Need to include this updated table. Will eventually merge into the all
+#                InnoDB tables script. Putting it here in case I forget.
+- name: Import the updated tcs_helper_catalogues_tables_info table.
+  mysql_db:
+    name: "crossmatch_catalogues"
+    state: import
+    target: "{{ sherlock_tables_sql_dir }}/tcs_helper_catalogue_tables_info.sql"
+    login_user: "{{ item.name }}"
+    login_password: "{{ item.password | default(omit) }}"
+    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
+  loop: "{{ mysql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_users is defined
+
+
 - name: Run the recreate views script. 
   mysql_db:
     name: "crossmatch_catalogues"
