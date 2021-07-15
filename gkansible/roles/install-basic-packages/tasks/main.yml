@@ -1,0 +1,120 @@
+- name: Update packages
+  become: true
+  apt:
+    update_cache: yes # apt-get update
+  when: ansible_os_family == "Debian"
+
+# Add specified repository into sources list.
+- apt_repository:
+    repo: "{{ item }}"
+    state: present
+  with_items:
+    - deb http://archive.ubuntu.com/ubuntu bionic main
+    - deb http://archive.ubuntu.com/ubuntu bionic universe
+    - deb http://archive.ubuntu.com/ubuntu bionic restricted
+    - deb http://archive.ubuntu.com/ubuntu bionic multiverse
+  become: true
+  when: ansible_os_family == "Debian"
+
+# From Dave's stuff.
+- name: Basic package installs
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - git
+      - gcc
+      - python3-pip
+      - gcc-multilib
+      - g++-multilib
+      - twine
+      - tmux
+      - python-setuptools
+      - python3-pymysql
+  become: true
+  when: ansible_os_family == "Debian"
+
+# Explicitly add the MariaDB repository
+- name: Add the MariaDB 10.4 repo key 
+  ansible.builtin.apt_key:
+    url: https://mariadb.org/mariadb_release_signing_key.asc
+    state: present
+  when: ansible_os_family == "Debian"
+  become: true
+
+- name: Add the MariaDB 10.4 repository
+  register: apt_result
+  ansible.builtin.apt_repository:
+    repo: deb http://mariadb.mirror.iweb.com/repo/10.4/ubuntu bionic main
+    state: present
+  when: ansible_os_family == "Debian"
+  become: true
+  ignore_errors: yes
+
+- name: "Update packages"
+  become: true
+  apt:
+    update_cache: yes # apt-get update
+  when: ansible_os_family == "Debian"
+
+- name: install python3
+  apt:
+    name: python3
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: install python3-dev
+  apt:
+    name: python3-dev
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: install pip3
+  apt:
+    name: python3-pip
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Upgrade pip3 Priority
+  alternatives:
+    name: pip
+    link: /usr/bin/pip
+    path: /usr/bin/pip3
+    priority: 60
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Upgrade Python3 Priority
+  alternatives:
+    name: python
+    link: /usr/bin/python
+    path: /usr/bin/python3
+    priority: 60
+  become: true
+  when: ansible_os_family == "Debian"
+
+# Install very latest version of PyMySQL
+- name: install the package, force upgrade
+  pip: 
+    name: pymysql
+    state: latest
+    executable: pip3
+  become: true
+
+- name: Copy the SSH private key to the destination machines.
+  copy:
+    content: "{{ ssh_keys.id_rsa }}"
+    dest: "/home/ubuntu/.ssh/id_rsa"
+    mode: '0400'
+  when: ansible_os_family == "Debian"
+
+- name: Copy the SSH public key to the destination machines.
+  copy:
+    content: "{{ ssh_keys.id_rsa_pub }}"
+    dest: "/home/ubuntu/.ssh/id_rsa.pub"
+    mode: '0644'
+  when: ansible_os_family == "Debian"

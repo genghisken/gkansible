@@ -1,0 +1,3 @@
+---
+ssh_keys: "{{ lookup('hashi_vault', 'secret=secret/lasair/ssh') }}"
+mariadb_credentials: "{{ lookup('hashi_vault', 'secret=secret/lasair/mariadb') }}"

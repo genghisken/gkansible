@@ -1,0 +1,175 @@
+## RUN THIS PLAYBOOK WITH
+## > ansible-playbook setup-mariadb-galera.yml --ask-vault-pass
+## > ansible-playbook setup-mariadb-galera.yml --vault-password-file ~/.config/ansible/vault_password  
+---
+
+# JUST GATHERING FACTS
+- hosts: cluster_control,frontend_db1,backend_db1,backend_db2
+  become: true
+
+# MAKE SURE python-mysqldb IS INSTALLED OR CLUSTERCONTROL FAILS TO INSTALL
+- hosts: cluster_control
+  become: yes
+  tasks:
+  - name: "Install python-mysqldb"
+    apt: 
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+        - python-mysqldb
+
+- hosts: cluster_control
+  become: yes
+  roles:
+    - role: severalnines.clustercontrol
+  vars:
+    runtag: controller
+    mariadb_credentials: "{{ lookup('hashi_vault', 'secret=secret/lasair/mariadb') }}"
+    mysql_root_password: "{{ mariadb_credentials.mariadb_root_pw }}"
+    cmon_mysql_password: "{{ mariadb_credentials.mariadb_root_pw }}"
+    cc_admin:
+      - set: true
+        email: "k.w.smith@qub.ac.uk"
+        password: "{{ mariadb_credentials.mariadb_root_pw }}"
+    cc_license:
+      - set: false
+
+- hosts: cluster_control
+  become: yes
+  become_user: root
+  roles:
+    - role: severalnines.clustercontrol
+      tags: deploy-database
+  vars:
+    runtag: deploy-database
+    mariadb_credentials: "{{ lookup('hashi_vault', 'secret=secret/lasair/mariadb') }}"
+    mysql_root_password:  "{{ mariadb_credentials.mariadb_root_pw }}"
+    cc_cluster:
+      # minimal create new galera
+      - deployment: true
+        operation: "create"
+        cluster_type: "galera"
+        cluster_name: "galera_cluster"
+        mysql_cnf_template: "my.cnf.mdb10x-galera"
+        mysql_datadir: "/var/lib/mysql"
+        mysql_root_password: "{{ mariadb_credentials.mariadb_root_pw }}"
+        mysql_hostnames:
+          - "{{ hostvars[groups['backend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}"
+          - "{{ hostvars[groups['backend_db2'][0]]['ansible_all_ipv4_addresses'][0] }}"
+          - "{{ hostvars[groups['frontend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}"
+        mysql_password: "{{ mariadb_credentials.mariadb_root_pw }}"
+        cmon_mysql_password: "{{ mariadb_credentials.mariadb_root_pw }}"
+        mysql_port: 3306
+        mysql_version: "10.4"
+        ssh_keyfile: "/home/ubuntu/.ssh/id_rsa"
+        ssh_user: "ubuntu"
+        sudo_password: ""
+        vendor: "mariadb"
+        nodes: 
+            - hostname: "{{ hostvars[groups['backend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}"
+              hostname_data: "{{ hostvars[groups['backend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}"
+              hostname_internal: ""
+              port: "3306"
+            - hostname: "{{ hostvars[groups['backend_db2'][0]]['ansible_all_ipv4_addresses'][0] }}"
+              hostname_data: "{{ hostvars[groups['backend_db2'][0]]['ansible_all_ipv4_addresses'][0] }}"
+              hostname_internal: ""
+              port: "3306"
+            - hostname: "{{ hostvars[groups['frontend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}"
+              hostname_data: "{{ hostvars[groups['frontend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}"
+              hostname_internal: ""
+              port: "3306"
+
+- hosts: backend_db1,backend_db2,frontend_db1
+  become: true
+  become_user: root
+  tasks:
+    - name: Copy .my.cnf file with root password credentials.
+      template:
+        src: "{{ playbook_dir }}/vendor/severalnines.clustercontrol/templates/user-my.cnf.j2"
+        dest: "/root/.my.cnf"
+        owner: root
+        group: root
+        mode: 0600
+      vars:
+        mysql_root_username: root
+        mariadb_credentials: "{{ lookup('hashi_vault', 'secret=secret/lasair/mariadb') }}"
+        mysql_root_password: "{{ mariadb_credentials.mariadb_root_pw }}"
+
+- hosts: backend_db1
+  become: true
+  become_user: root
+  tasks: 
+    - name: Add MaxScale MySQL User on Cluster
+      vars:
+        mariadb_credentials: "{{ lookup('hashi_vault', 'secret=secret/lasair/mariadb') }}"
+        password: "{{ mariadb_credentials.mariadb_root_pw }}"
+        ip: "{{ hostvars[groups['cluster_control'][0]]['ansible_all_ipv4_addresses'][0] }}"
+      community.mysql.mysql_query:
+        query:
+          - CREATE USER IF NOT EXISTS 'maxscale'@'{{ ip }}' IDENTIFIED BY "{{ password }}"
+          - GRANT SELECT ON mysql.user TO 'maxscale'@'{{ ip }}';
+          - GRANT SELECT ON mysql.db TO 'maxscale'@'{{ ip }}';
+          - GRANT SELECT ON mysql.tables_priv TO 'maxscale'@'{{ ip }}';
+          - GRANT SELECT ON mysql.columns_priv TO 'maxscale'@'{{ ip }}';
+          - GRANT SELECT ON mysql.proxies_priv TO 'maxscale'@'{{ ip }}';
+          - GRANT SELECT ON mysql.roles_mapping TO 'maxscale'@'{{ ip }}';
+          - GRANT SHOW DATABASES ON *.* TO 'maxscale'@'{{ ip }}';
+        login_user: root
+        login_password: "{{ password }}"
+        single_transaction: yes
+
+# MAKE LOWERCASE TABLES FOR EACH SERVER IN THE CLUSTER
+
+
+
+- hosts: backend_db1,backend_db2,frontend_db1
+  become: true
+  tasks:
+    - name: Request lowercase tables names on all mysql servers
+      ini_file:
+        path: /etc/mysql/my.cnf
+        section: MYSQLD
+        option: lower_case_table_names
+        value: "1"
+        backup: no
+    - name: Request lowercase tables names on all mysql servers
+      ini_file:
+        path: /etc/mysql/my.cnf
+        section: MYSQLD
+        option: log_bin_trust_function_creators
+        value: "1"
+        backup: no
+    - name: Increase open file limit
+      ini_file:
+        path: /etc/systemd/system/mariadb.service.d/override.conf
+        section: Service
+        option: LimitNOFILE
+        value: "infinity"
+        backup: no
+
+- hosts: cluster_control
+  become: true
+  vars:
+    maxscale_deb_url: https://dlm.mariadb.com/1270737/MaxScale/2.5.5/packages/ubuntu/bionic/maxscale-2.5.5-1.ubuntu.bionic.x86_64.deb
+  roles: 
+    - install-maxscale
+
+- hosts: cluster_control
+  become: true
+  tasks: 
+    - name: Populate Maxscale template and send to cluster control machine
+      template:
+        src: "{{ playbook_dir }}/roles/install-maxscale/templates/maxscale.cnf.j2"
+        dest: "/etc/maxscale.cnf"
+        # owner: bin
+        # group: wheel
+        # mode: '0644'
+    - name: maxscale restart
+      service:
+        name: maxscale
+        state: restarted
+
+
+  
+

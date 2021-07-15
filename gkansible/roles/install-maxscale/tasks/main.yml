@@ -1,0 +1,33 @@
+---
+# MAIN TASKS TO BE EXECUTED BY install_maxscale ROLE
+# xans-install-packages-role
+# xans-import-role
+
+- name: Check if maxscale is installed
+  command: dpkg-query -W maxscale
+  register: my_package_check_deb
+  failed_when: my_package_check_deb.rc > 1
+  changed_when: my_package_check_deb.rc == 1
+
+- name: Download maxscale
+  get_url: 
+    url="{{ maxscale_deb_url }}"
+    dest="/tmp/maxscale.deb"
+  when: my_package_check_deb.rc == 1
+
+- name: Install maxscale
+  apt: deb="/tmp/maxscale.deb"
+  become: true
+  when: my_package_check_deb.rc == 1
+
+# COPY secrets 
+- name: copy secrets to server
+  vars:
+    source_key: "files/secrets"
+    dest_key: "/var/lib/maxscale/.secrets"
+  copy: 
+    src: "{{ source_key }}" 
+    dest: "{{ dest_key }}"
+    owner: maxscale
+    group: maxscale
+    mode: u+r-w,g-rwx,o-rwx

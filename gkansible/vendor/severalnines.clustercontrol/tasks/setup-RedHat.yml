@@ -1,0 +1,51 @@
+---
+- name: Disabling SElinux.
+  selinux: state=disabled
+
+- name: Installing MySQL packages.
+  yum: name={{ mysql_packages }} state=present
+  register: rh_mysql_install_packages
+
+- name: Ensure MySQL Python libraries are installed.
+  yum: name={{ python_mysql }} state=present
+
+- name: Ensure Apache packages are installed.
+  yum: name={{ apache_packages }} state=present
+  register: rh_apache_install_packages
+  notify: restart apache
+
+- name: Check if ClusterControl Controller is already installed.
+  stat: path=/etc/sbin/cmon
+  register: cmon_installed
+
+- name: Installing ClusterControl repository.
+  stat: path={{ repo_config_path }}
+  register: s9s_repo_installed
+
+- name: Installing ClusterControl CLI repository.
+  stat: path={{ clustercontrol_cli_repository }}
+  register: s9s_cli_repo_installed
+
+- name: Install Severalnines GPG key (yum).
+  rpm_key: state=present key={{ gpg_key }}
+  when: s9s_repo_installed.stat.exists == false
+
+- name: Download Severalnines Repository definition.
+  get_url: url={{ repo_config_url }} dest={{ repo_config_path }}
+  when: s9s_repo_installed.stat.exists == false
+
+- name: Download Severalnines CLI Repository definition.
+  get_url: url={{ clustercontrol_cli_repository }} dest={{ repo_cli_config_path }}
+  when: s9s_cli_repo_installed.stat.exists == false
+
+- name: Install latest version of ClusterControl Controller packages.
+  yum: name={{ clustercontrol_controller_packages }} state=latest update_cache=yes
+  register: rh_clustercontrol_controller_install_packages
+
+- name: Install latest version of ClusterControl UI packages.
+  yum: name={{ clustercontrol_ui_packages }} state=latest update_cache=yes
+  register: rh_clustercontrol_ui_install_packages
+
+- name: Install latest version of ClusterControl CLI package.
+  yum: name={{ clustercontrol_cli_packages }} state=latest
+  register: rh_clustercontrol_cli_install_packages

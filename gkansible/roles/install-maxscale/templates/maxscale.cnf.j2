@@ -1,0 +1,66 @@
+[maxscale]
+# NUMBER OF WORKER THREADS HANDLING EVENTS
+threads=auto 
+
+[backend-service]
+type=service
+router=readconnroute
+router_options=synced
+servers=backend-db1,backend-db2
+user=maxscale
+password=613EA282FD01A6551A469C97C4C26ED34EB14E8AC85242EA81C498CA38E1747B
+            
+[frontend-service]
+type=service
+router=readconnroute
+router_options=synced
+servers=frontend-db1
+user=maxscale
+password=613EA282FD01A6551A469C97C4C26ED34EB14E8AC85242EA81C498CA38E1747B
+    
+[backend-listener]
+type=listener
+service=backend-service
+protocol=MariaDBClient
+port=9001
+
+[frontend-listener]
+type=listener
+service=frontend-service
+protocol=MariaDBClient
+port=9002
+
+[backend-db1]
+type=server
+address={{ hostvars[groups['backend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}
+port=3306
+protocol=MariaDBBackend
+
+[backend-db2]
+type=server
+address={{ hostvars[groups['backend_db2'][0]]['ansible_all_ipv4_addresses'][0] }}
+port=3306
+protocol=MariaDBBackend
+
+[frontend-db1]
+type=server
+address={{ hostvars[groups['frontend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}
+port=3306
+protocol=MariaDBBackend
+
+[galera-monitor]
+type=monitor
+module=galeramon
+servers=backend-db1, backend-db2, frontend-db1
+user=maxscale
+password=613EA282FD01A6551A469C97C4C26ED34EB14E8AC85242EA81C498CA38E1747B
+
+; [CLI]
+; type=service
+; router=cli
+
+; [CLI-listener]
+; type=listener
+; service=CLI
+; protocol=maxscaled
+; socket=default
