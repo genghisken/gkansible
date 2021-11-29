@@ -3,5 +3,5 @@
 ---
 - hosts: anacondanodes
   roles:
-    - install-anaconda
+    - anaconda
 

@@ -3,5 +3,5 @@
 ---
 - hosts: sherlocknodes
   roles:
-    - install-mysql-sherlock
+    - mysql_sherlock
 

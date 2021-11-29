@@ -3,5 +3,5 @@
 ---
 - hosts: basicnodes
   roles:
-    - install-basic-packages
+    - basic_packages
 
