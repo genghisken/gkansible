@@ -87,9 +87,9 @@
   become: true
   when: ansible_os_family == "Debian"
 
-- name: Pause for 2 minutes to allow MySQL to build its tablespaces
+- name: Pause for 60 minutes to allow MySQL to build its tablespaces
   pause:
-    minutes: 2
+    minutes: 60
 
 - name: Install Oracle MySQL client for Debian.
   apt:
