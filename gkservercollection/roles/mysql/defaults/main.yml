@@ -6,9 +6,13 @@ datadir: '{{ dataroot }}mysqldata'
 logdir: '{{ dataroot }}mysqllog'
 defaultdir: '/var/lib/mysql'
 
-mysql_ubuntu_server: 'mysql-server-5.7'
-mysql_ubuntu_client: 'mysql-client-5.7'
-mysql_ubuntu_client_core: 'mysql-client-core-5.7'
+# 2021-11-30 KWS Ubuntu 20.04 does NOT have MySQL 5.7. Need to install MySQL 8.0.
+#mysql_ubuntu_server: 'mysql-server-5.7'
+#mysql_ubuntu_client: 'mysql-client-5.7'
+#mysql_ubuntu_client_core: 'mysql-client-core-5.7'
+mysql_ubuntu_server: 'mysql-server-8.0'
+mysql_ubuntu_client: 'mysql-client-8.0'
+mysql_ubuntu_client_core: 'mysql-client-core-8.0'
 mysql_ubuntu_common: 'mysql-common'
 mysql_ubuntu_socket: '/var/run/mysqld/mysqld.sock'
 
