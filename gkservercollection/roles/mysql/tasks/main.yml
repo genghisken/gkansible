@@ -87,6 +87,10 @@
   become: true
   when: ansible_os_family == "Debian"
 
+- name: Pause for 2 minutes to allow MySQL to build its tablespaces
+  pause:
+    minutes: 2
+
 - name: Install Oracle MySQL client for Debian.
   apt:
     name: "{{ mysql_ubuntu_client }}"
@@ -121,6 +125,7 @@
 #    state: present
 #  become: true
 #  when: ansible_os_family == "Debian"
+
 
 # The apt-get service in Ubuntu automatically starts an installed service.
 # Shut it down!
