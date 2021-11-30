@@ -11,12 +11,16 @@
     value: "10"
   become: true
 
-- name: Update packages
-  become: true
-  apt:
-    update_cache: yes # apt-get update
-  when: ansible_os_family == "Debian"
+#- name: Update packages
+#  become: true
+#  apt:
+#    update_cache: yes # apt-get update
+#  when: ansible_os_family == "Debian"
 
+- name: Use the command apt-get update instead of the apt module
+  command: apt-get update
+  become: true
+  when: ansible_os_family == "Debian"
 
 # For RedHat - need to get the Yum repos, then install.
 

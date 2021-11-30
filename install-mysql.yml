@@ -3,5 +3,5 @@
 ---
 - hosts: mysqlnodes
   roles:
-    - mysql
+    - gkansible.gkservercollection.mysql
 
