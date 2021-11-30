@@ -87,9 +87,9 @@
   become: true
   when: ansible_os_family == "Debian"
 
-- name: Pause for 60 minutes to allow MySQL to build its tablespaces
+- name: Pause for 1 minute to allow MySQL to build its tablespaces
   pause:
-    minutes: 60
+    minutes: 1
 
 - name: Install Oracle MySQL client for Debian.
   apt:
@@ -204,10 +204,11 @@
     enabled: yes
   become: true
 
-- name: Remove the default created innodb tablespace 
-  shell: 'rm -f {{ datadir }}/ib*'
-  become: true
-  when: ansible_os_family == "Debian"
+# 2021-11-30 KWS MySQL 8.0 does NOT auto rebuild the ibdata1 tablespace. We MAY need to re-init the database.
+#- name: Remove the default created innodb tablespace 
+#  shell: 'rm -f {{ datadir }}/ib*'
+#  become: true
+#  when: ansible_os_family == "Debian"
 
 - name: start and enable mysql
   service:
