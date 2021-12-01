@@ -141,7 +141,7 @@
     state: directory
     owner: mysql
     group: mysql
-    mode: 0775
+    mode: 0755
     recurse: yes
   become: true
 
@@ -151,7 +151,7 @@
     state: directory
     owner: mysql
     group: mysql
-    mode: 0775
+    mode: 0755
     recurse: yes
   become: true
 
@@ -161,22 +161,37 @@
     state: directory
     owner: mysql
     group: mysql
-    mode: 0775
+    mode: 0755
     recurse: yes
   become: true
 
-- name: Check that the old mysql directory data exists     
-  stat:
-    path: '{{ defaultdir }}/mysql'
-  register: stat_result
+- name: Move the default installation file to new directory 
+  #shell: 'mv {{ defaultdir }}/* {{ datadir }}'
+  shell: 'rsync -av {{ defaultdir }}/ {{ datadir }}'
   become: true
   when: ansible_os_family == "Debian"
 
-
 - name: Move the default installation file to new directory 
-  shell: 'mv {{ defaultdir }}/* {{ datadir }}'
+  shell: 'rm -rf {{ defaultdir }}'
   become: true
-  when: ansible_os_family == "Debian" and stat_result.stat.exists
+  when: ansible_os_family == "Debian"
+
+- name: Recreate the old mysql directories
+  file:
+    path: "{{ defaultdir }}/mysql"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 0755
+    recurse: yes
+  become: true
+
+#- name: Check that the old mysql directory data exists     
+#  stat:
+#    path: '{{ defaultdir }}/mysql'
+#  register: stat_result
+#  become: true
+#  when: ansible_os_family == "Debian"
 
 
 - name: mysql configuration file (my.cnf)
