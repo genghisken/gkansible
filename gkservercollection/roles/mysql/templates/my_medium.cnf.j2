@@ -22,7 +22,8 @@ socket		= {% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else
 # The MySQL server
 [mysqld]
 # 2021-01-27 KWS Added this so that we can log into the database as root with just the socket.
-plugin-load-add = auth_socket.so
+# 2021-11-30 KWS Apparently not needed for Ubuntu.
+# plugin-load-add = auth_socket.so
 
 # 2013-06-25 KWS Added read/write network timeouts to stop mysqldump from
 #                failing.
@@ -68,7 +69,8 @@ read_rnd_buffer_size = 8M
 myisam_sort_buffer_size = 128M
 thread_cache_size = 8
 # 2012-08-04 KWS Increase cache size to 256M
-query_cache_size = 256M
+# 2021-11-30 KWS This isn't a valid variable in MySQL 8.0
+#query_cache_size = 256M
 tmp_table_size=10G
 
 # 2019-05-28 KWS Increased max_heap_table_size to 2G from the default of 16M in an
