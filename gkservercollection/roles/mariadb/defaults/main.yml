@@ -1,0 +1,46 @@
+---
+
+dataroot: '/data/mysql/'
+tmpdir: '{{ dataroot }}mysqltmp'
+datadir: '{{ dataroot }}mysqldata'
+logdir: '{{ dataroot }}mysqllog'
+defaultdir: '/var/lib/mysql'
+
+# 2021-11-30 KWS Ubuntu 20.04 does NOT have MySQL 5.7. Need to install MySQL 8.0.
+mysql_ubuntu_server: 'mysql-server-8.0'
+mysql_ubuntu_client: 'mysql-client-8.0'
+mysql_ubuntu_client_core: 'mysql-client-core-8.0'
+mysql_ubuntu_common: 'mysql-common'
+mysql_ubuntu_socket: '/var/run/mysqld/mysqld.sock'
+
+mariadb_server: 'https://'
+
+mariadb_version: "10.4"
+
+mariadb_rpm_code: 'http://yum.mariadb.org/10.4/centos7-amd64'
+mariadb_rpm_gpg_key: 'https://yum.mariadb.org/RPM-GPG-KEY-MariaDB'
+
+mariadb_redhat_repo: 'https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm'
+mariadb_redhat_server: 'mysql-community-server'
+mariadb_redhat_client: 'mysql-community-client'
+mariadb_redhat_common: 'mysql-community-common'
+mariadb_redhat_devel: 'mysql-community-devel'
+mariadb_redhat_libs: 'mysql-community-libs'
+mariadb_redhat_libs_compat: 'mysql-community-libs-compat'
+mariadb_redhat_test: 'mysql-community-test'
+mariadb_redhat_socket: '{{ defaultdir }}/mysql.sock'
+
+mysql_service_redhat: 'mysqld'
+mysql_service_ubuntu: 'mysql'
+
+mysql_root_password: 'root123password'
+
+mysql_port: 3306
+
+mariadb_ubuntu_packages:
+  - mariadb-server
+  - mariadb-common
+  - mariadb-client
+
+mariadb_key_url: "https://mariadb.org/mariadb_release_signing_key.asc"
+mariadb_repo: deb [arch=amd64] https://mirror.klaus-uwe.me/mariadb/repo/10.4/debian
