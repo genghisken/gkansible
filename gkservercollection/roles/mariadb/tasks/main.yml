@@ -118,56 +118,21 @@
 
 
 
+- name: Install python3-mysqldb in the default setup on the client - so we can do root password config
+  apt:
+    name: python3-mysqldb
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
 
-#
-#
-#- name: Install Oracle MySQL server for Debian.
-#  apt:
-#    name: "{{ mysql_ubuntu_server }}"
-#    state: present
-#  become: true
-#  when: ansible_os_family == "Debian"
-#
-#- name: Pause for 1 minute to allow MySQL to build its tablespaces
-#  pause:
-#    minutes: 1
-#
-#- name: Install Oracle MySQL client for Debian.
-#  apt:
-#    name: "{{ mysql_ubuntu_client }}"
-#    state: present
-#  become: true
-#  when: ansible_os_family == "Debian"
-#
-#- name: Install Oracle MySQL client core for Debian.
-#  apt:
-#    name: "{{ mysql_ubuntu_client_core }}"
-#    state: present
-#  become: true
-#  when: ansible_os_family == "Debian"
-#
-#- name: Install Oracle MySQL common for Debian.
-#  apt:
-#    name: "{{ mysql_ubuntu_common }}"
-#    state: present
-#  become: true
-#  when: ansible_os_family == "Debian"
-#
-#- name: Install python3-mysqldb in the default setup on the client - so we can do root password config
-#  apt:
-#    name: python3-mysqldb
-#    state: present
-#  become: true
-#  when: ansible_os_family == "Debian"
-#
-##- name: Install python-pymysql in the default setup on the client - so we can do root password config
-##  apt:
-##    name: python-pymysql
-##    state: present
-##  become: true
-##  when: ansible_os_family == "Debian"
-#
-#
+- name: Install python-pymysql in the default setup on the client - so we can do root password config
+  apt:
+    name: python-pymysql
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+
 ## The apt-get service in Ubuntu automatically starts an installed service.
 ## Shut it down!
 #- name: Stop service mysql, if started
