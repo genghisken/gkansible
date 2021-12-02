@@ -106,12 +106,12 @@
     update_cache: yes # apt-get update
   when: ansible_os_family == "Debian"
 
-#- name: Install MariaDB server for {{ ansible_distribution }}
-#  apt:
-#    name: "{{ mariadb_ubuntu_packages }}"
-#    state: present
-#  become: true
-#  when: ansible_os_family == "Debian"
+- name: Install MariaDB server for {{ ansible_distribution }}
+  apt:
+    name: "{{ mariadb_ubuntu_packages }}"
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
 
 
 
