@@ -11,12 +11,6 @@
     value: "10"
   become: true
 
-- name: Update packages
-  become: true
-  apt:
-    update_cache: yes # apt-get update
-  when: ansible_os_family == "Debian"
-
 #- name: Use the command apt-get update instead of the apt module
 #  command: apt-get update
 #  become: true
@@ -106,14 +100,18 @@
   become: true
   when: ansible_os_family == "Debian"
 
-#- meta: flush_handlers
-
-- name: Install MariaDB server for {{ ansible_distribution }}
-  apt:
-    name: "{{ mariadb_ubuntu_packages }}"
-    state: present
+- name: Update packages
   become: true
+  apt:
+    update_cache: yes # apt-get update
   when: ansible_os_family == "Debian"
+
+#- name: Install MariaDB server for {{ ansible_distribution }}
+#  apt:
+#    name: "{{ mariadb_ubuntu_packages }}"
+#    state: present
+#  become: true
+#  when: ansible_os_family == "Debian"
 
 
 
