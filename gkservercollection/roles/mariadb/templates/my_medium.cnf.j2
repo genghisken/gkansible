@@ -58,7 +58,7 @@ socket		= {% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else
 key_buffer_size = 16G
 key_cache_block_size = 5120
 # 2017-10-19 KWS Increased range_optimizer_max_mem_size to 10 * default for HmPtY HTMs.
-range_optimizer_max_mem_size=80M
+#range_optimizer_max_mem_size=80M
 # 2016-12-01 KWS Requested by Dave (1M was the default)
 max_allowed_packet=500M
 # 2018-02-06 KWS table_open_cache increased from 512 to 2048
@@ -83,7 +83,7 @@ interactive_timeout=864000
 wait_timeout=864000
 
 # Disable Federated by default
-skip-federated
+#skip-federated
 
 # Replication Master Server (default)
 # binary logging is required for replication
