@@ -46,6 +46,22 @@
   when: ansible_os_family == "RedHat"
   notify:
     - Pause to allow MySQL to build its tablespaces
+    - Stop service mysql, if started
+    - Create the mysql data directory
+    - Create the mysql tmp directory
+    - Create the mysql log directory
+    - Move the default installation file to new directory 
+    - Recreate the old mysql directories
+    - mysql configuration file (my.cnf)
+    - apparmor configuration file (alias)
+    - Restart apparmor
+    - start and enable mysql
+    - Set the root password
+    - Secure the root user for IPV6 localhost (::1)
+    - Secure the root user for IPV4 localhost (127.0.0.1)
+    - Secure the root user for localhost domain
+    - Secure the root user for server_hostname domain
+    - Deletes anonymous server user
 
 - name: Install Oracle MySQL server for Debian.
   apt:
