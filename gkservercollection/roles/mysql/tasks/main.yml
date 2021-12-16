@@ -31,270 +31,69 @@
   become: true
   when: ansible_os_family == "RedHat"
 
-- name: Install Oracle MySQL server RedHat Family.
+- name: Install Oracle MySQL for RedHat Family.
   yum:
-    name: "{{ mysql_redhat_server }}"
+    name: 
+      - "{{ mysql_redhat_server }}"
+      - "{{ mysql_redhat_client }}"
+      - "{{ mysql_redhat_common }}"
+      - "{{ mysql_redhat_devel }}"
+      - "{{ mysql_redhat_libs }}"
+      - "{{ mysql_redhat_libs_compat }}"
+      - "{{ mysql_redhat_test }}"
     state: present
   become: true
   when: ansible_os_family == "RedHat"
-
-- name: Install Oracle MySQL client for RedHat Family.
-  yum:
-    name: "{{ mysql_redhat_client }}"
-    state: present
-  become: true
-  when: ansible_os_family == "RedHat"
-
-- name: Install Oracle MySQL common for RedHat Family.
-  yum:
-    name: "{{ mysql_redhat_common }}"
-    state: present
-  become: true
-  when: ansible_os_family == "RedHat"
-
-- name: Install Oracle MySQL devel for RedHat Family.
-  yum:
-    name: "{{ mysql_redhat_devel }}"
-    state: present
-  become: true
-  when: ansible_os_family == "RedHat"
-
-- name: Install Oracle MySQL libs for RedHat Family.
-  yum:
-    name: "{{ mysql_redhat_libs }}"
-    state: present
-  become: true
-  when: ansible_os_family == "RedHat"
-
-- name: Install Oracle MySQL libs-compat for RedHat Family.
-  yum:
-    name: "{{ mysql_redhat_libs_compat }}"
-    state: present
-  become: true
-  when: ansible_os_family == "RedHat"
-
-- name: Install Oracle MySQL test for RedHat Family.
-  yum:
-    name: "{{ mysql_redhat_test }}"
-    state: present
-  become: true
-  when: ansible_os_family == "RedHat"
+  notify:
+    - Pause to allow MySQL to build its tablespaces
+    - Stop service mysql, if started
+    - Create the mysql data directory
+    - Create the mysql tmp directory
+    - Create the mysql log directory
+    - Move the default installation file to new directory 
+    - Recreate the old mysql directories
+    - mysql configuration file (my.cnf)
+    - apparmor configuration file (alias)
+    - Restart apparmor
+    - start and enable mysql
+    - Set the root password
+    - Secure the root user for IPV6 localhost (::1)
+    - Secure the root user for IPV4 localhost (127.0.0.1)
+    - Secure the root user for localhost domain
+    - Secure the root user for server_hostname domain
+    - Deletes anonymous server user
 
 - name: Install Oracle MySQL server for Debian.
   apt:
-    name: "{{ mysql_ubuntu_server }}"
+    name: 
+      - "{{ mysql_ubuntu_server }}"
+      - "{{ mysql_ubuntu_client }}"
+      - "{{ mysql_ubuntu_client_core }}"
+      - "{{ mysql_ubuntu_common }}"
+      # Install python3-mysqldb in the default setup on the client - so we can do root password config
+      - python3-mysqldb
     state: present
   become: true
   when: ansible_os_family == "Debian"
-
-- name: Pause for 1 minute to allow MySQL to build its tablespaces
-  pause:
-    minutes: 1
-
-- name: Install Oracle MySQL client for Debian.
-  apt:
-    name: "{{ mysql_ubuntu_client }}"
-    state: present
-  become: true
-  when: ansible_os_family == "Debian"
-
-- name: Install Oracle MySQL client core for Debian.
-  apt:
-    name: "{{ mysql_ubuntu_client_core }}"
-    state: present
-  become: true
-  when: ansible_os_family == "Debian"
-
-- name: Install Oracle MySQL common for Debian.
-  apt:
-    name: "{{ mysql_ubuntu_common }}"
-    state: present
-  become: true
-  when: ansible_os_family == "Debian"
-
-- name: Install python3-mysqldb in the default setup on the client - so we can do root password config
-  apt:
-    name: python3-mysqldb
-    state: present
-  become: true
-  when: ansible_os_family == "Debian"
-
-#- name: Install python-pymysql in the default setup on the client - so we can do root password config
-#  apt:
-#    name: python-pymysql
-#    state: present
-#  become: true
-#  when: ansible_os_family == "Debian"
-
-
-# The apt-get service in Ubuntu automatically starts an installed service.
-# Shut it down!
-- name: Stop service mysql, if started
-  service:
-    name: '{% if ansible_os_family == "Debian" %}{{ mysql_service_ubuntu }}{% else %}{{ mysql_service_redhat }}{% endif %}'
-    state: stopped
-  become: true
-
-- name: Create the mysql data directory
-  file:
-    path: "{{ datadir }}"
-    state: directory
-    owner: mysql
-    group: mysql
-    mode: 0755
-    recurse: yes
-  become: true
-
-- name: Create the mysql tmp directory
-  file:
-    path: "{{ tmpdir }}"
-    state: directory
-    owner: mysql
-    group: mysql
-    mode: 0755
-    recurse: yes
-  become: true
-
-- name: Create the mysql log directory
-  file:
-    path: "{{ logdir }}"
-    state: directory
-    owner: mysql
-    group: mysql
-    mode: 0755
-    recurse: yes
-  become: true
-
-- name: Move the default installation file to new directory 
-  #shell: 'mv {{ defaultdir }}/* {{ datadir }}'
-  shell: 'rsync -av {{ defaultdir }}/ {{ datadir }}'
-  become: true
-  when: ansible_os_family == "Debian"
-
-- name: Move the default installation file to new directory 
-  shell: 'rm -rf {{ defaultdir }}'
-  become: true
-  when: ansible_os_family == "Debian"
-
-- name: Recreate the old mysql directories
-  file:
-    path: "{{ defaultdir }}/mysql"
-    state: directory
-    owner: mysql
-    group: mysql
-    mode: 0755
-    recurse: yes
-  become: true
-
-#- name: Check that the old mysql directory data exists     
-#  stat:
-#    path: '{{ defaultdir }}/mysql'
-#  register: stat_result
-#  become: true
-#  when: ansible_os_family == "Debian"
-
-
-- name: mysql configuration file (my.cnf)
-  template:
-    src: my_medium.cnf.j2
-    dest: '/etc{% if ansible_os_family == "Debian" %}/mysql{% endif %}/my.cnf'
-    mode: 0644
-    owner: mysql
-    group: mysql
-  become: true
-
-
-- name: apparmor configuration file (alias)
-  template:
-    src: apparmor_alias.j2
-    dest: /etc/apparmor.d/tunables/alias
-    mode: 0644
-  become: true
-  when: ansible_os_family == "Debian"
-
-- name: Restart apparmor
-  service:
-    name: apparmor
-    state: restarted
-    enabled: yes
-  become: true
-
-# 2021-11-30 KWS MySQL 8.0 does NOT auto rebuild the ibdata1 tablespace. We MAY need to re-init the database.
-#- name: Remove the default created innodb tablespace 
-#  shell: 'rm -f {{ datadir }}/ib*'
-#  become: true
-#  when: ansible_os_family == "Debian"
-
-- name: start and enable mysql
-  service:
-    name: '{% if ansible_os_family == "Debian" %}{{ mysql_service_ubuntu }}{% else %}{{ mysql_service_redhat }}{% endif %}'
-    state: started
-    enabled: yes
-  become: true
-
-- name: Set the root password
-  mysql_user:
-    login_user: 'root'
-    login_password: ''
-    user: 'root'
-    password: '{{ mysql_root_password }}'
-    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
-    state: present
-  become: true
-
-- name: Secure the root user for IPV6 localhost (::1)
-  mysql_user:
-    login_user: 'root'
-    login_password: '{{ mysql_root_password }}'
-    user: 'root'
-    password: '{{ mysql_root_password }}'
-    host: '::1'
-  become: true
-
-- name: Secure the root user for IPV4 localhost (127.0.0.1)
-  mysql_user:
-    login_user: 'root'
-    login_password: '{{ mysql_root_password }}'
-    user: 'root'
-    password: '{{ mysql_root_password }}'
-    host: '127.0.0.1'
-  become: true
-
-- name: Secure the root user for localhost domain
-  mysql_user:
-    login_user: 'root'
-    login_password: '{{ mysql_root_password }}'
-    user: 'root'
-    password: '{{ mysql_root_password }}'
-    host: 'localhost'
-  become: true
-
-- name: Secure the root user for server_hostname domain
-  mysql_user:
-    login_user: 'root'
-    login_password: '{{ mysql_root_password }}'
-    user: 'root'
-    password: '{{ mysql_root_password }}'
-    host: '{{ ansible_fqdn }}'
-  become: true
-
-- name: Deletes anonymous server user
-  mysql_user:
-    login_user: 'root'
-    login_password: '{{ mysql_root_password }}'
-    user: ''
-    host_all: yes
-    state: absent
-  become: true
-
-- name: Removes the test database
-  mysql_db:
-    login_user: 'root'
-    login_password: '{{ mysql_root_password }}'
-    db: 'test'
-    state: absent
-  become: true
-
+  notify:
+    - Pause to allow MySQL to build its tablespaces
+    - Stop service mysql, if started
+    - Create the mysql data directory
+    - Create the mysql tmp directory
+    - Create the mysql log directory
+    - Move the default installation file to new directory 
+    - Recreate the old mysql directories
+    - mysql configuration file (my.cnf)
+    - apparmor configuration file (alias)
+    - Restart apparmor
+    - start and enable mysql
+    - Set the root password
+    - Secure the root user for IPV6 localhost (::1)
+    - Secure the root user for IPV4 localhost (127.0.0.1)
+    - Secure the root user for localhost domain
+    - Secure the root user for server_hostname domain
+    - Deletes anonymous server user
+    - Removes the test database
 
 - name: flush handlers
   meta: flush_handlers
