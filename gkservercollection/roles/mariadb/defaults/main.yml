@@ -6,15 +6,6 @@ datadir: '{{ dataroot }}mysqldata'
 logdir: '{{ dataroot }}mysqllog'
 defaultdir: '/var/lib/mysql'
 
-# 2021-11-30 KWS Ubuntu 20.04 does NOT have MySQL 5.7. Need to install MySQL 8.0.
-mysql_ubuntu_server: 'mysql-server-8.0'
-mysql_ubuntu_client: 'mysql-client-8.0'
-mysql_ubuntu_client_core: 'mysql-client-core-8.0'
-mysql_ubuntu_common: 'mysql-common'
-mysql_ubuntu_socket: '/var/run/mysqld/mysqld.sock'
-
-mariadb_server: 'https://'
-
 mariadb_version: "10.4"
 
 mariadb_rpm_code: 'http://yum.mariadb.org/10.4/centos7-amd64'
