@@ -104,7 +104,7 @@
     login_password: ''
     user: 'root'
     password: '{{ mysql_root_password }}'
-    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
+    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     state: present
   become: true
   # Failure is not necessarily fatal here - it may just be that the password has already been changed

@@ -16,7 +16,7 @@
 # The following options will be passed to all MySQL clients
 [client]
 port		= 3306
-socket		= {% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}
+socket		= {% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}
 
 
 # The MySQL server
@@ -53,7 +53,7 @@ slow-query-log-file={{ logdir }}/slow_query.log
 expire_logs_days=28
 datadir = {{ datadir }}
 port		= 3306
-socket		= {% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}
+socket		= {% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}
 
 key_buffer_size = 16G
 key_cache_block_size = 5120
