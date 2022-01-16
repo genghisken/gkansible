@@ -83,7 +83,9 @@
 - name: Install MariaDB server for {{ ansible_distribution }}
   apt:
     name: 
-      - "{{ mariadb_ubuntu_packages }}"
+      #- "{{ mariadb_ubuntu_packages }}"
+      - "{{ mariadb_ubuntu_server }}"
+      - "{{ mariadb_ubuntu_client }}"
       # Install python3-mysqldb in the default setup on the client - so we can do root password config
       - python3-mysqldb
     state: present

@@ -32,5 +32,8 @@ mariadb_ubuntu_packages:
   - mariadb-server
   - mariadb-client
 
+mariadb_ubuntu_server: 'mariadb-server'
+mariadb_ubuntu_client: 'mariadb-client'
+
 mariadb_key_url: "https://mariadb.org/mariadb_release_signing_key.asc"
 mariadb_ubuntu_repo: deb [arch=amd64] http://ams2.mirrors.digitalocean.com/mariadb/repo/{{ mariadb_version }}/ubuntu
