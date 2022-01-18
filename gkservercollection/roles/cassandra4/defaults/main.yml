@@ -1,7 +1,7 @@
 ---
 
 # Cassandra server
-cassandra_server: https://www.apache.org/dist/cassandra
+cassandra_server: https://downloads.apache.org/cassandra
 #cassandra_rpm_code: http://rpm.datastax.com/community
 cassandra_rpm_code: https://www.apache.org/dist/cassandra/redhat/40x/
 cassandra_rpm_gpg_key: https://www.apache.org/dist/cassandra/KEYS
