@@ -3,5 +3,5 @@
 ---
 - hosts: cassandranodes
   roles:
-    - gkansible.gkservercollection.cassandra
+    - gkansible.gkservercollection.cassandra4
 

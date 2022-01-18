@@ -1,0 +1,94 @@
+---
+# MAIN TASKS TO BE EXECUTED BY install-anaconda ROLE
+
+- name: Update packages
+  become: true
+  apt:
+    update_cache: yes # apt-get update
+  when: ansible_os_family == "Debian"
+
+- name: install Open JDK 11 Debian
+  apt:
+    name: openjdk-11-jdk
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: install Open JDK 11 CentOS
+  yum:
+    name: java-11-openjdk
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: main configuration (cassandra.repo)
+  template:
+    src: cassandra.yum.repo.j2
+    dest: '/etc/yum.repos.d/cassandra.repo'
+    mode: 0644
+    owner: root
+    group: root
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: install HTTPS transport (not sure why yet)
+  apt:
+    name: apt-transport-https
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: get cassandra repo
+  shell: 'wget -q -O - {{ cassandra_server }}/KEYS | sudo apt-key add -'
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: add cassandra
+  shell: 'echo "deb {{ cassandra_server }}/debian 40x main" > /etc/apt/sources.list.d/cassandra.list'
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Update packages now cassandra repo added
+  become: true
+  apt:
+    update_cache: yes # apt-get update
+  when: ansible_os_family == "Debian"
+
+- name: install Cassandra on Debian systems
+  apt:
+    name: cassandra
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+  notify:
+    - Stop service cassandra, if started
+    - Remove old Cassandra data
+    - Create the new Cassandra data directory
+    - Create the new Cassandra commitlog directory
+    - Create the new Cassandra hints directory
+    - Create the new Cassandra cdc_raw directory
+    - Create the new Cassandra saved_caches directory
+    - main configuration (cassandra.yaml)
+    - main configuration (cassandra-rackdc.properties)
+
+
+- name: install Cassandra on RedHat systems
+  yum:
+    name: cassandra
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+  notify:
+    - Stop service cassandra, if started
+    - Remove old Cassandra data
+    - Create the new Cassandra data directory
+    - Create the new Cassandra commitlog directory
+    - Create the new Cassandra hints directory
+    - Create the new Cassandra cdc_raw directory
+    - Create the new Cassandra saved_caches directory
+    - main configuration (cassandra.yaml)
+    - main configuration (cassandra-rackdc.properties)
+
+
+- name: flush handlers
+  meta: flush_handlers
