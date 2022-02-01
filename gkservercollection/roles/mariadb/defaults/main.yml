@@ -38,3 +38,9 @@ mariadb_ubuntu_socket: '/var/run/mysqld/mysql.sock'
 
 mariadb_key_url: "https://mariadb.org/mariadb_release_signing_key.asc"
 mariadb_ubuntu_repo: deb [arch=amd64] http://ams2.mirrors.digitalocean.com/mariadb/repo/{{ mariadb_version }}/ubuntu
+
+# Hashicorp Vault information (Used for Lasair deployments). If we have secrets stored there, use them in place of defaults above.
+vault_addr: "{{ lookup('env', 'VAULT_ADDR') }}"
+vault_token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+settings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings')}}"
+
