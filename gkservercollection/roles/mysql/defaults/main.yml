@@ -7,9 +7,6 @@ logdir: '{{ dataroot }}mysqllog'
 defaultdir: '/var/lib/mysql'
 
 # 2021-11-30 KWS Ubuntu 20.04 does NOT have MySQL 5.7. Need to install MySQL 8.0.
-#mysql_ubuntu_server: 'mysql-server-5.7'
-#mysql_ubuntu_client: 'mysql-client-5.7'
-#mysql_ubuntu_client_core: 'mysql-client-core-5.7'
 mysql_ubuntu_server: 'mysql-server-8.0'
 mysql_ubuntu_client: 'mysql-client-8.0'
 mysql_ubuntu_client_core: 'mysql-client-core-8.0'
@@ -29,7 +26,12 @@ mysql_redhat_socket: '{{ defaultdir }}/mysql.sock'
 mysql_service_redhat: 'mysqld'
 mysql_service_ubuntu: 'mysql'
 
-mysql_root_password: 'root123password'
-
 mysql_port: 3306
+
+# Hashicorp Vault information (Used for Lasair deployments). If we have secrets stored there, use them in place of defaults above.
+vault_addr: "{{ lookup('env', 'VAULT_ADDR') }}"
+vault_token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
+localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
+settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
 

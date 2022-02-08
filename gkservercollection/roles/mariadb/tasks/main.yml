@@ -1,5 +1,11 @@
 ---
 
+# 2022-02-07 KWS Test the availability of the credentials
+
+- name: Check that all the required variables are defined
+  fail: msg="Local root password is not defined"
+  when: settings.local_db_root_password is not defined
+
 # 2021-06-14 KWS Change swappiness from default 60 to 10.
 - name: set swapiness
   sysctl:

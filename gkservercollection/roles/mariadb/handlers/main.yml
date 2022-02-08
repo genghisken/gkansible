@@ -103,7 +103,7 @@
     login_user: 'root'
     login_password: ''
     user: 'root'
-    password: '{% if vault_addr != "" and settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    password: '{{ settings.local_db_root_password }}'
     login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     state: present
   become: true
@@ -113,7 +113,7 @@
 - name: Secure the root user for IPV6 localhost (::1)
   mysql_user:
     login_user: 'root'
-    login_password: '{% if vault_addr != "" and settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    login_password: '{{ settings.local_db_root_password }}'
     user: 'root'
     password: '{% if settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
     login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
@@ -123,7 +123,7 @@
 - name: Secure the root user for IPV4 localhost (127.0.0.1)
   mysql_user:
     login_user: 'root'
-    login_password: '{% if vault_addr != "" and settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    login_password: '{{ settings.local_db_root_password }}'
     user: 'root'
     password: '{% if settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
     login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
@@ -133,9 +133,9 @@
 - name: Secure the root user for localhost domain
   mysql_user:
     login_user: 'root'
-    login_password: '{% if vault_addr != "" and settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    login_password: '{{ settings.local_db_root_password }}'
     user: 'root'
-    password: '{% if vault_addr != "" and settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    password: '{{ settings.local_db_root_password }}'
     login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     host: 'localhost'
   become: true
@@ -143,9 +143,9 @@
 - name: Secure the root user for server_hostname domain
   mysql_user:
     login_user: 'root'
-    login_password: '{% if vault_addr != "" and settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    login_password: '{{ settings.local_db_root_password }}'
     user: 'root'
-    password: '{% if vault_addr != "" and settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    password: '{{ settings.local_db_root_password }}'
     login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     host: '{{ ansible_fqdn }}'
   become: true
@@ -154,7 +154,7 @@
 - name: Deletes anonymous server user
   mysql_user:
     login_user: 'root'
-    login_password: '{% if vault_addr != "" and settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    login_password: '{{ settings.local_db_root_password }}'
     login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     user: ''
     host_all: yes
@@ -164,7 +164,7 @@
 - name: Removes the test database
   mysql_db:
     login_user: 'root'
-    login_password: '{% if vault_addr != "" and settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    login_password: '{{ settings.local_db_root_password }}'
     login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     db: 'test'
     state: absent

@@ -7,3 +7,6 @@ Collection for installation of servers that contain the following software:
 * MariaDB/Galera/Maxscale
 * SherlockDB - A sherlock full database install (needs 6TB minimum partition)
 
+NOTE: The code attempts to contact a Hashicorp Vault repository for various settings information.
+If your settings are NOT stored there, please define the required variables (e.g. local_db_root_password)
+in a "localsettings.yml" file, defined in your playbook directory. (See localsettings_example.yml)
