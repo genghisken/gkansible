@@ -1,6 +1,6 @@
 - name: Pause to allow MySQL to build its tablespaces
   pause:
-    minutes: 1
+    seconds: 30
 
 # The apt-get service in Ubuntu automatically starts an installed service.
 # Shut it down!
