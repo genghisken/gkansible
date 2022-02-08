@@ -115,7 +115,7 @@
     login_user: 'root'
     login_password: '{{ settings.local_db_root_password }}'
     user: 'root'
-    password: '{% if settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    password: '{{ settings.local_db_root_password }}'
     login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     host: '::1'
   become: true
@@ -125,7 +125,7 @@
     login_user: 'root'
     login_password: '{{ settings.local_db_root_password }}'
     user: 'root'
-    password: '{% if settings.local_root_password %}{{ settings.local_root_password }}{% else %}{{ mysql_root_password }}{% endif %}'
+    password: '{{ settings.local_db_root_password }}'
     login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     host: '127.0.0.1'
   become: true
