@@ -3,6 +3,12 @@
 # xans-install-packages-role
 # xans-import-role
 
+# 2022-02-07 KWS Test the availability of the credentials
+
+- name: Check that all the required variables are defined
+  fail: msg="Maxscale secret is not defined"
+  when: settings.maxscale_secret is not defined
+
 - name: Check if maxscale is installed
   command: dpkg-query -W maxscale
   register: my_package_check_deb
@@ -20,13 +26,13 @@
   become: true
   when: my_package_check_deb.rc == 1
 
+# 2022-02-08 KWS Got rid of the source file. No longer used. Use settings.maxscale_secret instead.
 # COPY secrets 
 - name: copy secrets to server
   vars:
-    source_key: "files/secrets"
     dest_key: "/var/lib/maxscale/.secrets"
   copy: 
-    src: "{{ source_key }}" 
+    content: "{{ settings.maxscale_secret }}" 
     dest: "{{ dest_key }}"
     owner: maxscale
     group: maxscale

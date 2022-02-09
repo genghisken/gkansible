@@ -1,2 +1,5 @@
 ---
 # THESE ARE THE DEFAULT VARIABLES FOR THE install_maxscale ROLE
+vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
+localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
+settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"

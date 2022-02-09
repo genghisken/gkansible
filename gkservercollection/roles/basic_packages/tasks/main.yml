@@ -1,3 +1,9 @@
+# 2022-02-07 KWS Test the availability of the credentials
+
+- name: Check that all the required variables are defined
+  fail: msg="Secrets not defined anywhere"
+  when: settings.id_rsa is not defined
+
 - name: Update packages
   become: true
   apt:
@@ -107,14 +113,14 @@
 
 - name: Copy the SSH private key to the destination machines.
   copy:
-    content: "{{ ssh_keys.id_rsa }}"
+    content: "{{ settings.id_rsa }}"
     dest: "/home/ubuntu/.ssh/id_rsa"
     mode: '0400'
   when: ansible_os_family == "Debian"
 
 - name: Copy the SSH public key to the destination machines.
   copy:
-    content: "{{ ssh_keys.id_rsa_pub }}"
+    content: "{{ settings.id_rsa_pub }}"
     dest: "/home/ubuntu/.ssh/id_rsa.pub"
     mode: '0644'
   when: ansible_os_family == "Debian"

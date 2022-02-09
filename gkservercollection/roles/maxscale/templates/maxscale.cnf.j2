@@ -8,7 +8,7 @@ router=readconnroute
 router_options=synced
 servers=backend-db1,backend-db2
 user=maxscale
-password=613EA282FD01A6551A469C97C4C26ED34EB14E8AC85242EA81C498CA38E1747B
+password=E6A1798F463F36FBAEDBBBEF39290BBDC184E39DA4EA148F0DC3108EFC9EEF90
             
 [frontend-service]
 type=service
@@ -16,7 +16,7 @@ router=readconnroute
 router_options=synced
 servers=frontend-db1
 user=maxscale
-password=613EA282FD01A6551A469C97C4C26ED34EB14E8AC85242EA81C498CA38E1747B
+password=E6A1798F463F36FBAEDBBBEF39290BBDC184E39DA4EA148F0DC3108EFC9EEF90
     
 [backend-listener]
 type=listener
@@ -53,7 +53,7 @@ type=monitor
 module=galeramon
 servers=backend-db1, backend-db2, frontend-db1
 user=maxscale
-password=613EA282FD01A6551A469C97C4C26ED34EB14E8AC85242EA81C498CA38E1747B
+password=E6A1798F463F36FBAEDBBBEF39290BBDC184E39DA4EA148F0DC3108EFC9EEF90
 
 ; [CLI]
 ; type=service

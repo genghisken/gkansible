@@ -1,5 +1,11 @@
 ---
 
+# 2022-02-07 KWS Test the availability of the credentials
+
+- name: Check that all the required variables are defined
+  fail: msg="Master db root password is not defined"
+  when: settings.master_db_root_password is not defined
+
 - include: deploy-clustercontrol.yml
   when: runtag is defined and runtag == "controller"
 

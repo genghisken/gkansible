@@ -1,4 +1,8 @@
 ---
+vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
+localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
+settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
+
 # ==============
 # ClusterControl
 # ==============
@@ -19,7 +23,7 @@ cmon_sql_path: /usr/share/cmon
 #cmonapi_database: "{{ apache_doc_root }}/cmonapi/config/database.php"
 ccui_bootstrap: "{{ apache_doc_root }}/clustercontrol/bootstrap.php"
 mysql_root_username: root
-mysql_root_password: password
+mysql_root_password: {{ settings.master_db_root_password }}
 cmon_mysql_password: cmon
 cmon_mysql_port: 3306
 cmon_ssh_user: root

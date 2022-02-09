@@ -18,3 +18,7 @@ master_db_username:
 powerapi_token:
 sherlock_service_ip:
 slack_url_urlhook:
+ubuntu_id_rsa:
+ubuntu_id_rsa_pub:
+maxscale_secret:
+maxscale_password:
