@@ -216,8 +216,10 @@
   shell: ssh-keyscan -H {{ ansible_default_ipv4.address }} >> {{ cmon_ssh_key_dir }}/known_hosts
   when: ssh_key_user.stat.exists == false
 
+# 2022-02-14 KWS Added become: false
 - name: Remove temp local known_hosts copies.
   local_action: file dest="tmp/clustercontrol/key.pub" state=absent
+  become: false
 
 - name: Copy cmon.cnf - ClusterControl Controller configuration.
   template:

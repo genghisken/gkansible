@@ -1,4 +1,5 @@
 ---
+# 2022-02-14 KWS Added login_unix_socket
 - name: Ensure MySQL users are present.
   mysql_user:
     login_host: localhost
@@ -9,6 +10,7 @@
     priv: "{{ item.priv | default('*.*:USAGE') }}"
     state: present
     append_privs: "{{ item.append_privs | default('no') }}"
+    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
   with_items: "{{ mysql_users }}"
   become: yes
   become_user: "{{ cmon_ssh_user }}"

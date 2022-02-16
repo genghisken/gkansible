@@ -65,9 +65,11 @@
   loop_control:
     loop_var: host
 
+# 2022-02-14 KWS Added become: false
 - name: Remove temp local known_hosts copies.
   local_action: file dest="tmp/clustercontrol/{{ host.1 }}.pub" state=absent
   changed_when: false
+  become: false
   with_subelements:
     - "{{ cc_cluster }}"
     - mysql_hostnames

@@ -23,7 +23,7 @@ cmon_sql_path: /usr/share/cmon
 #cmonapi_database: "{{ apache_doc_root }}/cmonapi/config/database.php"
 ccui_bootstrap: "{{ apache_doc_root }}/clustercontrol/bootstrap.php"
 mysql_root_username: root
-mysql_root_password: {{ settings.master_db_root_password }}
+mysql_root_password: "{{ settings.master_db_root_password }}"
 cmon_mysql_password: cmon
 cmon_mysql_port: 3306
 cmon_ssh_user: root
@@ -166,3 +166,9 @@ mysql_users:
     host: "127.0.0.1"
     password: "{{ cmon_mysql_password }}"
     priv: '*.*:ALL,GRANT'
+
+
+# 2022-02-14 KWS Added the following socket definitions
+defaultdir: '/var/lib/mysql'
+mariadb_redhat_socket: '{{ defaultdir }}/mysql.sock'
+mariadb_ubuntu_socket: '/var/run/mysqld/mysqld.sock'

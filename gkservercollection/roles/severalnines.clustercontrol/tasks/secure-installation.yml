@@ -35,6 +35,16 @@
     group: root
     mode: 0600
 
+# 2022-02-14 KWS Copy the .my.cnf to the ssh login user as well.
+- name: Copy .my.cnf file with root password credentials to the ssh login user.
+  template:
+    src: "user-my.cnf.j2"
+    dest: "/home/{{ ansible_ssh_user }}/.my.cnf"
+    owner: "{{ ansible_ssh_user }}"
+    group: "{{ ansible_ssh_user }}"
+    mode: 0600
+
+
 - name: Get list of hosts for the anonymous user.
   command: mysql -u root -NBe 'SELECT Host FROM mysql.user WHERE User = ""'
   register: mysql_anonymous_hosts
@@ -51,6 +61,18 @@
   with_items: "{{ mysql_anonymous_hosts.stdout_lines }}"
   become: yes
 
+# 2022-02-14 KWS Added the root user for 127.0.0.1
+#- name: Secure the root user for IPV4 localhost (127.0.0.1)
+#  mysql_user:
+#    login_user: "{{ mysql_root_username }}"
+#    login_password: '{{ mysql_root_password }}'
+#    user: "{{ mysql_root_username }}"
+#    password: '{{ mysql_root_password }}'
+#    #login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
+#    host: '127.0.0.1'
+#  become: true
+
+# 2022-02-14 KWS Added the login_unix_socket.
 - name: Remove MySQL test database.
   mysql_db:
     login_host: localhost
@@ -58,6 +80,7 @@
     login_password: "{{ mysql_root_password }}"
     name: "test"
     state: absent
+    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
   become: yes
   become_user: "{{ cmon_ssh_user }}"
 
