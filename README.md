@@ -6,6 +6,9 @@ A repository of Ansible playbooks. These currently include:
 * MySQL 5.7
 * MariaDB/Galera/Maxscale
 * SherlockDB - A sherlock full database install (needs 6TB minimum partition)
+* IRAF Legacy 32-bit requirements for the PESSTO pipeline
+* IRAF Legacy Anaconda environment for PESSTO, SNID (Intel only)
+
 
 Make sure you can login to any newly created nodes from the control node before running these deployments.
 
