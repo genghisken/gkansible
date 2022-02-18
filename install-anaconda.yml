@@ -3,5 +3,5 @@
 ---
 - hosts: anacondanodes
   roles:
-    - anaconda
+    - gkansible.gkservercollection.anaconda
 
