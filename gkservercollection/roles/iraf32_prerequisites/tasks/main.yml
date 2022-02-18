@@ -8,47 +8,47 @@
   when: ansible_os_family == "Debian"
 
 
-#- name: install 32-bit prerequisite packages
-#  apt:
-#    name: 
-#      - libc6:i386
-#      - libz1:i386
-#      - libncurses5:i386
-#      - libbz2-1.0:i386
-#      - libuuid1:i386
-#      - libxcb1:i386
-#      - libxmu6:i386
-#    state: present
-#  become: true
-#  when: ansible_os_family == "Debian"
+- name: install 32-bit prerequisite packages
+  apt:
+    name: 
+      - libc6:i386
+      - libz1:i386
+      - libncurses5:i386
+      - libbz2-1.0:i386
+      - libuuid1:i386
+      - libxcb1:i386
+      - libxmu6:i386
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
 
 
 - name: install 64-bit prerequisite packages
   apt:
     name: 
-#      - libgl1-mesa-glx
-#      - libegl1-mesa
-#      - libxrandr2
-#      - libxrandr2
-#      - libxss1
-#      - libxcursor1
-#      - libxcomposite1
-#      - libasound2
-#      - libxi6
-#      - libxtst6
-#      - make
-#      - gcc
-#      - gfortran
-#      - swarp
-#      - vim
-#      - pgplot5
+      - libgl1-mesa-glx
+      - libegl1-mesa
+      - libxrandr2
+      - libxrandr2
+      - libxss1
+      - libxcursor1
+      - libxcomposite1
+      - libasound2
+      - libxi6
+      - libxtst6
+      - make
+      - gcc
+      - gfortran
+      - swarp
+      - vim
+      - pgplot5
       - source-extractor
       - python-tk
-#      - x11-utils
-#      - libx11-dev
-#      - xcb
-#      - libxcb-xinerama0
-#      - curl
+      - x11-utils
+      - libx11-dev
+      - xcb
+      - libxcb-xinerama0
+      - curl
     state: present
   become: true
   when: ansible_os_family == "Debian"
