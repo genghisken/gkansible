@@ -1,54 +1,26 @@
 # KWS - Added the Galera config (cluster_control and backend_dbx)
 
-cluster_control:
-    hosts:
-        192.168.0.50
-
-backend_db1:
-    hosts:
-        192.168.0.13
-
-backend_db2:
-    hosts:
-        192.168.0.29
-
-frontend_db1:
-    hosts:
-        192.168.0.28
-
-[head]
-localhost
-
 [cassandranodes]
-192.168.0.17
-192.168.0.11
-192.168.0.18
-192.168.0.39
-192.168.0.23
 
 [anacondanodes]
-192.168.0.17
-192.168.0.11
-192.168.0.18
-192.168.0.39
-192.168.0.23
 
 [basicnodes]
-192.168.0.50
-192.168.0.13
-192.168.0.29
-192.168.0.28
 
 [mysqlnodes]
-192.168.0.25
 
 [sherlocknodes]
-192.168.0.14
-192.168.0.43
 
 [cephfs_nodes]
-192.168.0.14
-192.168.0.43
+
+[cluster_control]
+
+[backend_db1]
+
+[backend_db2]
+
+[frontend_db1]
+
+[iraf_legacy]
 
 [mysqlnodes:vars]
 # Set the python interpreter for the remote machine.

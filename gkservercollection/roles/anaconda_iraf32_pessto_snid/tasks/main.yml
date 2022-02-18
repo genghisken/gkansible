@@ -1,0 +1,36 @@
+---
+# MAIN TASKS TO BE EXECUTED BY anaconda_cassandra ROLE
+
+- name: update conda pkgs
+  when: anaconda_pkg_update
+  command: '{{anaconda_link_dir}}/bin/conda update -y --all'
+
+- name: Create the iraf directory
+  shell: 'mkdir -p {{ ansible_env.HOME }}/iraf'
+
+- name: Create the nttpipeline directory
+  shell: 'mkdir -p {{ ansible_env.HOME }}/nttpipeline'
+
+- name: Insert PATH line in .bashrc file
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    line: "export PATH=$PATH:{{ ansible_env.HOME }}/nttpipeline/bin:{{ ansible_env.HOME }}/software/snid/snid-5.0/bin"
+    state: present
+    create: yes
+  notify:
+    - Add the STScI channel.
+    - Generate the IRAF python 2.7 environment.
+    - Get the PESSTO software
+    - Install the actual software
+    - Create the sextractor symlink (assumes apt source-extractor is installed)
+    - Create the snid directory
+    - Get SNID
+    - Get SNID Templates 2.0
+    - snid makefile
+    - snid snidmore.f
+    - snid snid.inc
+    - Compile SNID
+    - Remove tar files
+
+- name: flush handlers
+  meta: flush_handlers

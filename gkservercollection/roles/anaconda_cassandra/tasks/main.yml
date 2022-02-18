@@ -1,0 +1,25 @@
+---
+# MAIN TASKS TO BE EXECUTED BY anaconda_cassandra ROLE
+
+- name: update conda pkgs
+  when: anaconda_pkg_update
+  command: '{{anaconda_link_dir}}/bin/conda update -y --all'
+
+- name: Run commands in conda environment
+  shell: '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda create -y -n {{ conda_env_name }} python=3.7 pip'
+
+- name: Install swig inside conda environment
+  shell:  '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda activate {{ conda_env_name }} && conda install -y swig'
+
+- name: Install all the relevant python packages
+  shell: '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda activate {{ conda_env_name }} && pip install {{ item }}'
+  with_items:
+    - cassandra-driver
+    - mysqlclient
+    - docopt
+    - pyyaml
+    - datetime
+    - gkhtm
+    - gkutils
+    - gkdbutils
+

@@ -6,6 +6,8 @@ Collection for installation of servers that contain the following software:
 * MySQL 5.7
 * MariaDB/Galera/Maxscale
 * SherlockDB - A sherlock full database install (needs 6TB minimum partition)
+* IRAF Legacy 32-bit requirements for the PESSTO pipeline
+* IRAF Legacy Anaconda environment for PESSTO, SNID (Intel only)
 
 NOTE: The code attempts to contact a Hashicorp Vault repository for various settings information.
 If your settings are NOT stored there, please define the required variables (e.g. local_db_root_password)

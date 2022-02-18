@@ -1,0 +1,55 @@
+---
+# MAIN TASKS TO BE EXECUTED BY anaconda_cassandra ROLE
+- name: Add the STScI channel.
+  shell: '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda config --add channels http://ssb.stsci.edu/astroconda'
+
+- name: Generate the IRAF python 2.7 environment.
+  shell: '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda create -y -n {{ conda_env_name }} python=2.7 iraf-all pyraf-all stsci'
+
+- name: Get the PESSTO software
+  shell: "cd /tmp && curl -L https://github.com/svalenti/pessto/archive/refs/tags/v2.4.1.tar.gz -o v2.4.1.tar.gz && tar xfz v2.4.1.tar.gz && cd pessto-2.4.1/trunk/ && mv * {{ ansible_env.HOME }}/nttpipeline/"
+
+- name: Install the actual software
+  shell: ". {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda activate iraf27 && cd {{ ansible_env.HOME }}/nttpipeline && python setup.py install --record NTTpipe_install_files.txt"
+
+- name: Create the sextractor symlink (assumes apt source-extractor is installed)
+  file:
+    src: "/usr/bin/source-extractor"
+    dest: "{{ ansible_env.HOME }}/nttpipeline/bin/sex"
+    state: link
+
+- name: Create the snid directory
+  shell: 'mkdir -p {{ ansible_env.HOME }}/software/snid'
+
+- name: Get SNID
+  shell: "cd /tmp && curl -L https://people.lam.fr/blondin.stephane/software/snid/snid-5.0.tar.gz -o snid-5.0.tar.gz && cd {{ ansible_env.HOME }}/software/snid && tar xfz /tmp/snid-5.0.tar.gz"
+
+- name: Get SNID Templates 2.0
+  shell: "cd /tmp && curl -L https://people.lam.fr/blondin.stephane/software/snid/templates-2.0.tgz -o templates-2.0.tgz && cd {{ ansible_env.HOME }}/software/snid/snid-5.0 && tar xfz /tmp/templates-2.0.tgz"
+
+- name: snid makefile
+  template:
+    src: Makefile.j2
+    dest: "{{ ansible_env.HOME }}/software/snid/snid-5.0/Makefile"
+
+- name: snid snidmore.f
+  template:
+    src: snidmore.f.j2
+    dest: "{{ ansible_env.HOME }}/software/snid/snid-5.0/source/snidmore.f"
+
+- name: snid snid.inc
+  template:
+    src: snid.inc.j2
+    dest: "{{ ansible_env.HOME }}/software/snid/snid-5.0/source/snid.inc"
+
+- name: Compile SNID
+  shell: "cd {{ ansible_env.HOME }}/software/snid/snid-5.0 && make realclean && make && make install"
+
+- name: Remove tar files
+  file:
+    path:
+      - /tmp/templates-2.0.tgz
+      - /tmp/v2.4.1.tar.gz
+      - /tmp/templates-2.0.tgz
+    state: absent
+
