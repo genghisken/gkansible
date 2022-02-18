@@ -1,0 +1,7 @@
+## RUN THIS PLAYBOOK WITH
+## > ansible-playbook install-anaconda.yml --ask-vault-pass
+---
+- hosts: anacondanodes
+  roles:
+    - gkansible.gkservercollection.anaconda_iraf32_pessto_snid
+

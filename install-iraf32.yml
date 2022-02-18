@@ -1,0 +1,7 @@
+## RUN THIS PLAYBOOK WITH
+## > ansible-playbook install-anaconda.yml --ask-vault-pass
+---
+- hosts: iraf_legacy
+  roles:
+    - gkansible.gkservercollection.iraf32_prerequisites
+
