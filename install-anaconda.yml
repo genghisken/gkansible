@@ -1,7 +1,10 @@
 ## RUN THIS PLAYBOOK WITH
-## > ansible-playbook install-anaconda.yml --ask-vault-pass
+## ansible-playbook install-anaconda.yml
 ---
 - hosts: anacondanodes
+#  vars:
+#    anaconda_parent_dir: /localdisk/scratch/kws
+#    anaconda_link_dir: /localdisk/scratch/kws/anaconda
   roles:
-    - gkansible.gkservercollection.anaconda
+    - anaconda
 

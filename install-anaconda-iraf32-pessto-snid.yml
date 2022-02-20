@@ -1,7 +1,9 @@
 ## RUN THIS PLAYBOOK WITH
-## > ansible-playbook install-anaconda.yml --ask-vault-pass
+## ansible-playbook install-anaconda-iraf32-pessto-snid.yml
 ---
 - hosts: anacondanodes
+#  vars:
+#    anaconda_link_dir: /localdisk/scratch/kws/anaconda
   roles:
-    - gkansible.gkservercollection.anaconda_iraf32_pessto_snid
+    - anaconda_iraf32_pessto_snid
 
