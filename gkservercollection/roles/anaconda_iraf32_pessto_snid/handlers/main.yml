@@ -52,5 +52,5 @@
   with_items:
     - /tmp/templates-2.0.tgz
     - /tmp/v2.4.1.tar.gz
-    - /tmp/templates-2.0.tgz
+    - /tmp/snid-5.0.tar.gz
 
