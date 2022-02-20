@@ -5,5 +5,5 @@
 #  vars:
 #    anaconda_link_dir: /localdisk/scratch/kws/anaconda
   roles:
-    - anaconda_iraf32_pessto_snid
+    - gkansible.gkservercollection.anaconda_iraf32_pessto_snid
 

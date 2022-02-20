@@ -6,5 +6,5 @@
 #    anaconda_parent_dir: /localdisk/scratch/kws
 #    anaconda_link_dir: /localdisk/scratch/kws/anaconda
   roles:
-    - anaconda
+    - gkansible.gkservercollection.anaconda
 
