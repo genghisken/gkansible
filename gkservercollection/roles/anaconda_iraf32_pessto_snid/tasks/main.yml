@@ -3,7 +3,7 @@
 
 - name: update conda pkgs
   when: anaconda_pkg_update
-  command: '{{anaconda_link_dir}}/bin/conda update -y --all'
+  command: '{{ anaconda_link_dir }}/bin/conda update -y --all'
 
 - name: Create the iraf directory
   shell: 'mkdir -p {{ ansible_env.HOME }}/iraf'

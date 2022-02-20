@@ -4,7 +4,7 @@
 - name: Insert anaconda-init line in .bashrc file
   lineinfile:
     dest: "{{ ansible_env.HOME }}/.bashrc"
-    line: "alias anaconda-init='. \"$HOME/anaconda/etc/profile.d/conda.sh\"'"
+    line: "alias anaconda-init='. \"{{ anaconda_link_dir }}/etc/profile.d/conda.sh\"'"
     state: present
     create: yes
   notify:

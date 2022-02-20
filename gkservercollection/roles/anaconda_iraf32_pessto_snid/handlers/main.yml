@@ -1,16 +1,16 @@
 ---
 # MAIN TASKS TO BE EXECUTED BY anaconda_cassandra ROLE
 - name: Add the STScI channel.
-  shell: '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda config --add channels http://ssb.stsci.edu/astroconda'
+  shell: '. {{ anaconda_link_dir }}/etc/profile.d/conda.sh && conda config --add channels http://ssb.stsci.edu/astroconda'
 
 - name: Generate the IRAF python 2.7 environment.
-  shell: '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda create -y -n {{ conda_env_name }} python=2.7 iraf-all pyraf-all stsci'
+  shell: '. {{ anaconda_link_dir }}/etc/profile.d/conda.sh && conda create -y -n {{ conda_env_name }} python=2.7 iraf-all pyraf-all stsci'
 
 - name: Get the PESSTO software
   shell: "cd /tmp && curl -L https://github.com/svalenti/pessto/archive/refs/tags/v2.4.1.tar.gz -o v2.4.1.tar.gz && tar xfz v2.4.1.tar.gz && cd pessto-2.4.1/trunk/ && mv * {{ ansible_env.HOME }}/nttpipeline/"
 
 - name: Install the actual software
-  shell: ". {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda activate iraf27 && cd {{ ansible_env.HOME }}/nttpipeline && python setup.py install --record NTTpipe_install_files.txt"
+  shell: ". {{ anaconda_link_dir }}/etc/profile.d/conda.sh && conda activate iraf27 && cd {{ ansible_env.HOME }}/nttpipeline && python setup.py install --record NTTpipe_install_files.txt"
 
 - name: Create the sextractor symlink (assumes apt source-extractor is installed)
   file:
@@ -47,9 +47,10 @@
 
 - name: Remove tar files
   file:
-    path:
-      - /tmp/templates-2.0.tgz
-      - /tmp/v2.4.1.tar.gz
-      - /tmp/templates-2.0.tgz
+    path: "{{ item }}"
     state: absent
+  with_items:
+    - /tmp/templates-2.0.tgz
+    - /tmp/v2.4.1.tar.gz
+    - /tmp/templates-2.0.tgz
 
