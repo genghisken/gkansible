@@ -37,3 +37,13 @@
     owner: maxscale
     group: maxscale
     mode: u+r-w,g-rwx,o-rwx
+
+
+- name: Populate Maxscale template and send to cluster control machine
+  template:
+    src: maxscale.cnf.j2
+    dest: "/etc/maxscale.cnf"
+    # owner: bin
+    # group: wheel
+    # mode: '0644'
+  when: runtag is defined and runtag == "credential-templates"

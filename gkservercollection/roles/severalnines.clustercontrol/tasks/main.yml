@@ -17,4 +17,14 @@
   with_items: "{{ cc_cluster }}"
   when: runtag is defined and runtag == "deploy-database"
 
+# 2022-02-22 KWS Only run this if the runtag is set to
+- name: Copy .my.cnf file with root password credentials (KWS).
+  template:
+    src: user-my.cnf.j2
+    dest: "/root/.my.cnf"
+    owner: root
+    group: root
+    mode: 0600
+  when: runtag is defined and runtag == "credential-templates"
+
 
