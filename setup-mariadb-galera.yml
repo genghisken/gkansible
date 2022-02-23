@@ -1,11 +1,14 @@
 ## RUN THIS PLAYBOOK WITH
-## > ansible-playbook setup-mariadb-galera.yml --ask-vault-pass
-## > ansible-playbook setup-mariadb-galera.yml --vault-password-file ~/.config/ansible/vault_password  
+## > ansible-playbook setup-mariadb-galera.yml
 ---
 
 # JUST GATHERING FACTS
 - hosts: cluster_control,frontend_db1,backend_db1,backend_db2
   become: true
+
+- hosts: cluster_control,frontend_db1,backend_db1,backend_db2
+  roles:
+    - gkansible.gkservercollection.basic_packages
 
 # MAKE SURE python3-mysqldb IS INSTALLED OR CLUSTERCONTROL FAILS TO INSTALL
 - hosts: cluster_control
@@ -24,7 +27,7 @@
   roles:
     - role: gkansible.gkservercollection.severalnines.clustercontrol
   vars:
-    runtag: controller
+    runtag: "controller"
     vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
     localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
     settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
@@ -43,13 +46,16 @@
   become_user: root
   roles:
     - role: gkansible.gkservercollection.severalnines.clustercontrol
-      tags: deploy-database
+      tags: "deploy-database"
   vars:
-    runtag: deploy-database
+    runtag: "deploy-database"
     vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
     localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
     settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
     mysql_root_password: "{{ settings.master_db_root_password }}"
+    # WHY THE HELL DO I NEED TO DEFINE THESE. Why does the playbook think ansible_user is undefined
+    remote_login_user: "root"
+    remote_login_user_home: "/root"
 
     cc_cluster:
       # minimal create new galera
@@ -68,8 +74,8 @@
         cmon_mysql_password: "{{ settings.master_db_root_password }}"
         mysql_port: 3306
         mysql_version: "10.4"
-        ssh_keyfile: "/home/ubuntu/.ssh/id_rsa"
-        ssh_user: "ubuntu"
+        ssh_keyfile: "{{ remote_login_user_home }}/.ssh/id_rsa"
+        ssh_user: "{{ remote_login_user }}"
         sudo_password: ""
         vendor: "mariadb"
         nodes: 
@@ -92,22 +98,15 @@
   become_user: root
   # 2022-02-14 KWS Added the following role so we can refer to the template implicitly instead of
   #                using an absolute path.
+  vars:
+    runtag: "credential-templates"
+    vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
+    localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
+    settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
+    mysql_root_username: root
+    mysql_root_password: "{{ settings.master_db_root_password }}"
   roles:
-    - role: gkansible.gkservercollection.severalnines.clustercontrol
-  tasks:
-    - name: Copy .my.cnf file with root password credentials.
-      template:
-        src: user-my.cnf.j2
-        dest: "/root/.my.cnf"
-        owner: root
-        group: root
-        mode: 0600
-      vars:
-        vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
-        localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
-        settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
-        mysql_root_username: root
-        mysql_root_password: "{{ settings.master_db_root_password }}"
+    - gkansible.gkservercollection.severalnines.clustercontrol
 
 - hosts: backend_db1
   become: true
@@ -120,6 +119,9 @@
         settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
         password: "{{ settings.master_db_root_password }}"
         ip: "{{ hostvars[groups['cluster_control'][0]]['ansible_all_ipv4_addresses'][0] }}"
+        mariadb_redhat_socket: '/var/lib/mysql/mysql.sock'
+        mariadb_ubuntu_socket: '/var/run/mysqld/mysql.sock'
+
       community.mysql.mysql_query:
         query:
           - CREATE USER IF NOT EXISTS 'maxscale'@'{{ ip }}' IDENTIFIED BY "{{ password }}"
@@ -132,10 +134,10 @@
           - GRANT SHOW DATABASES ON *.* TO 'maxscale'@'{{ ip }}';
         login_user: root
         login_password: "{{ password }}"
+        login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
         single_transaction: yes
 
 # MAKE LOWERCASE TABLES FOR EACH SERVER IN THE CLUSTER
-
 
 
 - hosts: backend_db1,backend_db2,frontend_db1
@@ -174,19 +176,19 @@
   become: true
   # 2022-02-14 KWS Added the following role so we can refer to the template implicitly instead of
   #                using an absolute path.
+  vars:
+    runtag: "credential-templates"
   roles: 
     - gkansible.gkservercollection.maxscale
+
+
+- hosts: cluster_control
+  become: true
+  # 2022-02-14 KWS Added the following role so we can refer to the template implicitly instead of
+  #                using an absolute path.
   tasks: 
-    - name: Populate Maxscale template and send to cluster control machine
-      template:
-        src: maxscale.cnf.j2
-        dest: "/etc/maxscale.cnf"
-        # owner: bin
-        # group: wheel
-        # mode: '0644'
     - name: maxscale restart
       service:
         name: maxscale
         state: restarted
-
 

@@ -249,4 +249,4 @@
 
 - name: Pause to ensure the services are fully started (added by KWS)
   pause:
-    minutes: 2
+    seconds: 30

@@ -123,13 +123,38 @@
 - name: Copy the SSH private key to the destination machines.
   copy:
     content: "{{ settings.id_rsa }}"
-    dest: "/home/ubuntu/.ssh/id_rsa"
+    dest: "{{ ansible_env.HOME }}/.ssh/id_rsa"
     mode: '0400'
   when: ansible_os_family == "Debian"
 
 - name: Copy the SSH public key to the destination machines.
   copy:
     content: "{{ settings.id_rsa_pub }}"
-    dest: "/home/ubuntu/.ssh/id_rsa.pub"
+    dest: "{{ ansible_env.HOME }}/.ssh/id_rsa.pub"
     mode: '0644'
   when: ansible_os_family == "Debian"
+
+- name: Add the authorized_keys file
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.ssh/authorized_keys"
+    line: "{{ settings.id_rsa_pub }}"
+    state: present
+    create: yes
+
+- name: Create /root/.ssh
+  become: true
+  file:
+    path: /root/.ssh
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Copy the SSH public key to the destination machines root authorized_keys. In here because I can't get cluster control to do it correctly.
+  become: true
+  copy:
+    content: "{{ settings.id_rsa_pub }}"
+    dest: "/root/.ssh/authorized_keys"
+    mode: '0644'
+  when: ansible_os_family == "Debian"
+
