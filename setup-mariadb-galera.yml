@@ -143,8 +143,6 @@
         settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
         password: "{{ settings.master_db_root_password }}"
         ip: "{{ hostvars[groups['cluster_control'][0]]['ansible_all_ipv4_addresses'][0] }}"
-        mariadb_redhat_socket: '/var/lib/mysql/mysql.sock'
-        mariadb_ubuntu_socket: '/var/run/mysqld/mysql.sock'
 
       community.mysql.mysql_query:
         query:
@@ -158,7 +156,6 @@
           - GRANT SHOW DATABASES ON *.* TO 'maxscale'@'{{ ip }}';
         login_user: root
         login_password: "{{ password }}"
-        login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
         single_transaction: yes
 
 # MAKE LOWERCASE TABLES FOR EACH SERVER IN THE CLUSTER
