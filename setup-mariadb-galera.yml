@@ -25,7 +25,7 @@
 - hosts: cluster_control
   become: yes
   roles:
-    - role: gkansible.gkservercollection.severalnines.clustercontrol
+    - role: gkansible.gkservercollection.severalnines_clustercontrol
   vars:
     runtag: "controller"
     vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
@@ -46,7 +46,7 @@
 - hosts: backend_db1,backend_db2,frontend_db1
   become: true
   roles:
-    - { role: gkansible.gkservercollection.severalnines.clustercontrol, tags: dbnodes }
+    - { role: gkansible.gkservercollection.severalnines_clustercontrol, tags: dbnodes }
   vars:
     runtag: "dbnodes"
     clustercontrol_ip_address: "{{ hostvars[groups['cluster_control'][0]]['ansible_all_ipv4_addresses'][0] }}"
@@ -60,7 +60,7 @@
   become: yes
   become_user: root
   roles:
-    - role: gkansible.gkservercollection.severalnines.clustercontrol
+    - role: gkansible.gkservercollection.severalnines_clustercontrol
       tags: "deploy-database"
   vars:
     runtag: "deploy-database"
@@ -122,7 +122,7 @@
     mysql_root_username: root
     mysql_root_password: "{{ settings.master_db_root_password }}"
   roles:
-    - gkansible.gkservercollection.severalnines.clustercontrol
+    - gkansible.gkservercollection.severalnines_clustercontrol
 
 
 - hosts: cluster_control
