@@ -2,13 +2,18 @@
 
 # 2022-02-07 KWS Test the availability of the credentials
 
-- name: Check that all the required variables are defined
-  fail: msg="Master db root password is not defined"
-  when: settings.master_db_root_password is not defined
+#- name: Check that all the required variables are defined
+#  fail: msg="Master db root password is not defined"
+#  when: settings.master_db_root_password is not defined
+
+- name: DEBUG - Print the runtag
+  debug:
+    msg: "runtag = {{ runtag }}"
 
 - include: deploy-clustercontrol.yml
   when: runtag is defined and runtag == "controller"
 
+# 2022-02-23 KWS Changed runtag to deploy-database from dbnodes
 - include: setup-passwordless.yml
   when: runtag is defined and runtag == "dbnodes"
 
@@ -17,7 +22,7 @@
   with_items: "{{ cc_cluster }}"
   when: runtag is defined and runtag == "deploy-database"
 
-# 2022-02-22 KWS Only run this if the runtag is set to
+# 2022-02-22 KWS Only run this if the runtag is set to credential-templates
 - name: Copy .my.cnf file with root password credentials (KWS).
   template:
     src: user-my.cnf.j2
@@ -26,5 +31,4 @@
     group: root
     mode: 0600
   when: runtag is defined and runtag == "credential-templates"
-
 

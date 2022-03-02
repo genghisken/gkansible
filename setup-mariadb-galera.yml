@@ -41,6 +41,21 @@
     cc_license:
       - set: false
 
+
+# 2022-02-28 KWS Added the following lines to force trigger the passwordless setup
+- hosts: backend_db1,backend_db2,frontend_db1
+  become: true
+  roles:
+    - { role: gkansible.gkservercollection.severalnines.clustercontrol, tags: dbnodes }
+  vars:
+    runtag: "dbnodes"
+    clustercontrol_ip_address: "{{ hostvars[groups['cluster_control'][0]]['ansible_all_ipv4_addresses'][0] }}"
+    remote_login_user: "root"
+    remote_login_user_home: "/root"
+    ssh_keyfile: "{{ remote_login_user_home }}/.ssh/id_rsa"
+    ssh_user: "{{ remote_login_user }}"
+
+
 - hosts: cluster_control
   become: yes
   become_user: root
@@ -53,9 +68,10 @@
     localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
     settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
     mysql_root_password: "{{ settings.master_db_root_password }}"
-    # WHY THE HELL DO I NEED TO DEFINE THESE. Why does the playbook think ansible_user is undefined
     remote_login_user: "root"
     remote_login_user_home: "/root"
+    # 2022-02-23 KWS Added clustercontrol_ip_address
+    clustercontrol_ip_address: "{{ hostvars[groups['cluster_control'][0]]['ansible_all_ipv4_addresses'][0] }}"
 
     cc_cluster:
       # minimal create new galera
@@ -107,6 +123,14 @@
     mysql_root_password: "{{ settings.master_db_root_password }}"
   roles:
     - gkansible.gkservercollection.severalnines.clustercontrol
+
+
+- hosts: cluster_control
+  tasks:
+   - name: Pause to let clustercontrol build the databases.
+     pause:
+       seconds: 300
+
 
 - hosts: backend_db1
   become: true
