@@ -12,8 +12,6 @@ mysql_redhat_socket: '{{ defaultdir }}/mysql.sock'
 mysql_service_redhat: 'mysqld'
 mysql_service_ubuntu: 'mysql'
 
-mysql_root_password: 'root123password'
-
 mysql_port: 3306
 
 sherlock_database_source_dir: '/mnt/cephfs/ken/sherlock_database_files/mysqldata/crossmatch_catalogues'
@@ -31,3 +29,10 @@ mysql_users:
     host: "%"
     password: sherlock
     priv: "crossmatch_catalogues.*:ALL"
+
+# Hashicorp Vault information (Used for Lasair deployments). If we have secrets stored there, use them in place of defaults above.
+vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
+localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
+settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
+
+mysql_root_password: "{{ settings.local_db_root_password }}"

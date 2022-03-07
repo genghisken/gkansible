@@ -3,5 +3,5 @@
 ---
 - hosts: sherlocknodes
   roles:
-    - mysql_sherlock
+    - gkansible.gkservercollection.mysql_sherlock
 
