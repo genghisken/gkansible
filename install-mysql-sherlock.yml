@@ -1,7 +1,12 @@
 ## RUN THIS PLAYBOOK WITH
-## > ansible-playbook install-anaconda.yml --ask-vault-pass
+## > ansible-playbook install-mysql-sherlock.yml
 ---
 - hosts: sherlocknodes
+  vars:
+    sherlock_source_data_root: '/mnt/cephfs/ken'
+    sherlock_database_source_dir: '{{ sherlock_source_data_root }}/sherlock_database_files/mysqldata/crossmatch_catalogues'
+    sherlock_tables_sql_dir: '{{ sherlock_source_data_root }}/sherlock_innodb_tables'
+
   roles:
     - gkansible.gkservercollection.mysql_sherlock
 
