@@ -36,12 +36,14 @@
     mode: 0600
 
 # 2022-02-14 KWS Copy the .my.cnf to the ssh login user as well.
+# 2022-03-14 KWS At Gareth's prompting, replaced home directory with {{ ansible_env.HOME }},
+#                user id with {{ ansible_user_id }} and group id with {{ ansible_effective_group_id }}.
 - name: Copy .my.cnf file with root password credentials to the ssh login user.
   template:
     src: "user-my.cnf.j2"
-    dest: "/home/{{ ansible_ssh_user }}/.my.cnf"
-    owner: "{{ ansible_ssh_user }}"
-    group: "{{ ansible_ssh_user }}"
+    dest: "{{ ansible_env.HOME }}/.my.cnf"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
     mode: 0600
 
 
