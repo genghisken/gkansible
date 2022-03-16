@@ -6,7 +6,7 @@ threads=auto
 type=service
 router=readconnroute
 router_options=synced
-servers=backend-db1,backend-db2
+servers={{ backend_servers | join(', ') }}
 user=maxscale
 password=E6A1798F463F36FBAEDBBBEF39290BBDC184E39DA4EA148F0DC3108EFC9EEF90
             
@@ -14,7 +14,7 @@ password=E6A1798F463F36FBAEDBBBEF39290BBDC184E39DA4EA148F0DC3108EFC9EEF90
 type=service
 router=readconnroute
 router_options=synced
-servers=frontend-db1
+servers={{ frontend_servers | join(', ') }}
 user=maxscale
 password=E6A1798F463F36FBAEDBBBEF39290BBDC184E39DA4EA148F0DC3108EFC9EEF90
     
@@ -30,28 +30,19 @@ service=frontend-service
 protocol=MariaDBClient
 port=9002
 
-[backend-db1]
+{% for host in backend_servers + frontend_servers -%}
+[{{ host }}]
 type=server
-address={{ hostvars[groups['backend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}
+address={{ host }}
 port=3306
 protocol=MariaDBBackend
 
-[backend-db2]
-type=server
-address={{ hostvars[groups['backend_db2'][0]]['ansible_all_ipv4_addresses'][0] }}
-port=3306
-protocol=MariaDBBackend
-
-[frontend-db1]
-type=server
-address={{ hostvars[groups['frontend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}
-port=3306
-protocol=MariaDBBackend
+{% endfor -%}
 
 [galera-monitor]
 type=monitor
 module=galeramon
-servers=backend-db1, backend-db2, frontend-db1
+servers={{ (backend_servers + frontend_servers) | join(', ') }}
 user=maxscale
 password=E6A1798F463F36FBAEDBBBEF39290BBDC184E39DA4EA148F0DC3108EFC9EEF90
 
