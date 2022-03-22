@@ -14,3 +14,6 @@ cassandra_data_dir_pcissd: '/nvme0/cassandra'
 cassandra_config_dir: '/etc/cassandra'
 datacenter: 'somerville'
 rack: 'rack1'
+
+replication_factor: 3
+keyspace: 'lasair'
