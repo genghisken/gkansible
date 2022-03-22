@@ -12,9 +12,10 @@ A repository of Ansible playbooks. These currently include:
 
 Make sure you can login to any newly created nodes from the control node before running these deployments.
 
-Deployment is fairly straightforward.
+Deployment is fairly straightforward, though it requires Ansible 2.10+.
 
-* Copy the ansible_example.cfg file to ansible.cfg.
+* Install the collection: `ansible-galaxy collection install git+https://github.com/genghisken/gkansible.git`
+* Download and copy the ansible_example.cfg file to ansible.cfg.
 * If necessary, replace the "remote_user" in ansible.cfg. (Default is "ubuntu".)
 * Copy the hosts_example.yml file to hosts.yml
 * Edit the hosts.yml file and add the correct IP addresses of the target machines under the relevant machine group - e.g. [mysqlnodes].
