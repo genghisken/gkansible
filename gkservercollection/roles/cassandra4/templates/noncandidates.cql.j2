@@ -1,0 +1,11 @@
+CREATE TABLE {{ keyspace }}.noncandidates (
+    objectid ascii,
+    jd double,
+    diffmaglim float,
+    fid int,
+    field int,
+    magzpsci float,
+    magzpscirms float,
+    magzpsciunc float,
+    nid int,
+    PRIMARY KEY (objectid, jd));
