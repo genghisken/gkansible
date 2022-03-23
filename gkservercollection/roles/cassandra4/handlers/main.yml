@@ -97,6 +97,16 @@
     group: cassandra
   become: true
 
+- name: Restart the cassandra service
+  service:
+    name: cassandra
+    state: started
+  become: true
+
+- name: Pause to allow cassandra to properly start
+  pause:
+    seconds: 60
+
 - name: Create keyspace CQL file
   template:
     src: create_keyspace.cql.j2
