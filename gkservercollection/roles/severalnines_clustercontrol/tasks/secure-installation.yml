@@ -41,12 +41,12 @@
 - name: Copy .my.cnf file with root password credentials to the ssh login user.
   template:
     src: "user-my.cnf.j2"
-    #dest: "{{ ansible_env.HOME }}/.my.cnf"
-    #owner: "{{ ansible_user_id }}"
-    #group: "{{ ansible_effective_group_id }}"
-    dest: "/home/{{ ansible_ssh_user }}/.my.cnf"
-    owner: "{{ ansible_ssh_user }}"
-    group: "{{ ansible_ssh_user }}"
+    dest: "{{ ansible_env.HOME }}/.my.cnf"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+    #dest: "/home/{{ ansible_ssh_user }}/.my.cnf"
+    #owner: "{{ ansible_ssh_user }}"
+    #group: "{{ ansible_ssh_user }}"
     mode: 0600
 
 
