@@ -84,14 +84,20 @@
 - name: Updating apt cache if ClusterControl is not yet installed.
   apt: update_cache=yes
 
-- name: Installing latest version of ClusterControl Controller packages.
-  apt: name={{ clustercontrol_controller_packages }} state=latest
+# 2022-04-05 KWS Remove state=latest so we can install specific versions.
+- name: Installing SPECIFIC version of ClusterControl Controller packages.
+#  apt: name={{ clustercontrol_controller_packages }} state=latest
+  apt: name={{ clustercontrol_controller_packages }}
   register: deb_clustercontrol_controller_install_packages
 
-- name: Installing latest version of ClusterControl UI packages.
-  apt: name={{ clustercontrol_ui_packages }} state=latest
+# 2022-04-05 KWS Remove state=latest so we can install specific versions.
+- name: Installing SPECIFIC version of ClusterControl UI packages.
+#  apt: name={{ clustercontrol_ui_packages }} state=latest
+  apt: name={{ clustercontrol_ui_packages }}
   register: deb_clustercontrol_ui_install_packages
 
-- name: Installing latest version of ClusterControl CLI package.
-  apt: name={{ clustercontrol_cli_packages }} state=latest
+# 2022-04-05 KWS Remove state=latest so we can install specific versions.
+- name: Installing SPECIFIC version of ClusterControl CLI package.
+#  apt: name={{ clustercontrol_cli_packages }} state=latest
+  apt: name={{ clustercontrol_cli_packages }}
   register: deb_clustercontrol_cli_install_packages

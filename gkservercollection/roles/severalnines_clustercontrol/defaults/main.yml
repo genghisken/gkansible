@@ -7,14 +7,15 @@ settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ 
 # ClusterControl
 # ==============
 
+# 2022-04-05 KWS Install the March 7th 2022 version of clustercontrol. Versions after that failed. (Ticket raised.)
 clustercontrol_ui_packages:
-  - clustercontrol
+  - clustercontrol=1.9.2-8244
   - clustercontrol-notifications
   - clustercontrol-ssh
   - clustercontrol-cloud
   - clustercontrol-clud
 clustercontrol_controller_packages:
-  - clustercontrol-controller
+  - clustercontrol-controller=1.9.2-5242
 clustercontrol_cli_packages:
   - s9s-tools
 cmon_config_file: /etc/cmon.cnf
