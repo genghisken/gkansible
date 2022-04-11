@@ -1,0 +1,17 @@
+---
+# To be executed on ONE CASSANDRA NODE ONLY. (Doesn't matter which one!)
+
+- name: Create keyspace CQL file
+  template:
+    src: create_keyspace.cql.j2
+    dest: '/tmp/create_keyspace.cql'
+    mode: 0644
+  notify:
+    - Create candidates CQL file
+    - Create noncandidates CQL file
+    - Create htmcandidates CQL file
+    - Create keyspace and tables
+    - delete cql files
+
+- name: flush handlers
+  meta: flush_handlers

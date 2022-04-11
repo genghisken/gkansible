@@ -1,0 +1,7 @@
+## RUN THIS PLAYBOOK WITH
+## > ansible-playbook install-cassandra-schema-lasair.yml. Run this on ONLY one cassandra node.
+---
+- hosts: cassandranodes[0]
+  roles:
+    - gkansible.gkservercollection.cassandra_schema_lasair
+

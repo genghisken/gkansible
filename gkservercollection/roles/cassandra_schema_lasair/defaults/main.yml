@@ -1,0 +1,4 @@
+---
+
+replication_factor: 3
+keyspace: 'lasair'

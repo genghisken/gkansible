@@ -72,12 +72,6 @@
     - main configuration (cassandra-rackdc.properties)
     - Restart the cassandra service
     - Pause to allow cassandra to properly start
-    - Create keyspace CQL file
-    - Create candidates CQL file
-    - Create noncandidates CQL file
-    - Create htmcandidates CQL file
-    - Create keyspace and tables
-    - delete cql files
 
 
 - name: install Cassandra on RedHat systems
@@ -98,12 +92,6 @@
     - main configuration (cassandra-rackdc.properties)
     - Restart the cassandra service
     - Pause to allow cassandra to properly start
-    - Create keyspace CQL file
-    - Create candidates CQL file
-    - Create noncandidates CQL file
-    - Create htmcandidates CQL file
-    - Create keyspace and tables
-    - delete cql files
 
 
 - name: flush handlers
