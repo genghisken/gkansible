@@ -1,5 +1,7 @@
-## RUN THIS PLAYBOOK WITH
-## > ansible-playbook install-anaconda.yml --ask-vault-pass
+## RUN THIS PLAYBOOK WITH:
+## ansible-playbook install-cassandra4.yml
+## Note that "cassandranodes" is burned into the role. (I could modify this to refer to 
+## ansible_play_hosts_all in future if necessary.)
 ---
 - hosts: cassandranodes
   roles:

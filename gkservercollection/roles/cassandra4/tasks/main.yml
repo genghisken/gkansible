@@ -70,8 +70,10 @@
     - Create the new Cassandra saved_caches directory
     - main configuration (cassandra.yaml)
     - main configuration (cassandra-rackdc.properties)
-    - Restart the cassandra service
-    - Pause to allow cassandra to properly start
+    - Start the seed nodes
+    - Pause to allow the cassandra seed nodes cassandra to properly start
+    - Start the other cassandra nodes
+    - Pause to allow the cassandra other nodes cassandra to properly start
 
 
 - name: install Cassandra on RedHat systems
@@ -90,8 +92,10 @@
     - Create the new Cassandra saved_caches directory
     - main configuration (cassandra.yaml)
     - main configuration (cassandra-rackdc.properties)
-    - Restart the cassandra service
-    - Pause to allow cassandra to properly start
+    - Start the seed nodes
+    - Pause to allow the cassandra seed nodes cassandra to properly start
+    - Start the other cassandra nodes
+    - Pause to allow the cassandra other nodes cassandra to properly start
 
 
 - name: flush handlers
