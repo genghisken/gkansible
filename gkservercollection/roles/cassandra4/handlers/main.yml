@@ -101,23 +101,19 @@
   service:
     name: cassandra
     state: started
+  throttle: 1
   become: true
   when: (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2]))
 
 - name: Pause to allow the cassandra seed nodes cassandra to properly start
   pause:
-    seconds: 60
-  when: (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2]))
+    seconds: 120
 
 - name: Start the other cassandra nodes
   service:
     name: cassandra
     state: started
   become: true
-  when: not ( (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2])) )
-
-- name: Pause to allow the cassandra other nodes cassandra to properly start
-  pause:
-    seconds: 60
+  throttle: 1
   when: not ( (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2])) )
 
