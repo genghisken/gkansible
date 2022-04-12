@@ -1,0 +1,42 @@
+---
+# THIS PLAYBOOK MUST BE RUN WITH serial = 1. Cassandra nodes must be started one-at-a-time.
+
+# The apt-get service in Ubuntu automatically starts an installed service.
+# Shut it down!
+#- name: Stop service cassandra, if started
+#  service:
+#    name: cassandra
+#    state: stopped
+#  become: true
+#  throttle: 1
+
+- name: Start the seed nodes
+  service:
+    name: cassandra
+    state: started
+  throttle: 1
+  become: true
+  when: (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2]))
+
+
+- name: Pause to allow the cassandra seed nodes cassandra to properly start
+  wait_for:
+    timeout: 60
+  throttle: 1
+  when: (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2]))
+
+
+- name: Start the other cassandra nodes
+  service:
+    name: cassandra
+    state: started
+  become: true
+  throttle: 1
+  when: not ( (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2])) )
+
+- name: Pause to allow the cassandra other nodes cassandra to properly start
+  wait_for:
+    timeout: 60
+  throttle: 1
+  when: not ( (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2])) )
+

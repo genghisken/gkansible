@@ -1,0 +1,15 @@
+## RUN THIS PLAYBOOK WITH:
+## ansible-playbook start-cassandra.yml
+## Note that "cassandranodes" is burned into the role. (I could modify this to refer to 
+## ansible_play_hosts_all in future if necessary.)
+## NOTE: serial: 1 means that each node will be started in series, starting with the seed nodes.
+##       This has been extracted out of the original install-cassandra.yml script, since nodes
+##       MUST be started in the correct order. We could have inserted serial: 1 into the original
+##       installation script, but that would have meant every task would run in series for every
+##       node (which would have taken forever).
+---
+- hosts: cassandranodes
+  roles:
+    - gkansible.gkservercollection.cassandra_start_service
+  serial: 1
+
