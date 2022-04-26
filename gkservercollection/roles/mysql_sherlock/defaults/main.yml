@@ -14,8 +14,6 @@ mysql_service_ubuntu: 'mysql'
 
 mysql_port: 3306
 
-sherlock_database_source_dir: '/mnt/cephfs/ken/sherlock_database_files/mysqldata/crossmatch_catalogues'
-sherlock_tables_sql_dir: '/mnt/cephfs/ken/sherlock_innodb_tables'
 
 sherlock_user: "sherlock"
 
@@ -36,3 +34,12 @@ localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_y
 settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
 
 mysql_root_password: "{{ settings.local_db_root_password }}"
+
+# Sherlock import type can be "full", "lite" or "empty". If "empty" then only the schema
+# structure will be created. No data will be imported, except for any "helper" tables.
+sherlock_import_type: "empty"
+
+#sherlock_database_source_dir: '/mnt/cephfs/ken/sherlock_database_files/mysqldata/crossmatch_catalogues'
+#sherlock_tables_sql_dir: '/mnt/cephfs/ken/sherlock_innodb_tables'
+sherlock_catalogue_data_dir: "{% if sherlock_import_type == 'lite' %}'/mnt/sherlock/data'{% else %}'/mnt/sherlock/data_lite'{% endif %}"
+sherlock_sql_dir: "/mnt/sherlock/sql"

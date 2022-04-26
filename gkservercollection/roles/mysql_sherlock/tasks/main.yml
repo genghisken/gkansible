@@ -2,190 +2,23 @@
 
 - name: Create database schema script
   template:
-    src: crossmatch_catalogues_20201124_schema.sql.j2
-    dest: '/tmp/crossmatch_catalogues_20201124_schema.sql'
+    src: crossmatch_catalogues_20220425_schema.sql.j2
+    dest: '/tmp/crossmatch_catalogues_20220425_schema.sql'
     mode: 0644
-    owner: mysql
-    group: mysql
   become: true
-
-- name: Recreate views script
-  template:
-    src: crossmatch_catalogues_20201124_views.sql.j2
-    dest: '/tmp/crossmatch_catalogues_20201124_views.sql'
-    mode: 0644
-    owner: mysql
-    group: mysql
-  become: true
-
-#- name: Copy the sql script for dropping the tablespaces to /tmp
-#  copy:
-#    src: files/sherlock_innodb_discard_tablespaces.sql
-#    dest: /tmp/sherlock_innodb_discard_tablespaces.sql
-#    owner: mysql
-#    group: mysql
-#    mode: 0644 
-#  become: true
-#
-#- name: Copy the sql script for importing the tablespaces to /tmp
-#  copy:
-#    src: files/sherlock_innodb_import_tablespaces.sql
-#    dest: /tmp/sherlock_innodb_import_tablespaces.sql
-#    owner: mysql
-#    group: mysql
-#    mode: 0644 
-#  become: true
-
-- name: create databases (in this case, the Sherlock database)
-  mysql_db:
-    name: "{{ item.name }}"
-    state: "{{ item.state | default('present') }}"
-    target: "{{ item.target | default(omit) }}"
-    encoding: "{{ item.encoding | default(omit) }}"
-    collation: "{{ item.collation | default(omit) }}"
-    login_user: root
-    login_password: "{{ mysql_root_password }}"
-  loop: "{{ mysql_databases }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when:
-    - mysql_databases is defined
-  #no_log: yes
-  become: true
-
-- name: create users
-  mysql_user:
-    name: "{{ item.name }}"
-    state: present
-    password: "{{ item.password | default(omit) }}"
-    priv: "{{ item.priv | default(omit) }}"
-    host: "{{ item.host | default(omit) }}"
-    update_password: "{{ item.update_password | default('on_create') }}"
-    login_user: root
-    login_password: "{{ mysql_root_password }}"
-  loop: "{{ mysql_users }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when:
-    - mysql_users is defined
-  #no_log: yes
-  become: true
-
-- name: Run the schema create script
-  mysql_db:
-    name: "crossmatch_catalogues"
-    state: import
-    target: '/tmp/crossmatch_catalogues_20201124_schema.sql'
-    login_user: "{{ item.name }}"
-    login_password: "{{ item.password | default(omit) }}"
-    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
-  loop: "{{ mysql_users }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when:
-    - mysql_users is defined
-
-#- name: Detach the InnoDB tablespaces from the newly created tables
-#  mysql_db:
-#    name: "crossmatch_catalogues"
-#    state: import
-#    target: /tmp/sherlock_innodb_discard_tablespaces.sql
-#    login_user: "{{ item.name }}"
-#    login_password: "{{ item.password | default(omit) }}"
-#    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
-#  loop: "{{ mysql_users }}"
-#  loop_control:
-#    label: "{{ item.name }}"
-#  when:
-#    - mysql_users is defined
-
-- name: Get the Sherlock files on remote machine
-  find:
-    paths: "{{ sherlock_database_source_dir }}"
-  register: sherlock_db_files
-  become: true
-
-- name: Copy the massive datafiles (over 4.5 TB)
-  copy:
-    src: "{{ item.path }}"
-    dest: "{{ datadir }}/crossmatch_catalogues"
-    owner: mysql
-    group: mysql
-    mode: preserve
-    remote_src: yes
-  with_items:
-    - "{{ sherlock_db_files.files }}"
-  become: true
-
-#- name: Attach the InnoDB tablespaces from the newly created tables
-#  mysql_db:
-#    name: "crossmatch_catalogues"
-#    state: import
-#    target: /tmp/sherlock_innodb_import_tablespaces.sql
-#    login_user: "{{ item.name }}"
-#    login_password: "{{ item.password | default(omit) }}"
-#    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
-#  loop: "{{ mysql_users }}"
-#  loop_control:
-#    label: "{{ item.name }}"
-#  when:
-#    - mysql_users is defined
-#
-
-- name: Restart MySQL - so we now recognise the newly copied MyISAM tables.
-  service:
-    name: '{% if ansible_os_family == "Debian" %}{{ mysql_service_ubuntu }}{% else %}{{ mysql_service_redhat }}{% endif %}'
-    state: restarted
-    enabled: yes
-  become: true
-
-
-- name: Import the InnoDB data.
-  mysql_db:
-    name: "crossmatch_catalogues"
-    state: import
-    target: "{{ sherlock_tables_sql_dir }}/sherlock_innodb_tables_20210204_no_ppmxl.sql"
-    login_user: "{{ item.name }}"
-    login_password: "{{ item.password | default(omit) }}"
-    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
-  loop: "{{ mysql_users }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when:
-    - mysql_users is defined
-
-
-# 2021-05-21 KWS Need to include this updated table. Will eventually merge into the all
-#                InnoDB tables script. Putting it here in case I forget.
-- name: Import the updated tcs_helper_catalogues_tables_info table.
-  mysql_db:
-    name: "crossmatch_catalogues"
-    state: import
-    target: "{{ sherlock_tables_sql_dir }}/tcs_helper_catalogue_tables_info.sql"
-    login_user: "{{ item.name }}"
-    login_password: "{{ item.password | default(omit) }}"
-    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
-  loop: "{{ mysql_users }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when:
-    - mysql_users is defined
-
-
-- name: Run the recreate views script. 
-  mysql_db:
-    name: "crossmatch_catalogues"
-    state: import
-    target: '/tmp/crossmatch_catalogues_20201124_views.sql'
-    login_user: "{{ item.name }}"
-    login_password: "{{ item.password | default(omit) }}"
-    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
-  loop: "{{ mysql_users }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when:
-    - mysql_users is defined
-
+  notify:
+    - Recreate views script
+    - Recreate helper tables script
+    - create databases (in this case, the Sherlock database)
+    - create users
+    - Run the schema create script
+    - Get the Sherlock MyISAM datafiles from remote ceph store
+    - Copy the massive datafiles (over 4.5 TB)
+    - Restart MySQL - so we now recognise the newly copied MyISAM tables.
+    - Import the InnoDB data.
+    - Run the create helper tables script
+    - Run the recreate views script. 
+    - flush handlers
 
 - name: flush handlers
   meta: flush_handlers
