@@ -5,14 +5,12 @@
     src: crossmatch_catalogues_20220425_views.sql.j2
     dest: '/tmp/crossmatch_catalogues_20220425_views.sql'
     mode: 0644
-  become: true
 
 - name: Recreate helper tables script
   template:
     src: sherlock_helper_tables_20220425.sql.j2
     dest: '/tmp/sherlock_helper_tables_20220425.sql'
     mode: 0644
-  become: true
 
 #- name: Copy the sql script for dropping the tablespaces to /tmp
 #  copy:
@@ -41,7 +39,7 @@
     collation: "{{ item.collation | default(omit) }}"
     login_user: root
     login_password: "{{ mysql_root_password }}"
-    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
+    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
   loop: "{{ mysql_databases }}"
   loop_control:
     label: "{{ item.name }}"
@@ -60,7 +58,7 @@
     update_password: "{{ item.update_password | default('on_create') }}"
     login_user: root
     login_password: "{{ mysql_root_password }}"
-    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
+    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
   loop: "{{ mysql_users }}"
   loop_control:
     label: "{{ item.name }}"

@@ -5,7 +5,6 @@
     src: crossmatch_catalogues_20220425_schema.sql.j2
     dest: '/tmp/crossmatch_catalogues_20220425_schema.sql'
     mode: 0644
-  become: true
   notify:
     - Recreate views script
     - Recreate helper tables script
