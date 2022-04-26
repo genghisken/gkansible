@@ -40,7 +40,7 @@
     login_user: root
     login_password: "{{ mysql_root_password }}"
     login_host: "127.0.0.1"
-#    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
+    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
   loop: "{{ mysql_databases }}"
   loop_control:
     label: "{{ item.name }}"
@@ -60,7 +60,7 @@
     login_user: root
     login_password: "{{ mysql_root_password }}"
     login_host: "127.0.0.1"
-#    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
+    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
   loop: "{{ mysql_users }}"
   loop_control:
     label: "{{ item.name }}"
