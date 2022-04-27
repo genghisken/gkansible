@@ -1,9 +1,5 @@
 ---
 
-dataroot: '/data/mysql/'
-tmpdir: '{{ dataroot }}mysqltmp'
-datadir: '{{ dataroot }}mysqldata'
-logdir: '{{ dataroot }}mysqllog'
 defaultdir: '/var/lib/mysql'
 
 mysql_ubuntu_socket: '/var/run/mysqld/mysqld.sock'
@@ -13,7 +9,6 @@ mysql_service_redhat: 'mysqld'
 mysql_service_ubuntu: 'mysql'
 
 mysql_port: 3306
-
 
 sherlock_user: "sherlock"
 
@@ -33,6 +28,9 @@ vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors
 localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
 settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
 
+# By default, this uses the local database root password from Vault.
+# This should be overridden in vars if the local database root password
+# was overridden in the MariaDB/MySQL install.
 mysql_root_password: "{{ settings.local_db_root_password }}"
 
 # Sherlock import type can be "full", "lite" or "empty". If "empty" then only the schema
@@ -41,5 +39,6 @@ sherlock_import_type: "empty"
 
 #sherlock_database_source_dir: '/mnt/cephfs/ken/sherlock_database_files/mysqldata/crossmatch_catalogues'
 #sherlock_tables_sql_dir: '/mnt/cephfs/ken/sherlock_innodb_tables'
-sherlock_catalogue_data_dir: "{% if sherlock_import_type == 'lite' %}'/mnt/sherlock/data'{% else %}'/mnt/sherlock/data_lite'{% endif %}"
+sherlock_catalogue_data_dir_lite: "/mnt/sherlock/data_lite"
+sherlock_catalogue_data_dir: "/mnt/sherlock/data"
 sherlock_sql_dir: "/mnt/sherlock/sql"

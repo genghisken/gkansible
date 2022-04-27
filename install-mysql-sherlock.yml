@@ -8,7 +8,12 @@
     sherlock_tables_sql_dir: '{{ sherlock_source_data_root }}/sherlock_innodb_tables'
     sherlock_import_type: "empty"
     sherlock_catalogue_data_dir: "/tmp"
+    sherlock_catalogue_data_dir_lite: "/tmp/lite"
     sherlock_sql_dir: "/tmp"
+    vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
+    localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
+    settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
+    mysql_root_password: "{{ settings.master_db_root_password }}"
 
   roles:
     - gkansible.gkservercollection.mysql_sherlock

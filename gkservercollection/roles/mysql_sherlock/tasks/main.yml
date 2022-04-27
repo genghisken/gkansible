@@ -17,7 +17,7 @@
     - Import the InnoDB data.
     - Run the create helper tables script
     - Run the recreate views script. 
-    - flush handlers
 
 - name: flush handlers
   meta: flush_handlers
+

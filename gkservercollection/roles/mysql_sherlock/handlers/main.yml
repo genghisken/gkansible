@@ -34,7 +34,6 @@
   mysql_db:
     login_user: "root"
     login_password: "{{ mysql_root_password }}"
-    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     name: "{{ item.name }}"
     state: "{{ item.state | default('present') }}"
     target: "{{ item.target | default(omit) }}"
@@ -52,7 +51,6 @@
   mysql_user:
     login_user: "root"
     login_password: "{{ mysql_root_password }}"
-    login_unix_socket: '{% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}'
     name: "{{ item.name }}"
     password: "{{ item.password | default(omit) }}"
     state: present
@@ -95,16 +93,16 @@
 #  when:
 #    - mysql_users is defined
 
-- name: Get the Sherlock MyISAM datafiles from remote ceph store
+- name: Get the Sherlock MyISAM lite datafiles from remote ceph store
   find:
-    paths: "{{ sherlock_catalogue_data_dir }}"
+    paths: "{{ sherlock_catalogue_data_dir_lite }}"
     patterns: '*.MY[DI]$'
-  register: sherlock_db_files
+  register: sherlock_lite_db_files
   become: true
   when:
-    - sherlock_import_type != 'empty'
+    - sherlock_import_type == 'lite' or sherlock_import_type == 'full'
 
-- name: Copy the massive datafiles (over 4.5 TB)
+- name: Copy the lite datafiles
   copy:
     src: "{{ item.path }}"
     dest: "{{ datadir }}/crossmatch_catalogues"
@@ -113,10 +111,34 @@
     mode: preserve
     remote_src: yes
   with_items:
-    - "{{ sherlock_db_files.files }}"
+    - "{{ sherlock_lite_db_files.files }}"
   become: true
   when:
-    - sherlock_import_type != 'empty'
+    - sherlock_import_type == 'lite' or sherlock_import_type == 'full'
+
+
+- name: Get the Sherlock MyISAM large datafiles from remote ceph store
+  find:
+    paths: "{{ sherlock_catalogue_data_dir_lite }}"
+    patterns: '*.MY[DI]$'
+  register: sherlock_full_db_files
+  become: true
+  when:
+    - sherlock_import_type == 'full'
+
+- name: Copy the large datafiles
+  copy:
+    src: "{{ item.path }}"
+    dest: "{{ datadir }}/crossmatch_catalogues"
+    owner: mysql
+    group: mysql
+    mode: preserve
+    remote_src: yes
+  with_items:
+    - "{{ sherlock_full_db_files.files }}"
+  become: true
+  when:
+    - sherlock_import_type == 'full'
 
 #- name: Attach the InnoDB tablespaces from the newly created tables
 #  mysql_db:
@@ -184,6 +206,3 @@
   when:
     - mysql_users is defined
 
-
-- name: flush handlers
-  meta: flush_handlers
