@@ -1,5 +1,7 @@
 ---
 
+dataroot: '/data/mysql/'
+datadir: '{{ dataroot }}mysqldata'
 defaultdir: '/var/lib/mysql'
 
 mysql_ubuntu_socket: '/var/run/mysqld/mysqld.sock'
