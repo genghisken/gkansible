@@ -11,8 +11,10 @@
     - create databases (in this case, the Sherlock database)
     - create users
     - Run the schema create script
-    - Get the Sherlock MyISAM datafiles from remote ceph store
-    - Copy the massive datafiles (over 4.5 TB)
+    - Get the Sherlock MyISAM lite datafiles from remote ceph store
+    - Copy the lite datafiles
+    - Get the Sherlock MyISAM large datafiles from remote ceph store
+    - Copy the large datafiles
     - Restart MySQL - so we now recognise the newly copied MyISAM tables.
     - Import the InnoDB data.
     - Run the create helper tables script
