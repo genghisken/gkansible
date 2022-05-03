@@ -96,7 +96,7 @@
 - name: Get the Sherlock MyISAM lite datafiles from remote ceph store
   find:
     paths: "{{ sherlock_catalogue_data_dir_lite }}"
-    patterns: '\.MY[DI]$'
+    patterns: '.*\.MY[DI]$'
     use_regex: yes
   register: sherlock_lite_db_files
   become: true
@@ -109,7 +109,7 @@
     dest: "{{ datadir }}/crossmatch_catalogues"
     owner: mysql
     group: mysql
-    mode: preserve
+    mode: 0660 
     remote_src: yes
   with_items:
     - "{{ sherlock_lite_db_files.files }}"
@@ -121,7 +121,7 @@
 - name: Get the Sherlock MyISAM large datafiles from remote ceph store
   find:
     paths: "{{ sherlock_catalogue_data_dir }}"
-    patterns: '\.MY[DI]$'
+    patterns: '.*\.MY[DI]$'
     use_regex: yes
   register: sherlock_full_db_files
   become: true
@@ -134,7 +134,7 @@
     dest: "{{ datadir }}/crossmatch_catalogues"
     owner: mysql
     group: mysql
-    mode: preserve
+    mode: 0660 
     remote_src: yes
   with_items:
     - "{{ sherlock_full_db_files.files }}"
