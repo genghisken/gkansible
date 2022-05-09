@@ -101,7 +101,7 @@
   register: sherlock_lite_db_files
   become: true
   when:
-    - sherlock_import_type == 'lite' or sherlock_import_type == 'full'
+    - sherlock_import_type == 'lite' or sherlock_import_type == 'full' or sherlock_import_type == 'test'
 
 - name: Copy the lite datafiles
   copy:
@@ -115,7 +115,7 @@
     - "{{ sherlock_lite_db_files.files }}"
   become: true
   when:
-    - sherlock_import_type == 'lite' or sherlock_import_type == 'full'
+    - sherlock_import_type == 'lite' or sherlock_import_type == 'full' or sherlock_import_type == 'test'
 
 
 - name: Get the Sherlock MyISAM large datafiles from remote ceph store
@@ -178,6 +178,20 @@
     label: "{{ item.name }}"
   when:
     - mysql_users is defined and sherlock_import_type != 'empty'
+
+- name: Import sherlock large table test subset.
+  mysql_db:
+    name: "crossmatch_catalogues"
+    state: import
+    target: "{{ sherlock_sql_dir }}/sherlock_test_large_table_data_20220509.sql"
+    login_user: "{{ item.name }}"
+    login_password: "{{ item.password | default(omit) }}"
+    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
+  loop: "{{ mysql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_users is defined and sherlock_import_type == 'test'
 
 - name: Run the create helper tables script
   mysql_db:

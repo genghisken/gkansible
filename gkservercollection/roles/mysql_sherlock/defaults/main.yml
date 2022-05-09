@@ -35,8 +35,10 @@ settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ 
 # was overridden in the MariaDB/MySQL install.
 mysql_root_password: "{{ settings.local_db_root_password }}"
 
-# Sherlock import type can be "full", "lite" or "empty". If "empty" then only the schema
-# structure will be created. No data will be imported, except for any "helper" tables.
+# Sherlock import type can be "full", "lite", "test" or "empty". If "empty" then only the
+# schema structure will be created. No data will be imported, except for any "helper" tables.
+# If "test" then 6 arcmin sweeps around a list of test objects will be imported on top of
+# the "lite" schema.
 sherlock_import_type: "empty"
 
 #sherlock_database_source_dir: '/mnt/cephfs/ken/sherlock_database_files/mysqldata/crossmatch_catalogues'

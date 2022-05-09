@@ -17,6 +17,7 @@
     - Copy the large datafiles
     - Restart MySQL - so we now recognise the newly copied MyISAM tables.
     - Import the InnoDB data.
+    - Import sherlock large table test subset.
     - Run the create helper tables script
     - Run the recreate views script. 
 
