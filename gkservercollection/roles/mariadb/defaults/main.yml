@@ -6,9 +6,9 @@ datadir: '{{ dataroot }}mysqldata'
 logdir: '{{ dataroot }}mysqllog'
 defaultdir: '/var/lib/mysql'
 
-mariadb_version: "10.4"
+mariadb_version: "10.6"
 
-mariadb_rpm_code: 'http://yum.mariadb.org/10.4/centos7-amd64'
+mariadb_rpm_code: 'http://yum.mariadb.org/{{ mariadb_version }}/centos7-amd64'
 mariadb_rpm_gpg_key: 'https://yum.mariadb.org/RPM-GPG-KEY-MariaDB'
 
 mariadb_redhat_repo: 'https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm'

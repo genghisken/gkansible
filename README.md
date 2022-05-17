@@ -1,11 +1,12 @@
 # gkansible
-A repository of Ansible playbooks. These currently include:
+A repository of Ansible roles. These currently include:
 
 * Anaconda
-* Cassandra
+* Cassandra 3
+* Cassandra 4
 * MySQL 5.7
-* MariaDB/Galera/Maxscale
-* SherlockDB - A sherlock full database install (needs 6TB minimum partition)
+* MariaDB/Galera/Maxscale (default version 10.6)
+* SherlockDB - A sherlock database install - choose "empty", "lite", "test" or "full". ("empty" is default. "full" needs 5TB minimum partition size.)
 * IRAF Legacy 32-bit requirements for the PESSTO pipeline
 * IRAF Legacy Anaconda environment for PESSTO, SNID (Intel only)
 
