@@ -91,6 +91,12 @@
 #  become: true
 #  when: ansible_os_family == "Debian"
 
+- name: Initialize MySQL 8.0 Insecure.
+  shell: 'mysqld --initialize-insecure --user=mysql'
+  when: ansible_os_family == "RedHat"
+  become: true
+
+
 - name: start and enable mysql
   service:
     name: '{% if ansible_os_family == "Debian" %}{{ mysql_service_ubuntu }}{% else %}{{ mysql_service_redhat }}{% endif %}'

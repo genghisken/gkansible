@@ -13,7 +13,7 @@ mysql_ubuntu_client_core: 'mysql-client-core-8.0'
 mysql_ubuntu_common: 'mysql-common'
 mysql_ubuntu_socket: '/var/run/mysqld/mysqld.sock'
 
-mysql_redhat_repo: 'https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm'
+mysql_redhat_repo: 'https://dev.mysql.com/get/mysql80-community-release-el7-6.noarch.rpm'
 mysql_redhat_server: 'mysql-community-server'
 mysql_redhat_client: 'mysql-community-client'
 mysql_redhat_common: 'mysql-community-common'

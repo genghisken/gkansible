@@ -55,9 +55,8 @@
     - Move the default installation file to new directory 
     - Recreate the old mysql directories
     - mysql configuration file (my.cnf)
-    - apparmor configuration file (alias)
-    - Restart apparmor
     - start and enable mysql
+    - Initialize MySQL 8.0 Insecure.
     - Set the root password
     - Secure the root user for IPV6 localhost (::1)
     - Secure the root user for IPV4 localhost (127.0.0.1)
