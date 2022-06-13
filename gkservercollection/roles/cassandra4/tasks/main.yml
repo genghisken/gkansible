@@ -63,11 +63,7 @@
   notify:
     - Stop service cassandra, if started
     - Remove old Cassandra data
-    - Create the new Cassandra data directory
-    - Create the new Cassandra commitlog directory
-    - Create the new Cassandra hints directory
-    - Create the new Cassandra cdc_raw directory
-    - Create the new Cassandra saved_caches directory
+    - Create the new Cassandra data
     - main configuration (cassandra.yaml)
     - main configuration (cassandra-rackdc.properties)
 #    - Start the seed nodes
@@ -85,11 +81,7 @@
   notify:
     - Stop service cassandra, if started
     - Remove old Cassandra data
-    - Create the new Cassandra data directory
-    - Create the new Cassandra commitlog directory
-    - Create the new Cassandra hints directory
-    - Create the new Cassandra cdc_raw directory
-    - Create the new Cassandra saved_caches directory
+    - Create the new Cassandra data
     - main configuration (cassandra.yaml)
     - main configuration (cassandra-rackdc.properties)
 #    - Start the seed nodes
