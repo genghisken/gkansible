@@ -3,6 +3,7 @@ CREATE TABLE {{ keyspace }}.htmcandidates (
     htm13 ascii,
     htm16 ascii,
     jd double,
+    objectid ascii,
     candid bigint,
     chinr float,
     chipsf float,
@@ -32,7 +33,6 @@ CREATE TABLE {{ keyspace }}.htmcandidates (
     nbad int,
     nid int,
     nneg int,
-    objectid ascii,
     ra double,
     ranr double,
     rb float,
@@ -53,4 +53,4 @@ CREATE TABLE {{ keyspace }}.htmcandidates (
     ypos float,
     zpclrcov float,
     zpmed float,
-    PRIMARY KEY (htm10, htm13, htm16, jd));
+    PRIMARY KEY (htm10, htm13, htm16, jd, objectid, candid));

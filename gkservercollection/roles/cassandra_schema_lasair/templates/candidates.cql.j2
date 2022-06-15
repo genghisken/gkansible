@@ -1,11 +1,11 @@
 CREATE TABLE {{ keyspace }}.candidates (
     objectid ascii,
     jd double,
+    candid bigint,
     aimage float,
     aimagerat float,
     bimage float,
     bimagerat float,
-    candid bigint,
     chinr float,
     chipsf float,
     classtar float,
@@ -104,4 +104,4 @@ CREATE TABLE {{ keyspace }}.candidates (
     ypos float,
     zpclrcov float,
     zpmed float,
-    PRIMARY KEY (objectid, jd));
+    PRIMARY KEY (objectid, jd, candid));
