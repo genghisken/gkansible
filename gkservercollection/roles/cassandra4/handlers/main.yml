@@ -3,9 +3,10 @@
 # The apt-get service in Ubuntu automatically starts an installed service.
 # Shut it down!
 - name: Stop service cassandra, if started
-  service:
+  systemd:
     name: cassandra
     state: stopped
+    enabled: no
   become: true
 
 - name: Remove old Cassandra data
