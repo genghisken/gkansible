@@ -21,7 +21,10 @@
 
 - name: Pause to allow the cassandra seed nodes cassandra to properly start
   wait_for:
-    timeout: 60
+    delay: 30
+    timeout: 120
+    port: 9042
+    host: 127.0.0.1
   throttle: 1
   when: (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2]))
 
@@ -36,7 +39,10 @@
 
 - name: Pause to allow the cassandra other nodes cassandra to properly start
   wait_for:
-    timeout: 60
+    delay: 30
+    timeout: 120
+    port: 9042
+    host: 127.0.0.1
   throttle: 1
   when: not ( (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2])) )
 
