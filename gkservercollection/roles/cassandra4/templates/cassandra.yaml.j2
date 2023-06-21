@@ -663,7 +663,8 @@ ssl_storage_port: 7001
 #
 # Setting listen_address to 0.0.0.0 is always wrong.
 #
-listen_address: {{ ansible_all_ipv4_addresses[0] }}
+#listen_address: {{ ansible_all_ipv4_addresses[0] }}
+listen_address: {{ ansible_hostname }}
 
 # Set listen_address OR listen_interface, not both. Interfaces must correspond
 # to a single address, IP aliasing is not supported.
@@ -768,14 +769,16 @@ The ansible_facts can be referenced in these ways equivalently. If using the ans
 skip the ansible_ prefix. If not, refer to an ansible_fact with the ansible_ prefix. The following
 two examples are equivalent:
 broadcast_rpc_address: {{ ansible_facts['all_ipv4_addresses'][0] }}
-broadcast_rpc_address: {{ ansible_all_ipv4_addresses[0] }}
+#broadcast_rpc_address: {{ ansible_all_ipv4_addresses[0] }}
+broadcast_rpc_address: {{ ansible_hostname }}
 
 Additionally - the following appears to use the external address by default (also listed above as
 offset [1], but I'm not completely certain this is always consistent).
 broadcast_rpc_address: {{ ansible_default_ipv4['address'] }}
 broadcast_rpc_address: {{ ansible_facts['default_ipv4']['address'] }}
 #}
-broadcast_rpc_address: {{ ansible_all_ipv4_addresses[0] }}
+#broadcast_rpc_address: {{ ansible_all_ipv4_addresses[0] }}
+broadcast_rpc_address: {{ ansible_hostname }}
 
 
 # enable or disable keepalive on rpc/native connections
