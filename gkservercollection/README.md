@@ -9,6 +9,7 @@ Collection for installation of servers that contain the following software:
 * SherlockDB - A sherlock database install - choose "empty", "lite", "test" or "full". ("empty" is default. "full" needs 5TB minimum partition size.)
 * IRAF Legacy 32-bit requirements for the PESSTO pipeline
 * IRAF Legacy Anaconda environment for PESSTO, SNID (Intel only)
+* Pan-STARRS and ATLAS (PSAT) ingester code.
 
 NOTE: The code attempts to contact a Hashicorp Vault repository for various settings information.
 If your settings are NOT stored there, please define the required variables (e.g. local_db_root_password)

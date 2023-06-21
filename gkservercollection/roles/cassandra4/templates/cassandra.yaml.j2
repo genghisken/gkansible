@@ -1301,10 +1301,12 @@ replica_filtering_protection:
 
 # Log WARN on any multiple-partition batch size exceeding this value. 5kb per batch by default.
 # Caution should be taken on increasing the size of this threshold as it can lead to node instability.
-batch_size_warn_threshold_in_kb: 5
+# 2022-06-30 KWS Increased from 5 to 50 because of many warnings when ingesting historic data
+batch_size_warn_threshold_in_kb: 50
 
 # Fail any multiple-partition batch exceeding this value. 50kb (10x warn threshold) by default.
-batch_size_fail_threshold_in_kb: 50
+# 2022-06-30 KWS Increased from 50 to 500 because of many warnings when ingesting historic data
+batch_size_fail_threshold_in_kb: 500
 
 # Log WARN on any batches not of type LOGGED than span across more partitions than this limit
 unlogged_batch_across_partitions_warn_threshold: 10

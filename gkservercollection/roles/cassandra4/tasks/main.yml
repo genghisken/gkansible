@@ -14,6 +14,20 @@
   become: true
   when: ansible_os_family == "Debian"
 
+- name: install cURL Debian
+  apt:
+    name: curl
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: install cURL RedHat
+  yum:
+    name: curl
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
 - name: install Open JDK 11 CentOS
   yum:
     name: java-11-openjdk
@@ -38,13 +52,14 @@
   become: true
   when: ansible_os_family == "Debian"
 
+# 2023-06-20 KWS Minor update to this. Add key via curl not wget.
 - name: get cassandra repo
-  shell: 'wget -q -O - {{ cassandra_server }}/KEYS | sudo apt-key add -'
+  shell: 'curl {{ cassandra_server_keys }}/cassandra/KEYS | sudo apt-key add -'
   become: true
   when: ansible_os_family == "Debian"
 
 - name: add cassandra
-  shell: 'echo "deb {{ cassandra_server }}/debian 40x main" > /etc/apt/sources.list.d/cassandra.list'
+  shell: 'echo "deb {{ cassandra_server }} {{ cassandra_version }} main" > /etc/apt/sources.list.d/cassandra.sources.list'
   become: true
   when: ansible_os_family == "Debian"
 
