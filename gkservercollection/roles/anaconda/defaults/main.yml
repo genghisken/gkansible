@@ -5,8 +5,10 @@ anaconda_mirror: https://repo.continuum.io/archive
 # version of python (2|3)
 anaconda_python_ver: 3
 
+# 2022-09-27 KWS Time to update the Anaconda version to 2022.
 # anaconda version
-anaconda_ver: '2021.11'
+#anaconda_ver: '2021.11'
+anaconda_ver: '2023.03-1'
 
 # when downloading the anaconda binary it might take a while
 # don't let you less great network connection cause the role to falter
@@ -28,6 +30,10 @@ win_anaconda_add_to_path: True
 # anaconda checksums...
 # https://repo.continuum.io/archive/
 anaconda_checksums:
+  # https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
+  Anaconda3-2023.03-1-Linux-x86_64.sh: sha256:95102d7c732411f1458a20bdf47e4c1b0b6c8a21a2edfe4052ca370aaae57bab
+  # https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
+  Anaconda3-2022.05-Linux-x86_64.sh: sha256:a7c0afe862f6ea19a596801fc138bde0463abcbce1b753e8d5c474b506a2db2d
   # https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh
   Anaconda3-2021.11-Linux-x86_64.sh: sha256:fedf9e340039557f7b5e8a8a86affa9d299f5e9820144bd7b92ae9f7ee08ac60
   # https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-ppc64le.sh
@@ -44,6 +50,7 @@ anaconda_checksums:
 anaconda_make_sys_default: False
 
 anaconda_parent_dir: "{{ ansible_env.HOME }}"
+
 anaconda_link_subdir: anaconda
 
 anaconda_pkg_update: True
@@ -63,7 +70,7 @@ anaconda_installer_sh: '{{ anaconda_name }}.sh'
 anaconda_installer_url: '{{ anaconda_mirror }}/{{ anaconda_installer_sh }}'
 anaconda_checksum: '{{ anaconda_checksums[anaconda_installer_sh] }}'
 
-anaconda_install_dir: '{{ anaconda_parent_dir }}/anaconda'
+anaconda_install_dir: '{{ anaconda_parent_dir }}/{{ anaconda_link_subdir }}'
 anaconda_link_dir: '{{ anaconda_parent_dir }}/{{ anaconda_link_subdir }}'
 
 anaconda_conda_bin: '{{ anaconda_link_dir }}/bin/conda'
