@@ -1,0 +1,11 @@
+## RUN THIS PLAYBOOK WITH
+## > ansible-playbook install-psat.yml --ask-vault-pass
+---
+- hosts: psat
+  vars:
+    installation_user: "ubuntu"
+    installation_group: "ubuntu"
+    installation_user_home: "/home/ubuntu"
+  roles:
+    - gkansible.gkservercollection.psat
+

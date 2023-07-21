@@ -1,0 +1,23 @@
+---
+
+psat_software_location: '/usr/local/ps1code/gitrelease'
+psat_libraries_location: '/usr/local/swtools'
+
+mysqlpp_code_code: 'https://tangentsoft.com/mysqlpp/releases/mysql++-3.3.0.tar.gz'
+yaml_cpp_3_code: 'https://github.com/jbeder/yaml-cpp/archive/refs/tags/release-0.3.0.tar.gz'
+
+
+# Hashicorp Vault information (Used for Lasair deployments). If we have secrets stored there, use them in place of defaults above.
+vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
+localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
+settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
+bitbucket_user: "{{ settings.bitbucket_user }}"
+bitbucket_pass: "{{ settings.bitbucket_pass }}"
+
+code_deployment_name: "{{ settings.psat_code_name }}"
+
+# Override these variables in a playbook if you want a different user and group (e.g. atls/arc).
+# The user and group must already exist.
+installation_user: "pstc"
+installation_group: "arc"
+installation_user_home: "/home/pstc"

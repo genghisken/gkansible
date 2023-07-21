@@ -6,7 +6,7 @@
   command: '{{anaconda_link_dir}}/bin/conda update -y --all'
 
 - name: Run commands in conda environment
-  shell: '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda create -y -n {{ conda_env_name }} python=3.7 pip'
+  shell: '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda create -y -n {{ conda_env_name }} python=3.11 pip'
 
 - name: Install swig inside conda environment
   shell:  '. {{ ansible_env.HOME }}/anaconda/etc/profile.d/conda.sh && conda activate {{ conda_env_name }} && conda install -y swig'

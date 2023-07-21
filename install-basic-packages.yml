@@ -3,5 +3,5 @@
 ---
 - hosts: basicnodes
   roles:
-    - basic_packages
+    - gkansible.gkservercollection.basic_packages
 

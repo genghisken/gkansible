@@ -16,12 +16,13 @@
         vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
         localsettings: "{{ lookup('template', 'localsettings.yml', errors='warn')|from_yaml | default('undefined', true) }}"
         settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ vaultsettings }}{% endif %}"
-        password: "{{ settings.maxscale_password }}"
+        maxscale_password: "{{ settings.maxscale_password }}"
+        password: "{{ settings.master_db_root_password }}"
         ip: "{{ hostvars[groups['cluster_control'][0]]['ansible_all_ipv4_addresses'][0] }}"
 
       community.mysql.mysql_query:
         query:
-          - CREATE USER IF NOT EXISTS 'maxscale'@'{{ ip }}' IDENTIFIED BY "{{ password }}"
+          - CREATE USER IF NOT EXISTS 'maxscale'@'{{ ip }}' IDENTIFIED BY "{{ maxscale_password }}"
           - GRANT SELECT ON mysql.user TO 'maxscale'@'{{ ip }}';
           - GRANT SELECT ON mysql.db TO 'maxscale'@'{{ ip }}';
           - GRANT SELECT ON mysql.tables_priv TO 'maxscale'@'{{ ip }}';

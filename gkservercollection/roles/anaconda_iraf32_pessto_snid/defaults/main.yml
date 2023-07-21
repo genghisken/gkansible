@@ -1,14 +1,14 @@
 ---
 
 anaconda_parent_dir: "{{ ansible_env.HOME }}"
-anaconda_link_subdir: anaconda
+anaconda_link_subdir: anaconda3
 
 anaconda_pkg_update: True
 
 # control the install channels
 #anaconda_install_channels: "defaults conda-forge bioconda"
 
-anaconda_install_dir: '{{ anaconda_parent_dir }}/anaconda'
+anaconda_install_dir: '{{ anaconda_parent_dir }}/{{ anaconda_link_subdir }}'
 anaconda_link_dir: '{{ anaconda_parent_dir }}/{{ anaconda_link_subdir }}'
 
 conda_env_name: "iraf27"

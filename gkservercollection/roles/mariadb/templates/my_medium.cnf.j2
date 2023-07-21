@@ -73,6 +73,11 @@ thread_cache_size = 8
 #query_cache_size = 256M
 tmp_table_size=10G
 
+# 2023-07-14 KWS Introduced tmp_disk_table_size, since with is where MariaDB (MySQL)
+#                places its temporary Aria (MyISAM) tables. Limit so the filesystem
+#                does not fill up (e.g. set to 10G). Default value is 16 exabytes.
+tmp_disk_table_size={{ tmp_disk_table_size }}
+
 # 2019-05-28 KWS Increased max_heap_table_size to 2G from the default of 16M in an
 #                attemp to stave off "closing tables" system lock.
 max_heap_table_size=2G

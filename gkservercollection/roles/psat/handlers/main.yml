@@ -1,0 +1,64 @@
+---
+
+## installation of MySQL++
+#   
+#cd /tmp && curl -L -O https://tangentsoft.com/mysqlpp/releases/mysql++-3.3.0.tar.gz && tar xfz mysql++-3.3.0.tar.gz && cd mysql++-3.3.0 && ./configure --prefix=/usr/local/swtools && make && make install
+#   
+## libyaml-cpp03 library.
+#cd /tmp && curl -L -O https://github.com/jbeder/yaml-cpp/archive/refs/tags/release-0.3.0.tar.gz && tar xfz release-0.3.0.tar.gz  && cd yaml-cpp-release-0.3.0 && mkdir build && cd build && cmake --install-prefix=/usr/local/swtools .. && make && make install && cd /usr/local/swtools/include && ln -s yaml-cpp yaml-cpp03 && cd /usr/local/swtools/lib && ln -s libyaml-cpp.a libyaml-cpp03.a
+
+- name: Install MySQL++
+  shell: |
+    cd "{{ installation_user_home }}/Downloads"
+    tar xfz mysql++-3.3.0.tar.gz
+    cd mysql++-3.3.0
+    ./configure --prefix=/usr/local/swtools
+    make
+    make install
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Install libyaml-cpp03
+  shell: |
+    cd "{{ installation_user_home }}/Downloads"
+    tar xfz release-0.3.0.tar.gz 
+    cd yaml-cpp-release-0.3.0
+    mkdir build
+    cd build
+    cmake --install-prefix=/usr/local/swtools ..
+    make
+    make install
+    cd /usr/local/swtools/include
+    ln -s yaml-cpp yaml-cpp03
+    cd /usr/local/swtools/lib
+    ln -s libyaml-cpp.a libyaml-cpp03.a
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Make the HTM library
+  shell: |
+    cd "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/htm"
+    csh configure 
+    mkdir unix
+    make
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Make the Pan-STARRS ingester
+  shell: |
+    cd "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/ingesters/ps1_transients/cpp"
+    . ./env_linux_ubuntu_mariadb.sh
+    mkdir objs
+    make -f Makefile_ubuntu_mariadb
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Make the ATLAS ingester
+  shell: |
+    . "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/ingesters/ps1_transients/cpp/env_linux_ubuntu_mariadb.sh"
+    cd "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/ingesters/tphot/cpp"
+    mkdir objs
+    make -f Makefile_ddc_ubuntu_mariadb
+  become: true
+  become_user: "{{ installation_user }}"
+

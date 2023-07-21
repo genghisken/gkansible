@@ -92,6 +92,8 @@
       #- "{{ mariadb_ubuntu_packages }}"
       - "{{ mariadb_ubuntu_server }}"
       - "{{ mariadb_ubuntu_client }}"
+      - "{{ mariadb_ubuntu_dev }}"
+      - "{{ mariadb_ubuntu_dev_compat }}"
       # Install python3-mysqldb in the default setup on the client - so we can do root password config
       - python3-mysqldb
     state: present

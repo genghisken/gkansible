@@ -22,6 +22,8 @@
 
 [iraf_legacy]
 
+[psat]
+
 [mysqlnodes:vars]
 # Set the python interpreter for the remote machine.
 ansible_python_interpreter=/usr/bin/python3

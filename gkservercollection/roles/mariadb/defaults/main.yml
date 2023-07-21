@@ -26,12 +26,18 @@ mysql_service_ubuntu: 'mysql'
 
 mysql_port: 3306
 
+# 2023-07-14 KWS Introduce tmp_disk_table_size. Only relevant to
+#                MyISAM or Aria tables. Default size is 16 exabytes!
+tmp_disk_table_size: 18446744073709551615
+
 mariadb_ubuntu_packages:
   - mariadb-server
   - mariadb-client
 
 mariadb_ubuntu_server: 'mariadb-server'
 mariadb_ubuntu_client: 'mariadb-client'
+mariadb_ubuntu_dev: 'libmariadb-dev'
+mariadb_ubuntu_dev_compat: 'libmariadb-dev-compat'
 mariadb_ubuntu_socket: '/var/run/mysqld/mysqld.sock'
 
 mariadb_key_url: "https://mariadb.org/mariadb_release_signing_key.asc"

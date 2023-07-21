@@ -1,0 +1,139 @@
+---
+
+# 2022-02-07 KWS Test the availability of the credentials
+
+- name: Update packages
+  apt:
+    update_cache: yes # apt-get update
+  when: ansible_os_family == "Debian"
+  become: true
+
+- name: install git package
+  apt:
+    name: git
+  become: true
+
+#- name: Get current user
+#  command: "id -g"
+#  register: groupid
+
+- name: Create the ps1code directory 
+  file:
+    path: "{{ psat_software_location }}"
+    state: directory
+    owner: "{{ installation_user }}"
+    group: "{{ installation_group }}"
+    mode: 0755
+    recurse: yes
+  become: true
+
+- name: Create the swtools directory 
+  file:
+    path: "{{ psat_libraries_location }}"
+    state: directory
+    owner: "{{ installation_user }}"
+    group: "{{ installation_group }}"
+    mode: 0755
+    recurse: yes
+  become: true
+
+- name: Copy the Bitbucket SSH private key to the destination machines.
+  copy:
+    content: "{{ settings.bitbucket_ssh_key }}"
+    dest: "{{ installation_user_home }}/.ssh/gkgit"
+    owner: "{{ installation_user }}"
+    group: "{{ installation_group }}"
+    mode: '0400'
+  when: ansible_os_family == "Debian"
+  become: true
+
+#- name: ssh config file for bitbucket
+#  template:
+#    src: sshconfig.j2
+#    dest: "{{ ansible_env.HOME }}/.ssh/config"
+
+- name: Get updated files from git repository (bitbucket)
+  git: 
+    repo: "git@bitbucket.com:{{ bitbucket_user | urlencode }}/ps1.git"
+    dest: "{{ psat_software_location }}/{{ code_deployment_name }}"
+    key_file: "{{ installation_user_home }}/.ssh/gkgit"
+    accept_hostkey: yes
+    update: no
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Get psat-server code (github)
+  git: 
+    repo: "https://github.com/genghisken/psat-server.git"
+    dest: "{{ psat_software_location }}/psat-server"
+    update: no
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Get psat-ml code (github)
+  git: 
+    repo: "https://github.com/genghisken/psat-ml.git"
+    dest: "{{ psat_software_location }}/psat-ml"
+    update: no
+  become: true
+  become_user: "{{ installation_user }}"
+
+# The database and PSAT client code might not be on the same server.
+# So at the very least we need the client code and a few libraries.
+- name: Package installation
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - mariadb-client
+      - libmariadb-dev
+      - libmariadb-dev-compat
+      - csh
+      - libcfitsio-bin
+      - libcfitsio-dev
+      - libccfits-dev
+      - cmake
+      - libpcre++-dev
+      - g++
+      - swig
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: "Update packages"
+  become: true
+  apt:
+    update_cache: yes # apt-get update
+  when: ansible_os_family == "Debian"
+
+
+#- name: Download custom software
+#  command: "{{ item }};'"
+#  with_items:
+#    - "cd /tmp && curl -L -O https://tangentsoft.com/mysqlpp/releases/mysql++-3.3.0.tar.gz"
+#    - "cd /tmp && curl -L -O https://github.com/jbeder/yaml-cpp/archive/refs/tags/release-0.3.0.tar.gz"
+
+
+- name: Download MySQL++
+  ansible.builtin.get_url:
+    url: "https://tangentsoft.com/mysqlpp/releases/mysql++-3.3.0.tar.gz"
+    dest: "{{ installation_user_home }}/Downloads/mysql++-3.3.0.tar.gz"
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Download libyaml-cpp03
+  ansible.builtin.get_url:
+    url: "https://github.com/jbeder/yaml-cpp/archive/refs/tags/release-0.3.0.tar.gz"
+    dest: "{{ installation_user_home }}/Downloads/release-0.3.0.tar.gz"
+  notify:
+    - Install MySQL++
+    - Install libyaml-cpp03
+    - Make the HTM library
+    - Make the Pan-STARRS ingester
+    - Make the ATLAS ingester
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: flush handlers
+  meta: flush_handlers
+
