@@ -9,7 +9,7 @@
 
 - name: Install MySQL++
   shell: |
-    cd "{{ installation_user_home }}/Downloads"
+    cd /tmp
     tar xfz mysql++-3.3.0.tar.gz
     cd mysql++-3.3.0
     ./configure --prefix=/usr/local/swtools
@@ -20,7 +20,7 @@
 
 - name: Install libyaml-cpp03
   shell: |
-    cd "{{ installation_user_home }}/Downloads"
+    cd /tmp
     tar xfz release-0.3.0.tar.gz 
     cd yaml-cpp-release-0.3.0
     mkdir build

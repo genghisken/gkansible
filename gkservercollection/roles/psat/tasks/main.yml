@@ -117,14 +117,14 @@
 - name: Download MySQL++
   ansible.builtin.get_url:
     url: "https://tangentsoft.com/mysqlpp/releases/mysql++-3.3.0.tar.gz"
-    dest: "{{ installation_user_home }}/Downloads/mysql++-3.3.0.tar.gz"
+    dest: "/tmp/mysql++-3.3.0.tar.gz"
   become: true
   become_user: "{{ installation_user }}"
 
 - name: Download libyaml-cpp03
   ansible.builtin.get_url:
     url: "https://github.com/jbeder/yaml-cpp/archive/refs/tags/release-0.3.0.tar.gz"
-    dest: "{{ installation_user_home }}/Downloads/release-0.3.0.tar.gz"
+    dest: "/tmp/release-0.3.0.tar.gz"
   notify:
     - Install MySQL++
     - Install libyaml-cpp03
