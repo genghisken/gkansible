@@ -33,6 +33,12 @@ socket		= {% if ansible_os_family == "Debian" %}{{ mariadb_ubuntu_socket }}{% el
 net_read_timeout=7200
 net_write_timeout=7200
 
+# 2023-08-23 KWS Changed lower_case_table_names to 1 as a result of Galera
+#                default settings. Done for compatibility with queries done on
+#                the Galera (cluster control configured) system.
+lower_case_table_names=1
+
+
 # 2018-02-06 KWS Increased max connections to 2048 from default 151.
 max_connections = 2048
 
