@@ -222,3 +222,18 @@
   when:
     - mysql_users is defined
 
+
+- name: Import Sherlock 2023 updates.
+  mysql_db:
+    name: "crossmatch_catalogues"
+    state: import
+    target: "{{ sherlock_sql_dir }}/sherlock_update_20230926.sql"
+    login_user: "{{ item.name }}"
+    login_password: "{{ item.password | default(omit) }}"
+    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
+  loop: "{{ mysql_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - mysql_users is defined
+

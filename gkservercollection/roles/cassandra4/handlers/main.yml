@@ -77,14 +77,14 @@
 #    state: started
 #  throttle: 1
 #  become: true
-#  when: (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2]))
+#  when: (play_hosts|length < 5 and inventory_hostname == play_hosts[0]) or (play_hosts|length >= 5 and (inventory_hostname == play_hosts[0] or inventory_hostname == play_hosts[2]))
 #
 #
 #- name: Pause to allow the cassandra seed nodes cassandra to properly start
 #  wait_for:
 #    timeout: 60
 #  throttle: 1
-#  when: (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2]))
+#  when: (play_hosts|length < 5 and inventory_hostname == play_hosts[0]) or (play_hosts|length >= 5 and (inventory_hostname == play_hosts[0] or inventory_hostname == play_hosts[2]))
 #
 #
 #- name: Start the other cassandra nodes
@@ -93,11 +93,11 @@
 #    state: started
 #  become: true
 #  throttle: 1
-#  when: not ( (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2])) )
+#  when: not ( (play_hosts|length < 5 and inventory_hostname == play_hosts[0]) or (play_hosts|length >= 5 and (inventory_hostname == play_hosts[0] or inventory_hostname == play_hosts[2])) )
 #
 #- name: Pause to allow the cassandra other nodes cassandra to properly start
 #  wait_for:
 #    timeout: 60
 #  throttle: 1
-#  when: not ( (groups['cassandranodes']|length < 5 and inventory_hostname == groups['cassandranodes'][0]) or (groups['cassandranodes']|length >= 5 and (inventory_hostname == groups['cassandranodes'][0] or inventory_hostname == groups['cassandranodes'][2])) )
+#  when: not ( (play_hosts|length < 5 and inventory_hostname == play_hosts[0]) or (play_hosts|length >= 5 and (inventory_hostname == play_hosts[0] or inventory_hostname == play_hosts[2])) )
 #

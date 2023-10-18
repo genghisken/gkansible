@@ -20,6 +20,7 @@
     - Import sherlock large table test subset.
     - Run the create helper tables script
     - Run the recreate views script. 
+    - Import Sherlock 2023 updates.
 
 - name: flush handlers
   meta: flush_handlers
