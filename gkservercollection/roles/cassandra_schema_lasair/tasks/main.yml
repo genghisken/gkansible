@@ -1,10 +1,17 @@
 ---
 # To be executed on ONE CASSANDRA NODE ONLY. (Doesn't matter which one!)
 
+- name: Create the ansible_deploy/cassandra directory
+  file:
+    path: "{{ ansible_env.HOME }}/ansible_deploy/cassandra"
+    state: directory
+    recurse: yes
+
+
 - name: Create keyspace CQL file
   template:
     src: create_keyspace.cql.j2
-    dest: '/tmp/create_keyspace.cql'
+    dest: '{{ ansible_env.HOME }}/ansible_deploy/cassandra/create_keyspace.cql'
     mode: 0644
   notify:
     - Create candidates CQL file
