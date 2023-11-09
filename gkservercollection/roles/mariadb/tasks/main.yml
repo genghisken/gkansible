@@ -85,6 +85,8 @@
   apt:
     update_cache: yes # apt-get update
   when: ansible_os_family == "Debian"
+  notify:
+    - mysql configuration file (my.cnf)
 
 - name: Install MariaDB server for {{ ansible_distribution }}
   apt:

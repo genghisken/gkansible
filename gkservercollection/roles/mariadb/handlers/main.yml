@@ -65,6 +65,7 @@
   template:
     src: my_medium.cnf.j2
     dest: '/etc{% if ansible_os_family == "Debian" %}/mysql{% endif %}/my.cnf'
+    follow: true
     mode: 0644
     owner: mysql
     group: mysql
