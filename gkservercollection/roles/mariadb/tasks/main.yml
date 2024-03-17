@@ -88,6 +88,7 @@
   notify:
     - mysql configuration file (my.cnf)
 
+# 2024-02-25 KWS Added mariadb-backup
 - name: Install MariaDB server for {{ ansible_distribution }}
   apt:
     name: 
@@ -96,6 +97,7 @@
       - "{{ mariadb_ubuntu_client }}"
       - "{{ mariadb_ubuntu_dev }}"
       - "{{ mariadb_ubuntu_dev_compat }}"
+      - "{{ mariadb_ubuntu_backup }}"
       # Install python3-mysqldb in the default setup on the client - so we can do root password config
       - python3-mysqldb
     state: present

@@ -72,7 +72,8 @@ table_open_cache = 2048
 sort_buffer_size = 2M
 read_buffer_size = 2M
 read_rnd_buffer_size = 8M
-myisam_sort_buffer_size = 128M
+# 2024-03-02 KWS Increase the size of myisam_sort_buffer_size to 64GB for very large machines
+myisam_sort_buffer_size = 4G
 thread_cache_size = 8
 # 2012-08-04 KWS Increase cache size to 256M
 # 2021-11-30 KWS This isn't a valid variable in MySQL 8.0
@@ -107,6 +108,8 @@ server-id	= 1
 
 tmpdir		= {{ tmpdir }}		
 
+# 2024-02-27 KWS Set innodb_strict_mode = 0 so that rows can be arbitrarily wide
+innodb_strict_mode = 0
 # KWS - Setup (initally) a 1GB InnoDB Tablespace - Large not really necessary
 innodb_data_home_dir = {{ datadir }}
 #innodb_data_file_path = ibdata1:1G:autoextend
@@ -124,6 +127,7 @@ innodb_lock_wait_timeout = 50
 skip-character-set-client-handshake
 collation-server=utf8_unicode_ci
 character-set-server=utf8
+
 
 [mysqldump]
 quick
