@@ -8,7 +8,7 @@ anaconda_python_ver: 3
 # 2022-09-27 KWS Time to update the Anaconda version to 2022.
 # anaconda version
 #anaconda_ver: '2021.11'
-anaconda_ver: '2023.03-1'
+anaconda_ver: '2023.09-0'
 
 # when downloading the anaconda binary it might take a while
 # don't let you less great network connection cause the role to falter
@@ -30,6 +30,8 @@ win_anaconda_add_to_path: True
 # anaconda checksums...
 # https://repo.continuum.io/archive/
 anaconda_checksums:
+  # https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
+  Anaconda3-2023.09-0-Linux-x86_64.sh: sha256:6c8a4abb36fbb711dc055b7049a23bbfd61d356de9468b41c5140f8a11abd851
   # https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
   Anaconda3-2023.03-1-Linux-x86_64.sh: sha256:95102d7c732411f1458a20bdf47e4c1b0b6c8a21a2edfe4052ca370aaae57bab
   # https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
