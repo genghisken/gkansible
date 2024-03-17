@@ -62,3 +62,26 @@
   become: true
   become_user: "{{ installation_user }}"
 
+- name: Install wcstools
+  shell: |
+    cd /tmp
+    tar xfz wcstools-3.9.7.tar.gz
+    cd wcstools-3.9.7
+    make all
+    mkdir -p /usr/local/swtools/wcstools
+    cp -rp bin /usr/local/swtools/wcstools
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Install fits2jpeg
+  shell: |
+    cd /usr/local/ps1code/gitrelease/psat-server/psat-server/binaries/c/fits2jpeg
+    export BASE=/usr/local/swtools
+    export INCDIR=/usr/local/swtools/include
+    export LIBDIR=/usr/local/swtools/lib
+    make
+    mkdir -p /usr/local/swtools/bin
+    cp -p fits2jpeg /usr/local/swtools/bin
+  become: true
+  become_user: "{{ installation_user }}"
+

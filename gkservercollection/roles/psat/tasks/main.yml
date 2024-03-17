@@ -23,7 +23,7 @@
     state: directory
     owner: "{{ installation_user }}"
     group: "{{ installation_group }}"
-    mode: 0755
+    mode: 0775
     recurse: yes
   become: true
 
@@ -33,7 +33,7 @@
     state: directory
     owner: "{{ installation_user }}"
     group: "{{ installation_group }}"
-    mode: 0755
+    mode: 0775
     recurse: yes
   become: true
 
@@ -78,6 +78,15 @@
   become: true
   become_user: "{{ installation_user }}"
 
+# 2024-02-27 KWS Added wcstools
+- name: Download wcstools
+  ansible.builtin.get_url:
+    url: "http://tdc-www.harvard.edu/software/wcstools/wcstools-3.9.7.tar.gz"
+    dest: "/tmp/wcstools-3.9.7.tar.gz"
+  become: true
+  become_user: "{{ installation_user }}"
+
+# 2024-02-28 KWS Added libconfig-yaml-perl and imagemagick and libjpeg-dev
 # The database and PSAT client code might not be on the same server.
 # So at the very least we need the client code and a few libraries.
 - name: Package installation
@@ -97,6 +106,9 @@
       - libpcre++-dev
       - g++
       - swig
+      - libconfig-yaml-perl
+      - imagemagick
+      - libjpeg-dev
   become: true
   when: ansible_os_family == "Debian"
 
@@ -131,6 +143,8 @@
     - Make the HTM library
     - Make the Pan-STARRS ingester
     - Make the ATLAS ingester
+    - Install wcstools
+    - Install fits2jpeg
   become: true
   become_user: "{{ installation_user }}"
 
