@@ -95,9 +95,6 @@
     state: present
   vars:
     packages:
-      - mariadb-client
-      - libmariadb-dev
-      - libmariadb-dev-compat
       - csh
       - libcfitsio-bin
       - libcfitsio-dev
@@ -111,6 +108,32 @@
       - libjpeg-dev
   become: true
   when: ansible_os_family == "Debian"
+
+- name: MariaDB client Package installation
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - mariadb-client
+      - libmariadb-dev
+      - libmariadb-dev-compat
+  become: true
+  when: installation_database == 'mariadb' and ansible_os_family == "Debian"
+
+
+- name: MySQL client Package installation
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - libmysqlclient-dev
+      - libmysqlclient21
+      - default-libmysqlclient-dev
+  become: true
+  when: installation_database == 'mysql' and ansible_os_family == "Debian"
+
 
 - name: "Update packages"
   become: true
@@ -140,11 +163,11 @@
   notify:
     - Install MySQL++
     - Install libyaml-cpp03
+    - Install wcstools
+    - Install fits2jpeg
     - Make the HTM library
     - Make the Pan-STARRS ingester
     - Make the ATLAS ingester
-    - Install wcstools
-    - Install fits2jpeg
   become: true
   become_user: "{{ installation_user }}"
 

@@ -18,6 +18,8 @@ code_deployment_name: "{{ settings.psat_code_name }}"
 
 # Override these variables in a playbook if you want a different user and group (e.g. atls/arc).
 # The user and group must already exist.
+# 2024-04-04 KWS Added installation database. Sometimes we need to install with MariaDB, other times with MySQL.
+installation_database: "mariadb"
 installation_user: "pstc"
 installation_group: "arc"
 installation_user_home: "/home/pstc"

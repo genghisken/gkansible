@@ -35,33 +35,6 @@
   become: true
   become_user: "{{ installation_user }}"
 
-- name: Make the HTM library
-  shell: |
-    cd "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/htm"
-    csh configure 
-    mkdir unix
-    make
-  become: true
-  become_user: "{{ installation_user }}"
-
-- name: Make the Pan-STARRS ingester
-  shell: |
-    cd "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/ingesters/ps1_transients/cpp"
-    . ./env_linux_ubuntu_mariadb.sh
-    mkdir objs
-    make -f Makefile_ubuntu_mariadb
-  become: true
-  become_user: "{{ installation_user }}"
-
-- name: Make the ATLAS ingester
-  shell: |
-    . "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/ingesters/ps1_transients/cpp/env_linux_ubuntu_mariadb.sh"
-    cd "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/ingesters/tphot/cpp"
-    mkdir objs
-    make -f Makefile_ddc_ubuntu_mariadb
-  become: true
-  become_user: "{{ installation_user }}"
-
 - name: Install wcstools
   shell: |
     cd /tmp
@@ -85,3 +58,29 @@
   become: true
   become_user: "{{ installation_user }}"
 
+- name: Make the HTM library
+  shell: |
+    cd "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/htm"
+    csh configure 
+    mkdir unix
+    make
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Make the Pan-STARRS ingester
+  shell: |
+    cd "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/ingesters/ps1_transients/cpp"
+    . ./env_linux_ubuntu_{{ installation_database }}.sh
+    mkdir objs
+    make -f Makefile_ubuntu_mariadb
+  become: true
+  become_user: "{{ installation_user }}"
+
+- name: Make the ATLAS ingester
+  shell: |
+    . "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/ingesters/ps1_transients/cpp/env_linux_ubuntu_{{ installation_database }}.sh"
+    cd "/usr/local/ps1code/gitrelease/{{ code_deployment_name }}/code/ingesters/tphot/cpp"
+    mkdir objs
+    make -f Makefile_ddc_ubuntu_mariadb
+  become: true
+  become_user: "{{ installation_user }}"
