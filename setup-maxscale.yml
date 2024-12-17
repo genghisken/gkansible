@@ -61,11 +61,29 @@
         option: LimitNOFILE
         value: "infinity"
         backup: no
+    # 2023-11-21 KWS Added temp table size limit and batch limit.
+    - name: Limit temporary table size
+      ini_file:
+        path: /etc/mysql/my.cnf
+        section: MYSQLD
+        option: tmp_disk_table_size
+        value: "10G"
+        backup: no
+    - name: Increase batch limit to infinity
+      ini_file:
+        path: /etc/mysql/my.cnf
+        section: MYSQLD
+        option: wsrep_max_ws_rows
+        value: "0"
+        backup: no
+
 
 - hosts: cluster_control
   become: true
   vars:
-    maxscale_deb_url: https://dlm.mariadb.com/1961572/MaxScale/2.5.18/packages/ubuntu/focal/x86_64/maxscale-2.5.18-1.ubuntu.focal.x86_64.deb
+    # 2023-11-21 KWS Versions of MaxScale are specific to the Ubuntu 20.04 and 22.04 versions.
+    #maxscale_deb_url: https://dlm.mariadb.com/1961572/MaxScale/2.5.18/packages/ubuntu/focal/x86_64/maxscale-2.5.18-1.ubuntu.focal.x86_64.deb
+    maxscale_deb_url: https://dlm.mariadb.com/3477300/MaxScale/23.08.3/packages/ubuntu/jammy/x86_64/maxscale-23.08.3-1.ubuntu.jammy.x86_64.deb
   roles: 
     - gkansible.gkservercollection.maxscale
 

@@ -50,7 +50,14 @@ max_connect_errors=10000
 secure_file_priv=
 
 # 2018-02-06 KWS Increase open_files_limit from default of 5000 to 10000
-open_files_limit=10000
+# 2024-04-29 KWS Increase open_files_limit from default of 10000 to 100000
+#                Don't forget to systemctl edit mariadb.service and add the following
+#                two lines between the comments:
+#                [Service]
+#                LimitNOFILE=infinity
+#                LimitMEMLOCK=infinity
+
+open_files_limit=100000
 
 #log-bin = /data/mysql/mysqllogs/mysql-bin
 

@@ -89,6 +89,7 @@
     - mysql configuration file (my.cnf)
 
 # 2024-02-25 KWS Added mariadb-backup
+# 2024-05-01 KWS Added default-libmysqlclient-dev build-essential pkg-config, needed by mysqlclient
 - name: Install MariaDB server for {{ ansible_distribution }}
   apt:
     name: 
@@ -98,6 +99,9 @@
       - "{{ mariadb_ubuntu_dev }}"
       - "{{ mariadb_ubuntu_dev_compat }}"
       - "{{ mariadb_ubuntu_backup }}"
+      - "{{ mariadb_libmysqlclient }}"
+      - "{{ mariadb_build_essential }}"
+      - "{{ mariadb_pkg_config }}"
       # Install python3-mysqldb in the default setup on the client - so we can do root password config
       - python3-mysqldb
     state: present
@@ -112,6 +116,7 @@
     - Move the default installation file to new directory 
     - Recreate the old mysql directories
     - mysql configuration file (my.cnf)
+    - debian-start file
     - apparmor configuration file (alias)
     - Restart apparmor
     - start and enable mysql

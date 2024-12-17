@@ -8,14 +8,24 @@ settings: "{% if vaultsettings == 'undefined' %}{{ localsettings }}{% else %}{{ 
 # ==============
 
 # 2022-04-05 KWS Install the March 7th 2022 version of clustercontrol. Versions after that failed. (Ticket raised.)
+# 2023-11-21 KWS Version 1.9.2 is no longer available on Ubuntu 22.04.3.
+# 2023-11-21 KWS Version 1.9.7 admin interface does NOT work on Ubuntu 22.04.3. Modified
+#                just to pickup the latest verison of clustercontrol
 clustercontrol_ui_packages:
-  - clustercontrol=1.9.2-8244
+#  - clustercontrol=1.9.2-8244
+#  - clustercontrol=1.9.7-8653
+  - clustercontrol
   - clustercontrol-notifications
   - clustercontrol-ssh
   - clustercontrol-cloud
   - clustercontrol-clud
+# 2023-11-21 KWS Version 1.9.2 is no longer available on Ubuntu 22.04.3.
+# 2023-11-21 KWS Version 1.9.7 admin interface does NOT work on Ubuntu 22.04.3. Modified
+#                just to pickup the latest verison of clustercontrol-controller
 clustercontrol_controller_packages:
-  - clustercontrol-controller=1.9.2-5242
+#  - clustercontrol-controller=1.9.2-5242
+#  - clustercontrol-controller=1.9.7-6677
+  - clustercontrol-controller
 clustercontrol_cli_packages:
   - s9s-tools
 cmon_config_file: /etc/cmon.cnf

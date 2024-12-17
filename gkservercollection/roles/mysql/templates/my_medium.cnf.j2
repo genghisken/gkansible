@@ -15,6 +15,8 @@
 
 # The following options will be passed to all MySQL clients
 [client]
+# 2024-04-11 KWS Added local_infile setting for Sherlock.
+local_infile    = 1
 port		= 3306
 socket		= {% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else %}{{ mysql_redhat_socket }}{% endif %}
 
@@ -24,6 +26,8 @@ socket		= {% if ansible_os_family == "Debian" %}{{ mysql_ubuntu_socket }}{% else
 # 2021-01-27 KWS Added this so that we can log into the database as root with just the socket.
 # 2021-11-30 KWS Apparently not needed for Ubuntu.
 # plugin-load-add = auth_socket.so
+# 2024-04-11 KWS Added local_infile setting for Sherlock.
+local_infile    = 1
 
 # 2013-06-25 KWS Added read/write network timeouts to stop mysqldump from
 #                failing.

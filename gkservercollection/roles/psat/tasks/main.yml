@@ -87,6 +87,7 @@
   become_user: "{{ installation_user }}"
 
 # 2024-02-28 KWS Added libconfig-yaml-perl and imagemagick and libjpeg-dev
+# 2024-05-04 KWS Added pigz
 # The database and PSAT client code might not be on the same server.
 # So at the very least we need the client code and a few libraries.
 - name: Package installation
@@ -106,6 +107,7 @@
       - libconfig-yaml-perl
       - imagemagick
       - libjpeg-dev
+      - pigz
   become: true
   when: ansible_os_family == "Debian"
 

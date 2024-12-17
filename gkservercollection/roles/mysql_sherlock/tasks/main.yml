@@ -6,7 +6,9 @@
     state: directory
     recurse: yes
 
-
+# 2024-10-07 KWS Note that we no longer copy "lite" datafiles. We import the
+#                sub-20GB database tables from a database dump. Takes longer, but
+#                should be more reliable.
 - name: Create database schema script
   template:
     src: crossmatch_catalogues_20220425_schema.sql.j2
@@ -18,8 +20,7 @@
     - create databases (in this case, the Sherlock database)
     - create users
     - Run the schema create script
-    - Get the Sherlock MyISAM lite datafiles from remote ceph store
-    - Copy the lite datafiles
+    - Import the sub 20GB data tables
     - Get the Sherlock MyISAM large datafiles from remote ceph store
     - Copy the large datafiles
     - Restart MySQL - so we now recognise the newly copied MyISAM tables.
@@ -31,18 +32,20 @@
 - name: flush handlers
   meta: flush_handlers
 
-- name: Always Import Sherlock updates.
-  mysql_db:
-    name: "crossmatch_catalogues"
-    state: import
-    target: "{{ sherlock_sql_dir }}/sherlock_update_20230926.sql"
-    login_user: "{{ item.name }}"
-    login_password: "{{ item.password | default(omit) }}"
-    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
-  loop: "{{ mysql_users }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when:
-    - mysql_users is defined
+# 2024-10-07 Sherlock is now updated. Should be no reson to run the updates script.
+
+#- name: Always Import Sherlock updates.
+#  mysql_db:
+#    name: "crossmatch_catalogues"
+#    state: import
+#    target: "{{ sherlock_sql_dir }}/sherlock_update_20230926.sql"
+#    login_user: "{{ item.name }}"
+#    login_password: "{{ item.password | default(omit) }}"
+#    login_host: "{{ ansible_all_ipv4_addresses[0] }}"
+#  loop: "{{ mysql_users }}"
+#  loop_control:
+#    label: "{{ item.name }}"
+#  when:
+#    - mysql_users is defined
 
 

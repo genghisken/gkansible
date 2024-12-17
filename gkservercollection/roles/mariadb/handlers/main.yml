@@ -71,6 +71,20 @@
     group: mysql
   become: true
 
+# 2024-04-15 KWS For some reason SOME Ubuntu 22.04 systems do NOT have the following file.
+#                I have no idea why this is only sometimes necessary. Added "force: no" so that
+#                if the file already exists, don't bother replacing it.
+- name: debian-start file
+  template:
+    src: debian-start.j2
+    dest: '/etc/mysql/debian-start'
+    follow: true
+    mode: 0755
+    owner: root
+    group: root
+    force: no
+  become: true
+
 - name: apparmor configuration file (alias)
   template:
     src: apparmor_alias.j2
