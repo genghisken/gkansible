@@ -81,6 +81,11 @@
     - Create the new Cassandra data
     - main configuration (cassandra.yaml)
     - main configuration (cassandra-rackdc.properties)
+    - Create the prometheus directory
+    - Download the prometheus agent
+    - Prometheus agent configuration file
+    - Add the prometheus agent to the cassandra environment
+
 #    - Start the seed nodes
 #    - Pause to allow the cassandra seed nodes cassandra to properly start
 #    - Start the other cassandra nodes
@@ -99,6 +104,10 @@
     - Create the new Cassandra data
     - main configuration (cassandra.yaml)
     - main configuration (cassandra-rackdc.properties)
+    - Create the prometheus directory
+    - Download the prometheus agent
+    - Prometheus agent configuration file
+    - Add the prometheus agent to the cassandra environment
 #    - Start the seed nodes
 #    - Pause to allow the cassandra seed nodes cassandra to properly start
 #    - Start the other cassandra nodes
