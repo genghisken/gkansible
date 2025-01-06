@@ -10,7 +10,7 @@ name: gkservercollection
 # The version of the collection. Must be compatible with semantic versioning
 # 2024-03-17 KWS Bumped to version 0.0.28 because of updates to MariaDB and Anaconda installs.
 # 2024-12-17 KWS Bumped to version 0.2.0 to match the latest release tag.
-version: 0.2.0
+version: 0.2.1
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
