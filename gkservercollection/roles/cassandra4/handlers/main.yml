@@ -100,9 +100,10 @@
 - name: Add the prometheus agent to the cassandra environment
   lineinfile:
     dest: '{{ cassandra_config_dir }}{% if ansible_os_family == "RedHat" %}/conf{% endif %}/cassandra-env.sh'
-    line: 'JVM_OPTS="$JVM_OPTS -javaagent:/etc/cassandra/jmx_prometheus_javaagent-1.0.1.jar=7070:{{ cassandra_config_dir }}{% if ansible_os_family == "RedHat" %}/conf{% endif %}/prometheus/prometheus_cassandra.yml"'
+    line: 'JVM_OPTS="$JVM_OPTS -javaagent:/etc/cassandra/prometheus/jmx_prometheus_javaagent-1.0.1.jar=7070:{{ cassandra_config_dir }}{% if ansible_os_family == "RedHat" %}/conf{% endif %}/prometheus/prometheus_cassandra.yml"'
     state: present
     create: yes
+  become: true
 
 #- name: Start the seed nodes
 #  service:
