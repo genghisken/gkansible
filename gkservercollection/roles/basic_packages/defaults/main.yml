@@ -1,5 +1,5 @@
 ---
-mariadb_version: 10.6
+mariadb_version: 10.11
 mariadb_key_url: "https://mariadb.org/mariadb_release_signing_key.asc"
 mariadb_ubuntu_repo: deb [arch=amd64] http://ams2.mirrors.digitalocean.com/mariadb/repo/{{ mariadb_version }}/ubuntu
 

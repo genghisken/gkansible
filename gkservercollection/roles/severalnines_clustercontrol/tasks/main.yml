@@ -10,15 +10,15 @@
   debug:
     msg: "runtag = {{ runtag }}"
 
-- include: deploy-clustercontrol.yml
+- include_tasks: deploy-clustercontrol.yml
   when: runtag is defined and runtag == "controller"
 
 # 2022-02-23 KWS Changed runtag to deploy-database from dbnodes
-- include: setup-passwordless.yml
+- include_tasks: setup-passwordless.yml
   when: runtag is defined and runtag == "dbnodes"
 
 # Perform deployment if cc_cluster is defined
-- include: deploy-database.yml
+- include_tasks: deploy-database.yml
   with_items: "{{ cc_cluster }}"
   when: runtag is defined and runtag == "deploy-database"
 

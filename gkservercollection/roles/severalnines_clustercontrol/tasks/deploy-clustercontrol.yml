@@ -66,13 +66,13 @@
   when: cmon_ssh_user != 'root'
 
 # Installation tasks.
-- include: setup-RedHat8.yml
+- include_tasks: setup-RedHat8.yml
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8
 
-- include: setup-RedHat.yml
+- include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
 
-- include: setup-Debian.yml
+- include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
 - name: Check if MySQL/MariaDB packages were installed.
@@ -107,16 +107,16 @@
       }}"
 
 # Configure MySQL, schemas and users
-- include: configure-mysql.yml
-- include: secure-installation.yml
-- include: users.yml
+- include_tasks: configure-mysql.yml
+- include_tasks: secure-installation.yml
+- include_tasks: users.yml
 
 # Configure Apache
-- include: configure-apache-RedHat.yml
+- include_tasks: configure-apache-RedHat.yml
   when: ansible_os_family == 'RedHat'
 
-- include: configure-apache-Debian.yml
+- include_tasks: configure-apache-Debian.yml
   when: ansible_os_family == 'Debian'
 
 # Configure ClusterControl
-- include: clustercontrol.yml
+- include_tasks: clustercontrol.yml

@@ -36,8 +36,8 @@
       - g++-multilib
       - twine
       - tmux
-      - python-setuptools
-      - python3-pymysql
+      #- python-setuptools
+      #- python3-pymysql
   become: true
   when: ansible_os_family == "Debian"
 
@@ -103,12 +103,12 @@
   when: ansible_os_family == "Debian"
 
 # Install very latest version of PyMySQL
-- name: install the package, force upgrade
-  pip: 
-    name: pymysql
-    state: latest
-    executable: pip3
-  become: true
+#- name: install the package, force upgrade
+#  pip: 
+#    name: pymysql
+#    state: latest
+#    executable: pip3
+#  become: true
 
 - name: Copy the SSH private key to the destination machines.
   copy:
