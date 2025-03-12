@@ -13,6 +13,17 @@
 - include_tasks: deploy-clustercontrol.yml
   when: runtag is defined and runtag == "controller"
 
+# 2025-03-12 KWS At this point cluster control should be installed. We should now
+#                remove/comment out any defunct statements from the template config
+#                file.
+- name: Comment out obsolete line in MariaDB 10.x template file
+  ansible.builtin.lineinfile:
+    path: /usr/share/cmon/templates/my.cnf.mdb10x-galera
+    regexp: '^wsrep_replicate_myisam=1'
+    line: '# \g<0>'
+    backrefs: yes
+  when: runtag is defined and runtag == "controller"
+
 # 2022-02-23 KWS Changed runtag to deploy-database from dbnodes
 - include_tasks: setup-passwordless.yml
   when: runtag is defined and runtag == "dbnodes"
