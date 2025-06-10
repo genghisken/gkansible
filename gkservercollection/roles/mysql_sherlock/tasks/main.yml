@@ -11,8 +11,8 @@
 #                should be more reliable.
 - name: Create database schema script
   template:
-    src: crossmatch_catalogues_20220425_schema.sql.j2
-    dest: '{{ ansible_env.HOME }}/ansible_deploy/mariadb/crossmatch_catalogues_20220425_schema.sql'
+    src: crossmatch_catalogues_20241002_schema.sql.j2
+    dest: '/tmp/crossmatch_catalogues_20241002_schema.sql'
     mode: 0644
   notify:
     - Recreate views script
