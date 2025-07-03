@@ -135,6 +135,13 @@ skip-character-set-client-handshake
 collation-server=utf8_unicode_ci
 character-set-server=utf8
 
+# 2025-07-02 KWS Added to match the default setting of MySQL 8.0. This stops MyISAM tables
+#                from auto checking when copied. In MariaDB 10.11, the default value is
+#                BACKUP,QUICK - which means that copied MyISAM tables will be automatically
+#                repaired, even if currently OK. The repair process is currently broken for
+#                tables with > 10B rows.
+myisam_recover_options = OFF
+
 
 [mysqldump]
 quick

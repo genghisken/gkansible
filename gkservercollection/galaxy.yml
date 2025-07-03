@@ -11,7 +11,8 @@ name: gkservercollection
 # 2024-03-17 KWS Bumped to version 0.0.28 because of updates to MariaDB and Anaconda installs.
 # 2024-12-17 KWS Bumped to version 0.2.0 to match the latest release tag.
 # 2025-06-10 KWS Fixed create schema script
-version: 0.2.5
+# 2025-07-03 KWS Changed default value of myisam_recover_options to OFF for MariaDB.
+version: 0.2.6
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
