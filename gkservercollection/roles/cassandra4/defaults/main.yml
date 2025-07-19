@@ -11,6 +11,7 @@ cassandra_rpm_code: https://www.apache.org/dist/cassandra/redhat/{{ cassandra_ve
 cassandra_rpm_gpg_key: https://www.apache.org/dist/cassandra/KEYS
 cassandra_cluster_name: 'Lasair4'
 cassandra_data_dir: '/var/lib/cassandra'
+cassandra_commitlog_dir: '/var/lib/cassandra'
 cassandra_data_dir_nvmessd: '/nvme/16/cassandra'
 cassandra_data_dir_satassd: '/ssdraid0/cassandra'
 cassandra_data_dir_pcissd: '/nvme0/cassandra'

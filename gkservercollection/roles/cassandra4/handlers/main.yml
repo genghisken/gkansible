@@ -15,7 +15,7 @@
     path: '{{ item }}'
   with_items:
     - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/data"
-    - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/commitlog"
+    - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_commitlog_dir }}{% endif %}/commitlog"
     - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/hints"
     - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/cdc_raw"
     - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/saved_caches"
@@ -33,7 +33,7 @@
     recurse: yes
   with_items:
     - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/data"
-    - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/commitlog"
+    - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_commitlog_dir }}{% endif %}/commitlog"
     - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/hints"
     - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/cdc_raw"
     - "{% if ansible_hostname == 'db0' or ansible_hostname == 'db1' %}{{ cassandra_data_dir_nvmessd }}{% elif ansible_hostname == 'db3' or ansible_hostname == 'db4' %}{{ cassandra_data_dir_satassd }}{% elif ansible_hostname == 'db2' %}{{ cassandra_data_dir_pcissd }}{% elif ansible_hostname == 'db5' or ansible_hostname == 'db6' %}{{ cassandra_data_dir_bigssdraid }}{% else %}{{ cassandra_data_dir }}{% endif %}/saved_caches"
@@ -61,6 +61,59 @@
     owner: cassandra
     group: cassandra
   become: true
+
+# 2025-07-16 KWS New code to read the cassandra_mappings.txt file and configure cassandra-rackdc.properties accordingly.
+- name: Check for cassandra_mappings.txt
+  stat:
+    path: "{{ mapping_path }}"
+  register: cass_map_stat
+
+- name: Set default rack to rack1
+  set_fact:
+    rack: "rack1"
+
+- name: Extract instance number from hostname (string)
+  set_fact:
+    instance_id_str: >-
+      {{ inventory_hostname
+         | regex_search('([0-9]+)$')
+         | default('', true)
+      }}
+
+- name: Convert instance_id_str to integer if we got digits
+  set_fact:
+    instance_id: "{{ instance_id_str | int }}"
+  when: instance_id_str != ""
+
+- name: Load mapping file into cassandra_map
+  set_fact:
+    cassandra_map: >-
+      {{ lookup(
+           'community.general.read_csv',
+           file=mapping_path,
+           delimiter='\t',
+           header=true
+         )
+      }}
+  when: cass_map_stat.stat.exists
+
+- name: Override rack from mapping if we have a valid instance & mapping entry
+  set_fact:
+    rack: >-
+      hv{{ cassandra_map
+           | selectattr('instance','equalto', instance_id)
+           | map(attribute='hv')
+           | first
+      }}
+  when:
+    - cass_map_stat.stat.exists
+    - instance_id_str != ""
+    - (cassandra_map
+       | selectattr('instance','equalto', instance_id)
+       | list
+       | length) > 0
+
+# 2025-07-16 KWS New code END.
 
 - name: main configuration (cassandra-rackdc.properties)
   template:
