@@ -107,6 +107,14 @@
               hostname_data: "{{ hostvars[groups['frontend_db1'][0]]['ansible_all_ipv4_addresses'][0] }}"
               hostname_internal: ""
               port: "3306"
+#        # 2025-07-10 KWS This is how nodes are setup on the live systems.
+#        nodes: |
+#          [
+#          {%- for host in groups['backend_db'] + groups['frontend_db'] -%}
+#            { "hostname": "{{ hostvars[host]['ansible_default_ipv4']['address'] }}", "hostname_data": "{{ hostvars[host]['ansible_default_ipv4']['address'] }}", "hostname_internal": "", "port": "3306" },
+#          {%- endfor -%}
+#          ]
+
 
 
 - hosts: backend_db1,backend_db2,frontend_db1
