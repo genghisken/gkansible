@@ -71,26 +71,26 @@
 
 # 2025-07-21 KWS New code to check for cassandra_mapping.txt file. If we can't find it, fail the install.
 
-- name: Check for cassandra_mappings.txt on controller
+- name: Check for cassandra_mapping.txt on controller
   stat:
-    path: "{{ playbook_dir }}/cassandra_mappings.txt"
+    path: "{{ playbook_dir }}/cassandra_mapping.txt"
   delegate_to: localhost
   run_once: true
   register: cass_map_stat
 
 - name: Fail the entire run if mapping file is missing
   fail:
-    msg: "Mapping file {{ playbook_dir }}/cassandra_mappings.txt not found."
+    msg: "Mapping file {{ playbook_dir }}/cassandra_mapping.txt not found."
   when: not cass_map_stat.stat.exists
   delegate_to: localhost
   run_once: true
 
-- name: Load cassandra_mappings.txt into hostvars['localhost'].cassandra_map
+- name: Load cassandra_mapping.txt into hostvars['localhost'].cassandra_map
   set_fact:
     cassandra_map: >-
       {{ lookup(
            'community.general.read_csv',
-           file=playbook_dir ~ '/cassandra_mappings.txt',
+           file=playbook_dir ~ '/cassandra_mapping.txt',
            delimiter='\t',
            header=true
          )
