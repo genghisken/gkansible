@@ -42,7 +42,7 @@
 
 - name: Pause to allow the cassandra seed nodes cassandra to properly start
   wait_for:
-    delay: 30
+    delay: 5
     timeout: 120
     port: 9042
     host: 127.0.0.1
@@ -61,7 +61,7 @@
 
 - name: Pause to allow the cassandra other nodes cassandra to properly start
   wait_for:
-    delay: 30
+    delay: 5
     timeout: 120
     port: 9042
     host: 127.0.0.1
