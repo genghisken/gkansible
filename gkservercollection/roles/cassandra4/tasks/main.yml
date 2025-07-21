@@ -69,6 +69,55 @@
     update_cache: yes # apt-get update
   when: ansible_os_family == "Debian"
 
+# 2025-07-21 KWS New code to check for cassandra_mapping.txt file. If we can't find it, fail the install.
+
+- name: Check for cassandra_mappings.txt on controller
+  stat:
+    path: "{{ playbook_dir }}/cassandra_mappings.txt"
+  delegate_to: localhost
+  run_once: true
+  register: cass_map_stat
+
+- name: Fail the entire run if mapping file is missing
+  fail:
+    msg: "Mapping file {{ playbook_dir }}/cassandra_mappings.txt not found."
+  when: not cass_map_stat.stat.exists
+  delegate_to: localhost
+  run_once: true
+
+- name: Load cassandra_mappings.txt into hostvars['localhost'].cassandra_map
+  set_fact:
+    cassandra_map: >-
+      {{ lookup(
+           'community.general.read_csv',
+           file=playbook_dir ~ '/cassandra_mappings.txt',
+           delimiter='\t',
+           header=true
+         )
+      }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Lookup this host in the mapping
+  set_fact:
+    matching_entries: >-
+      {{ hostvars['localhost']['cassandra_map']
+         | selectattr('instance','equalto', inventory_hostname)
+         | list
+      }}
+
+- name: Fail if this host is not in the mapping file
+  fail:
+    msg: "No mapping entry for {{ inventory_hostname }} — aborting."
+  when: matching_entries | length == 0
+
+- name: Set rack from mapping
+  set_fact:
+    rack: "{{ matching_entries[0].hv }}"
+
+# 2025-07-21 KWS New code ends
+
+
 - name: install Cassandra on Debian systems
   apt:
     name: cassandra
@@ -80,12 +129,6 @@
     - Remove old Cassandra data
     - Create the new Cassandra data
     - main configuration (cassandra.yaml)
-    - Check for cassandra_mapping.txt
-    - Abort if the mapping file is missing
-    - Load mapping file into cassandra_map
-    - Gather any entries matching this host
-    - Abort if this host is not in the mapping file
-    - Set rack from the mapping
     - main configuration (cassandra-rackdc.properties)
     - Create the prometheus directory
     - Download the prometheus agent
@@ -109,12 +152,6 @@
     - Remove old Cassandra data
     - Create the new Cassandra data
     - main configuration (cassandra.yaml)
-    - Check for cassandra_mapping.txt
-    - Abort if the mapping file is missing
-    - Load mapping file into cassandra_map
-    - Gather any entries matching this host
-    - Abort if this host is not in the mapping file
-    - Set rack from the mapping
     - main configuration (cassandra-rackdc.properties)
     - Create the prometheus directory
     - Download the prometheus agent

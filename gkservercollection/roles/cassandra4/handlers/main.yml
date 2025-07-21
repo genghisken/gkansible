@@ -62,52 +62,6 @@
     group: cassandra
   become: true
 
-# 2025-07-16 KWS New code to read the cassandra_mapping.txt file and configure cassandra-rackdc.properties accordingly.
-
-- name: Check for cassandra_mapping.txt
-  stat:
-    path: "{{ mapping_path }}"
-  register: cass_map_stat
-
-- name: Abort if the mapping file is missing
-  fail:
-    msg: >
-      Mapping file {{ mapping_path }} not found.
-      Cannot determine rack for {{ inventory_hostname }}.
-  when: not cass_map_stat.stat.exists
-
-- name: Load mapping file into cassandra_map
-  set_fact:
-    cassandra_map: >-
-      {{ lookup(
-           'community.general.read_csv',
-           file=mapping_path,
-           delimiter='\t',
-           header=true
-         )
-      }}
-
-- name: Gather any entries matching this host
-  set_fact:
-    matching_entries: >-
-      {{ cassandra_map
-         | selectattr('instance','equalto', inventory_hostname)
-         | list
-      }}
-
-- name: Abort if this host is not in the mapping file
-  fail:
-    msg: >
-      No mapping entry found for {{ inventory_hostname }} in {{ mapping_path }}.
-      Deployment aborted for this node.
-  when: matching_entries | length == 0
-
-- name: Set rack from the mapping
-  set_fact:
-    rack: "{{ matching_entries[0].hv }}"
-
-# 2025-07-16 KWS New code END.
-
 - name: main configuration (cassandra-rackdc.properties)
   template:
     src: cassandra-rackdc.properties.j2
