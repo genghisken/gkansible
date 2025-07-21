@@ -81,11 +81,11 @@
     - Create the new Cassandra data
     - main configuration (cassandra.yaml)
     - Check for cassandra_mappings.txt
-    - Set default rack to rack1
-    - Extract instance number from hostname (string)
-    - Convert instance_id_str to integer if we got digits
+    - Abort if the mappings file is missing
     - Load mapping file into cassandra_map
-    - Override rack from mapping if we have a valid instance & mapping entry
+    - Gather any entries matching this host
+    - Abort if this host is not in the mapping file
+    - Set rack from the mapping
     - main configuration (cassandra-rackdc.properties)
     - Create the prometheus directory
     - Download the prometheus agent
@@ -110,11 +110,11 @@
     - Create the new Cassandra data
     - main configuration (cassandra.yaml)
     - Check for cassandra_mappings.txt
-    - Set default rack to rack1
-    - Extract instance number from hostname (string)
-    - Convert instance_id_str to integer if we got digits
+    - Abort if the mappings file is missing
     - Load mapping file into cassandra_map
-    - Override rack from mapping if we have a valid instance & mapping entry
+    - Gather any entries matching this host
+    - Abort if this host is not in the mapping file
+    - Set rack from the mapping
     - main configuration (cassandra-rackdc.properties)
     - Create the prometheus directory
     - Download the prometheus agent
