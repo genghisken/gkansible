@@ -80,8 +80,8 @@
     - Remove old Cassandra data
     - Create the new Cassandra data
     - main configuration (cassandra.yaml)
-    - Check for cassandra_mappings.txt
-    - Abort if the mappings file is missing
+    - Check for cassandra_mapping.txt
+    - Abort if the mapping file is missing
     - Load mapping file into cassandra_map
     - Gather any entries matching this host
     - Abort if this host is not in the mapping file
@@ -109,8 +109,8 @@
     - Remove old Cassandra data
     - Create the new Cassandra data
     - main configuration (cassandra.yaml)
-    - Check for cassandra_mappings.txt
-    - Abort if the mappings file is missing
+    - Check for cassandra_mapping.txt
+    - Abort if the mapping file is missing
     - Load mapping file into cassandra_map
     - Gather any entries matching this host
     - Abort if this host is not in the mapping file

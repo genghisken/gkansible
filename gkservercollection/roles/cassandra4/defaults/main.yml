@@ -22,7 +22,7 @@ datacenter: 'somerville'
 rack: 'rack1'
 
 # 2025-07-21 KWS Added default cassandra to hypervisor mapping path.
-mapping_path: "{{ playbook_dir }}/cassandra_mappings.txt"
+mapping_path: "{{ playbook_dir }}/cassandra_mapping.txt"
 
 replication_factor: 3
 keyspace: 'lasair'

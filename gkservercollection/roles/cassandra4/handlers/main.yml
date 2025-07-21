@@ -62,14 +62,14 @@
     group: cassandra
   become: true
 
-# 2025-07-16 KWS New code to read the cassandra_mappings.txt file and configure cassandra-rackdc.properties accordingly.
+# 2025-07-16 KWS New code to read the cassandra_mapping.txt file and configure cassandra-rackdc.properties accordingly.
 
-- name: Check for cassandra_mappings.txt
+- name: Check for cassandra_mapping.txt
   stat:
     path: "{{ mapping_path }}"
   register: cass_map_stat
 
-- name: Abort if the mappings file is missing
+- name: Abort if the mapping file is missing
   fail:
     msg: >
       Mapping file {{ mapping_path }} not found.
