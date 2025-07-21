@@ -70,45 +70,41 @@
   when: ansible_os_family == "Debian"
 
 # 2025-07-21 KWS New code to check for cassandra_mapping.txt file. If we can't find it, fail the install.
-
-- name: Check for cassandra_mapping.txt on controller
+- name: Ensure cassandra_mapping.yaml exists on control node
   stat:
-    path: "{{ playbook_dir }}/cassandra_mapping.txt"
+    path: "{{ playbook_dir }}/cassandra_mapping.yaml"
   delegate_to: localhost
   run_once: true
-  register: cass_map_stat
+  register: mapping_yaml_stat
 
-- name: Fail the entire run if mapping file is missing
+- name: Abort entire play if mapping YAML is missing
   fail:
-    msg: "Mapping file {{ playbook_dir }}/cassandra_mapping.txt not found."
-  when: not cass_map_stat.stat.exists
+    msg: |
+      cassandra_mapping.yaml not found at {{ playbook_dir }}/cassandra_mapping.yaml
+      Cannot proceed with Cassandra deployment.
+  when: not mapping_yaml_stat.stat.exists
   delegate_to: localhost
   run_once: true
 
-- name: Load cassandra_mapping.txt into hostvars['localhost'].cassandra_map
+- name: Load cassandra_mapping.yaml into hostvars['localhost'].cassandra_map
   set_fact:
-    cassandra_map: >-
-      {{ lookup(
-           'community.general.read_csv',
-           file=playbook_dir ~ '/cassandra_mapping.txt',
-           delimiter='\t',
-           header=true
-         )
-      }}
+    cassandra_map: "{{ lookup('file', playbook_dir ~ '/cassandra_mapping.yaml') | from_yaml }}"
   delegate_to: localhost
   run_once: true
 
-- name: Lookup this host in the mapping
+- name: Find mapping entry for this host
   set_fact:
     matching_entries: >-
-      {{ hostvars['localhost']['cassandra_map']
+      {{ hostvars['localhost'].cassandra_map.nodes
          | selectattr('instance','equalto', inventory_hostname)
          | list
       }}
 
-- name: Fail if this host is not in the mapping file
+- name: Abort if this host is not listed in cassandra_mapping.yaml
   fail:
-    msg: "No mapping entry for {{ inventory_hostname }} — aborting."
+    msg: |
+      No entry for {{ inventory_hostname }} in cassandra_mapping.yaml.
+      Deployment aborted for this node.
   when: matching_entries | length == 0
 
 - name: Set rack from mapping
