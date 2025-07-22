@@ -70,11 +70,11 @@
   when: ansible_os_family == "Debian"
 
 # 2025-07-21 KWS New code to check for cassandra_mapping.yaml file. If we can't find it, fail the install.
-- name: "Abort if cassandra_map is not defined"
+- name: "Abort if cassandra_map wasn’t loaded"
   fail:
     msg: |
-      cassandra_mapping.yaml was not loaded.
-      Please add it under vars_files: in your play.
+      cassandra_mapping.yaml was not loaded via vars_files.
+      Please add it under `vars_files:` in your playbook so `cassandra_map.nodes` is available.
   when: cassandra_map is not defined
 
 - name: "Find mapping entry for this host"
@@ -82,20 +82,19 @@
     mapping_entry: >-
       {{ cassandra_map.nodes
          | selectattr('instance','equalto', inventory_hostname)
-         | first(default={}) 
+         | first(default={})
       }}
 
-- name: "Abort if this host is not listed in cassandra_mapping.yaml"
+- name: "Abort if this host isn’t in cassandra_mapping.yaml"
   fail:
     msg: |
       No entry for {{ inventory_hostname }} in cassandra_mapping.yaml.
-      Deployment aborted for this node.
+      Aborting deployment on this node.
   when: mapping_entry == {}
 
 - name: "Set rack from mapping"
   set_fact:
     rack: "{{ mapping_entry.hv }}"
-
 # 2025-07-21 KWS New code ends
 
 
