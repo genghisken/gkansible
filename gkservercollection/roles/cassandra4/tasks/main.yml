@@ -69,47 +69,32 @@
     update_cache: yes # apt-get update
   when: ansible_os_family == "Debian"
 
-# 2025-07-21 KWS New code to check for cassandra_mapping.txt file. If we can't find it, fail the install.
-- name: Ensure cassandra_mapping.yaml exists on control node
-  stat:
-    path: "{{ playbook_dir }}/cassandra_mapping.yaml"
-  delegate_to: localhost
-  run_once: true
-  register: mapping_yaml_stat
-
-- name: Abort entire play if mapping YAML is missing
+# 2025-07-21 KWS New code to check for cassandra_mapping.yaml file. If we can't find it, fail the install.
+- name: "Abort if cassandra_map is not defined"
   fail:
     msg: |
-      cassandra_mapping.yaml not found at {{ playbook_dir }}/cassandra_mapping.yaml
-      Cannot proceed with Cassandra deployment.
-  when: not mapping_yaml_stat.stat.exists
-  delegate_to: localhost
-  run_once: true
+      cassandra_mapping.yaml was not loaded.
+      Please add it under vars_files: in your play.
+  when: cassandra_map is not defined
 
-- name: Load cassandra_mapping.yaml into hostvars['localhost'].cassandra_map
+- name: "Find mapping entry for this host"
   set_fact:
-    cassandra_map: "{{ lookup('file', playbook_dir ~ '/cassandra_mapping.yaml') | from_yaml }}"
-  delegate_to: localhost
-  run_once: true
-
-- name: Find mapping entry for this host
-  set_fact:
-    matching_entries: >-
-      {{ hostvars['localhost'].cassandra_map.nodes
+    mapping_entry: >-
+      {{ cassandra_map.nodes
          | selectattr('instance','equalto', inventory_hostname)
-         | list
+         | first(default={}) 
       }}
 
-- name: Abort if this host is not listed in cassandra_mapping.yaml
+- name: "Abort if this host is not listed in cassandra_mapping.yaml"
   fail:
     msg: |
       No entry for {{ inventory_hostname }} in cassandra_mapping.yaml.
       Deployment aborted for this node.
-  when: matching_entries | length == 0
+  when: mapping_entry == {}
 
-- name: Set rack from mapping
+- name: "Set rack from mapping"
   set_fact:
-    rack: "{{ matching_entries[0].hv }}"
+    rack: "{{ mapping_entry.hv }}"
 
 # 2025-07-21 KWS New code ends
 
