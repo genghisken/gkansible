@@ -73,28 +73,28 @@
 - name: "Abort if cassandra_map wasn’t loaded"
   fail:
     msg: |
-      cassandra_mapping.yaml was not loaded via vars_files.
-      Please add it under `vars_files:` in your playbook so `cassandra_map.nodes` is available.
+      cassandra_mapping.yaml was not included via vars_files.
+      Please add it under 'vars_files:' in your play so cassandra_map.nodes is defined.
   when: cassandra_map is not defined
 
-- name: "Find mapping entry for this host"
+- name: "Collect all mapping entries for this host"
   set_fact:
-    mapping_entry: >-
+    mapping_entries: >-
       {{ cassandra_map.nodes
          | selectattr('instance','equalto', inventory_hostname)
-         | first(default={})
+         | list
       }}
 
 - name: "Abort if this host isn’t in cassandra_mapping.yaml"
   fail:
     msg: |
-      No entry for {{ inventory_hostname }} in cassandra_mapping.yaml.
-      Aborting deployment on this node.
-  when: mapping_entry == {}
+      No mapping entry for {{ inventory_hostname }}
+      in cassandra_mapping.yaml – aborting deployment on this node.
+  when: mapping_entries | length == 0
 
-- name: "Set rack from mapping"
+- name: "Set rack_id from the first matching entry"
   set_fact:
-    rack: "{{ mapping_entry.hv }}"
+    rack_id: "{{ mapping_entries[0].hv }}"
 # 2025-07-21 KWS New code ends
 
 

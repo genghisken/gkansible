@@ -14,7 +14,7 @@ name: gkservercollection
 # 2025-07-03 KWS Changed default value of myisam_recover_options to OFF for MariaDB.
 # 2025-07-21 KWS Read the cassandra deployment details from cassandra_mappings.txt so that we can create a network
 #                topology aware version of replication by associating cassandra nodes with hypervisors.
-version: 0.2.14
+version: 0.2.15
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
