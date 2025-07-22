@@ -92,9 +92,9 @@
       in cassandra_mapping.yaml – aborting deployment on this node.
   when: mapping_entries | length == 0
 
-- name: "Set rack_id from the first matching entry"
+- name: "Set rack from the first matching entry"
   set_fact:
-    rack_id: "{{ mapping_entries[0].hv }}"
+    rack: "{{ mapping_entries[0].hv }}"
 # 2025-07-21 KWS New code ends
 
 
