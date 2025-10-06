@@ -157,6 +157,7 @@
     group: mysql
     mode: 0660
     remote_src: yes
+    follow: yes
   with_items:
     - "{{ sherlock_lite_db_files.files }}"
   become: true
