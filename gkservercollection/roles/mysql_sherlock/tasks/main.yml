@@ -9,25 +9,42 @@
 # 2024-10-07 KWS Note that we no longer copy "lite" datafiles. We import the
 #                sub-20GB database tables from a database dump. Takes longer, but
 #                should be more reliable.
+#- name: Create database schema script
+#  template:
+#    src: crossmatch_catalogues_20241002_schema.sql.j2
+#    dest: '/tmp/crossmatch_catalogues_20241002_schema.sql'
+#    mode: 0644
+#  notify:
+#    - Recreate views script
+#    - Recreate helper tables script
+#    - create databases (in this case, the Sherlock database)
+#    - create users
+#    - Run the schema create script
+#    - Import the sub 20GB data tables
+#    - Get the Sherlock MyISAM large datafiles from remote ceph store
+#    - Copy the large datafiles
+#    - Restart MySQL - so we now recognise the newly copied MyISAM tables.
+#    - Import the InnoDB data.
+#    - Import sherlock large table test subset.
+#    - Run the create helper tables script
+#    - Run the recreate views script. 
+
+# 2025-10-05 KWS New version 3 of Sherlock database.
 - name: Create database schema script
   template:
-    src: crossmatch_catalogues_20241002_schema.sql.j2
-    dest: '/tmp/crossmatch_catalogues_20241002_schema.sql'
+    src: crossmatch_catalogues_20251005_schema.sql.j2
+    dest: '/tmp/crossmatch_catalogues_20251005_schema.sql'
     mode: 0644
   notify:
-    - Recreate views script
-    - Recreate helper tables script
     - create databases (in this case, the Sherlock database)
     - create users
     - Run the schema create script
-    - Import the sub 20GB data tables
+    - Import the innodb data tables
     - Get the Sherlock MyISAM large datafiles from remote ceph store
     - Copy the large datafiles
+    - Get the Sherlock MyISAM lite datafiles from remote ceph store
+    - Copy the lite datafiles
     - Restart MySQL - so we now recognise the newly copied MyISAM tables.
-    - Import the InnoDB data.
-    - Import sherlock large table test subset.
-    - Run the create helper tables script
-    - Run the recreate views script. 
 
 - name: flush handlers
   meta: flush_handlers

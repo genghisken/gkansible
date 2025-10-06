@@ -63,22 +63,34 @@
 
 
 
-- name: Add MariaDB Repository Key for MariaDB repo for {{ ansible_distribution }}
-  apt_key:
-    url: "{{ mariadb_key_url }}"
-    state: present
+# 2025-10-03 KWS Updated the key and repo tasks. Replace the two tasks below when ready.
+- name: Ensure /etc/apt/keyrings directory exists
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  when: ansible_os_family == "Debian"
+
+- name: Download and install official MariaDB signing key (dearmored)
+  ansible.builtin.shell: |
+    set -e
+    curl -fsSL "{{ mariadb_key_url }}" | gpg --dearmor > /tmp/mariadb-key.gpg
+    install -m 644 /tmp/mariadb-key.gpg "{{ mariadb_key_path }}"
+    rm -f /tmp/mariadb-key.gpg
+  args:
+    executable: /bin/bash
   become: true
   when: ansible_os_family == "Debian"
 
-- name: Add MariaDB Repository for MariaDB for {{ ansible_distribution }} ({{ ansible_distribution_release }})
-  apt_repository:
-    repo: "{{ mariadb_ubuntu_repo }} {{ ansible_distribution_release }}  main"
+- name: Add MariaDB repository for {{ ansible_distribution }} ({{ ansible_distribution_release }})
+  ansible.builtin.apt_repository:
+    repo: "{{ mariadb_ubuntu_repo }}"
     state: present
     filename: mariadb
   register: addmariadbrepo
-  #notify: Update repo cache
   become: true
   when: ansible_os_family == "Debian"
+
 
 - name: Update packages
   become: true

@@ -46,8 +46,14 @@ mariadb_libmysqlclient: 'default-libmysqlclient-dev'
 mariadb_build_essential: 'build-essential'
 mariadb_pkg_config: 'pkg-config'
 
+
+# 2025-10-03 KWS Updated the repo info. Replaced the digital ocean line.
 mariadb_key_url: "https://mariadb.org/mariadb_release_signing_key.asc"
-mariadb_ubuntu_repo: deb [arch=amd64] http://ams2.mirrors.digitalocean.com/mariadb/repo/{{ mariadb_version }}/ubuntu
+mariadb_key_path: "/etc/apt/keyrings/mariadb-archive-keyring.gpg"
+mariadb_ubuntu_repo: >
+  deb [arch=amd64 signed-by={{ mariadb_key_path }}]
+  https://deb.mariadb.org/repo/{{ mariadb_version }}/ubuntu {{ ansible_lsb.codename }} main
+
 
 # Hashicorp Vault information (Used for Lasair deployments). If we have secrets stored there, use them in place of defaults above.
 vaultsettings: "{{ lookup('hashi_vault', 'secret=secret/lasair/settings', errors='warn') | default('undefined', true) }}"
