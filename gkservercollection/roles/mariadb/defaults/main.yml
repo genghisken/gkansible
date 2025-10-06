@@ -52,7 +52,7 @@ mariadb_key_url: "https://mariadb.org/mariadb_release_signing_key.asc"
 mariadb_key_path: "/etc/apt/keyrings/mariadb-archive-keyring.gpg"
 mariadb_ubuntu_repo: >
   deb [arch=amd64 signed-by={{ mariadb_key_path }}]
-  https://deb.mariadb.org/repo/{{ mariadb_version }}/ubuntu {{ ansible_lsb.codename }} main
+  https://deb.mariadb.org/{{ mariadb_version }}/ubuntu {{ ansible_lsb.codename }} main
 
 
 # Hashicorp Vault information (Used for Lasair deployments). If we have secrets stored there, use them in place of defaults above.
