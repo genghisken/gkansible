@@ -134,24 +134,21 @@
     - sherlock_import_type == 'full'
 
 - name: Get the Sherlock MyISAM lite datafiles from remote ceph store
-  find:
-    paths: "{{ sherlock_catalogue_data_dir_lite }}"
-    patterns: '.*\.MY[DI]$'
-    use_regex: yes
-    follow: yes
+  command: bash -c "find -L {{ sherlock_catalogue_data_dir_lite }} -type f -regextype posix-extended -regex '.*\\.MY[DI]$'"
   register: sherlock_lite_db_files
+  changed_when: false
   become: true
   when: sherlock_import_type == 'lite'
 
-- name: Copy the lite datafiles (resolve symlinks)
+- name: Copy the lite datafiles
   copy:
-    src: "{{ lookup('pipe', 'readlink -f ' + item.path) }}"
-    dest: "{{ datadir }}/crossmatch_catalogues"
+    src: "{{ item }}"
+    dest: "{{ datadir }}/crossmatch_catalogues/"
     owner: mysql
     group: mysql
     mode: 0660
     remote_src: yes
-  loop: "{{ sherlock_lite_db_files.files | default([]) }}"
+  loop: "{{ sherlock_lite_db_files.stdout_lines }}"
   become: true
   when:
     - sherlock_import_type == 'lite'
