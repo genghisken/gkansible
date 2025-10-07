@@ -133,25 +133,34 @@
   when:
     - sherlock_import_type == 'full'
 
-- name: Get the Sherlock MyISAM lite datafiles from remote ceph store
-  set_fact:
-    resolved_lite_files: >-
-      {{ sherlock_lite_db_files.files
-         | map(attribute='path')
-         | map('community.general.realpath')
-         | list }}
-  when: sherlock_import_type == 'lite'
+- name: Get and copy the Sherlock MyISAM lite datafiles
+  block:
+    - name: Find lite datafiles (follows symlinks)
+      find:
+        paths: "{{ sherlock_catalogue_data_dir_lite }}"
+        patterns: '.*\.MY[DI]$'
+        use_regex: yes
+        follow: yes
+      register: sherlock_lite_db_files
+      become: true
 
-- name: Copy the lite datafiles
-  copy:
-    src: "{{ item }}"
-    dest: "{{ datadir }}/crossmatch_catalogues"
-    owner: mysql
-    group: mysql
-    mode: 0660
-    remote_src: yes
-  loop: "{{ resolved_lite_files }}"
-  become: true
+    - name: Resolve symlinks to real files
+      command: readlink -f "{{ item.path }}"
+      register: resolved_lite_paths
+      changed_when: false
+      loop: "{{ sherlock_lite_db_files.files }}"
+      become: true
+
+    - name: Copy resolved lite datafiles
+      copy:
+        src: "{{ item.stdout }}"
+        dest: "{{ datadir }}/crossmatch_catalogues"
+        owner: mysql
+        group: mysql
+        mode: 0660
+        remote_src: yes
+      loop: "{{ resolved_lite_paths.results }}"
+      become: true
   when: sherlock_import_type == 'lite'
 
 #- name: Attach the InnoDB tablespaces from the newly created tables
