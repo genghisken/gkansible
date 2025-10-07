@@ -44,6 +44,8 @@
     - Copy the large datafiles
     - Get the Sherlock MyISAM lite datafiles from remote ceph store
     - Copy the lite datafiles
+    - Recreate helper tables script
+    - Run the create helper tables script
     - Restart MySQL - so we now recognise the newly copied MyISAM tables.
 
 - name: flush handlers
