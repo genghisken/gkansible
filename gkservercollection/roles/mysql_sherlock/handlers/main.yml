@@ -138,6 +138,7 @@
     paths: "{{ sherlock_catalogue_data_dir_lite }}"
     patterns: '.*\.MY[DI]$'
     use_regex: yes
+    follow: yes
   register: sherlock_lite_db_files
   become: true
   when:
