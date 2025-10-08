@@ -33,7 +33,7 @@
 - name: Create database schema script
   template:
     src: crossmatch_catalogues_20251005_schema.sql.j2
-    dest: '/tmp/crossmatch_catalogues_20251005_schema.sql'
+    dest: "{{ ansible_env.HOME }}/ansible_deploy/mariadb/crossmatch_catalogues_20251005_schema.sql"
     mode: 0644
   notify:
     - create databases (in this case, the Sherlock database)

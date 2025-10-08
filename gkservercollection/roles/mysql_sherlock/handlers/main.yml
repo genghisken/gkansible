@@ -172,14 +172,14 @@
 - name: Recreate helper tables script
   template:
     src: crossmatch_catalogues_helper_tables_20251005.sql.j2
-    dest: '/tmp/crossmatch_catalogues_helper_tables_20251005.sql'
+    dest: "{{ ansible_env.HOME }}/ansible_deploy/mariadb/crossmatch_catalogues_helper_tables_20251005.sql"
     mode: 0644
 
 - name: Run the create helper tables script
   mysql_db:
     name: "crossmatch_catalogues"
     state: import
-    target: '/tmp/crossmatch_catalogues_helper_tables_20251005.sql'
+    target: "{{ ansible_env.HOME }}/ansible_deploy/mariadb/crossmatch_catalogues_helper_tables_20251005.sql"
     login_user: "{{ item.name }}"
     login_password: "{{ item.password | default(omit) }}"
     login_host: "{{ ansible_all_ipv4_addresses[0] }}"
