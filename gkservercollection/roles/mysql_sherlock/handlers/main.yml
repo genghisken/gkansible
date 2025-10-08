@@ -63,7 +63,7 @@
   mysql_db:
     name: "crossmatch_catalogues"
     state: import
-    target: '/tmp/crossmatch_catalogues_20251005_schema.sql'
+    target: "{{ ansible_env.HOME }}/ansible_deploy/mariadb/crossmatch_catalogues_20251005_schema.sql"
     login_user: "{{ item.name }}"
     login_password: "{{ item.password | default(omit) }}"
     login_host: "{{ ansible_all_ipv4_addresses[0] }}"
