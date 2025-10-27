@@ -1,0 +1,80 @@
+---
+- name: Purge old MariaDB repository and key completely, then install new one
+  hosts: mysqlnodes
+  become: true
+  vars:
+    mariadb_version: "10.11"
+    mariadb_key_url: "https://mariadb.org/mariadb_release_signing_key.asc"
+    mariadb_key_path: "/etc/apt/keyrings/mariadb-archive-keyring.gpg"
+    mariadb_sources_path: "/etc/apt/sources.list.d/mariadb.sources"
+
+  tasks:
+    - name: Remove all old MariaDB/DigitalOcean sources.list entries
+      ansible.builtin.shell: |
+        rm -f /etc/apt/sources.list.d/mariadb.list \
+              /etc/apt/sources.list.d/mariadb.repo \
+              /etc/apt/sources.list.d/*mariadb*DO*.list || true
+        sed -i '/mariadb/d' /etc/apt/sources.list || true
+        sed -i '/digitalocean/d' /etc/apt/sources.list || true
+      args:
+        executable: /bin/bash
+
+    - name: Remove old MariaDB or DigitalOcean key files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/trusted.gpg.d/mariadb.gpg
+        - /etc/apt/trusted.gpg.d/digitalocean.gpg
+        - /etc/apt/keyrings/mariadb-keyring.pgp
+        - /usr/share/keyrings/mariadb-archive-keyring.gpg
+      ignore_errors: true
+
+    - name: Delete old MariaDB key from apt-key keyring if still present
+      ansible.builtin.shell: |
+        apt-key del F1656F24C74CD1D8 || true
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+
+    - name: Ensure /etc/apt/keyrings directory exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Install official MariaDB signing key (binary dearmored)
+      ansible.builtin.shell: |
+        set -e
+        curl -fsSL "{{ mariadb_key_url }}" | gpg --dearmor > /tmp/mariadb.gpg
+        install -m 644 /tmp/mariadb.gpg "{{ mariadb_key_path }}"
+        rm -f /tmp/mariadb.gpg
+      args:
+        executable: /bin/bash
+      register: mariadb_key
+      changed_when: mariadb_key.rc == 0
+
+    - name: Replace MariaDB .sources file with official repository
+      ansible.builtin.copy:
+        dest: "{{ mariadb_sources_path }}"
+        content: |
+          # Official MariaDB {{ mariadb_version }} repository for {{ ansible_distribution_release }}
+          Types: deb
+          URIs: https://deb.mariadb.org/{{ mariadb_version }}/ubuntu
+          Suites: {{ ansible_distribution_release }}
+          Components: main main/debug
+          Signed-By: {{ mariadb_key_path }}
+        mode: '0644'
+      register: mariadb_repo
+
+    - name: Clear apt lists and cache
+      ansible.builtin.shell: |
+        rm -rf /var/lib/apt/lists/*
+        apt clean
+      args:
+        executable: /bin/bash
+
+    - name: Update apt cache after cleanup
+      ansible.builtin.apt:
+        update_cache: yes
+
