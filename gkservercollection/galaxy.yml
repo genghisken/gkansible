@@ -15,7 +15,8 @@ name: gkservercollection
 # 2025-07-21 KWS Read the cassandra deployment details from cassandra_mappings.txt so that we can create a network
 #                topology aware version of replication by associating cassandra nodes with hypervisors.
 # 2025-10-05 KWS New mysql_sherlock role to account for the new version of Sherlock.
-version: 0.2.28
+# 2025-10-31 KWS Minor schema and view updates for mysql_sherlock and change of libpcre++ to libpcre3 for Ubuntu 24.04.
+version: 0.2.29
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md

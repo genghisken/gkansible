@@ -101,7 +101,8 @@
       - libcfitsio-dev
       - libccfits-dev
       - cmake
-      - libpcre++-dev
+      #- libpcre++-dev
+      - libpcre3-dev
       - g++
       - swig
       - libconfig-yaml-perl
