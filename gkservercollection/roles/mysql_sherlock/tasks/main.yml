@@ -32,8 +32,8 @@
 # 2025-10-05 KWS New version 3 of Sherlock database.
 - name: Create database schema script
   template:
-    src: crossmatch_catalogues_20251031_schema.sql.j2
-    dest: "{{ ansible_env.HOME }}/ansible_deploy/mariadb/crossmatch_catalogues_20251031_schema.sql"
+    src: crossmatch_catalogues_20251201_schema.sql.j2
+    dest: "{{ ansible_env.HOME }}/ansible_deploy/mariadb/crossmatch_catalogues_20251201_schema.sql"
     mode: 0644
   notify:
     - create databases (in this case, the Sherlock database)
