@@ -17,7 +17,8 @@ name: gkservercollection
 # 2025-10-05 KWS New mysql_sherlock role to account for the new version of Sherlock.
 # 2025-10-31 KWS Minor schema and view updates for mysql_sherlock and change of libpcre++ to libpcre3 for Ubuntu 24.04.
 # 2025-12-01 KWS View update for mysql_sherlock.
-version: 0.2.30
+# 2025-12-08 KWS Schema and view updates for mysql_sherlock.
+version: 0.2.31
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md

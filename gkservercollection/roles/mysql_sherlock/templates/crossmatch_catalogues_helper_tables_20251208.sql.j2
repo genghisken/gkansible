@@ -1,0 +1,237 @@
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19  Distrib 10.11.14-MariaDB, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: sherlock
+-- ------------------------------------------------------
+-- Server version	10.11.14-MariaDB-ubu2204
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `tcs_helper_catalogue_tables_info`
+--
+
+DROP TABLE IF EXISTS `tcs_helper_catalogue_tables_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tcs_helper_catalogue_tables_info` (
+  `id` smallint(5) unsigned NOT NULL,
+  `table_name` varchar(100) DEFAULT NULL,
+  `description` varchar(60) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `number_of_rows` bigint(20) DEFAULT NULL,
+  `reference_url` varchar(200) DEFAULT NULL,
+  `reference_text` varchar(70) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `vizier_link` varchar(200) DEFAULT NULL,
+  `in_ned` tinyint(4) DEFAULT NULL,
+  `object_types` varchar(100) DEFAULT NULL,
+  `version_number` varchar(45) DEFAULT NULL,
+  `last_updated` datetime DEFAULT NULL,
+  `legacy_table` tinyint(4) DEFAULT 0,
+  `old_table_name` varchar(100) DEFAULT NULL,
+  `raColName` varchar(45) DEFAULT NULL,
+  `decColName` varchar(45) DEFAULT NULL,
+  `catalogue_object_subtypeColName` varchar(45) DEFAULT NULL,
+  `catalogue_object_idColName` varchar(100) DEFAULT NULL,
+  `zColName` varchar(100) DEFAULT NULL,
+  `distanceColName` varchar(45) DEFAULT NULL,
+  `object_type_accuracy` tinyint(2) DEFAULT NULL,
+  `semiMajorColName` varchar(100) DEFAULT NULL,
+  `semiMajorToArcsec` float DEFAULT NULL,
+  `transientStream` tinyint(4) DEFAULT 0,
+  `photoZColName` varchar(45) DEFAULT NULL,
+  `photoZErrColName` varchar(45) DEFAULT NULL,
+  `UColName` varchar(45) DEFAULT NULL,
+  `UErrColName` varchar(45) DEFAULT NULL,
+  `BColName` varchar(45) DEFAULT NULL,
+  `BErrColName` varchar(45) DEFAULT NULL,
+  `VColName` varchar(45) DEFAULT NULL,
+  `VErrColName` varchar(45) DEFAULT NULL,
+  `RColName` varchar(45) DEFAULT NULL,
+  `RErrColName` varchar(45) DEFAULT NULL,
+  `IColName` varchar(45) DEFAULT NULL,
+  `IErrColName` varchar(45) DEFAULT NULL,
+  `JColName` varchar(45) DEFAULT NULL,
+  `JErrColName` varchar(45) DEFAULT NULL,
+  `HColName` varchar(45) DEFAULT NULL,
+  `HErrColName` varchar(45) DEFAULT NULL,
+  `KColName` varchar(45) DEFAULT NULL,
+  `KErrColName` varchar(45) DEFAULT NULL,
+  `_uColName` varchar(45) DEFAULT NULL,
+  `_uErrColName` varchar(45) DEFAULT NULL,
+  `_gColName` varchar(45) DEFAULT NULL,
+  `_gErrColName` varchar(45) DEFAULT NULL,
+  `_rColName` varchar(45) DEFAULT NULL,
+  `_rErrColName` varchar(45) DEFAULT NULL,
+  `_iColName` varchar(45) DEFAULT NULL,
+  `_iErrColName` varchar(45) DEFAULT NULL,
+  `_zColName` varchar(45) DEFAULT NULL,
+  `_zErrColName` varchar(45) DEFAULT NULL,
+  `_yColName` varchar(45) DEFAULT NULL,
+  `_yErrColName` varchar(45) DEFAULT NULL,
+  `unkMagColName` varchar(45) DEFAULT NULL,
+  `unkMagErrColName` varchar(45) DEFAULT NULL,
+  `GColName` varchar(45) DEFAULT NULL,
+  `GErrColName` varchar(45) DEFAULT NULL,
+  `W1ColName` varchar(45) DEFAULT NULL,
+  `W1ErrColName` varchar(45) DEFAULT NULL,
+  `W2ColName` varchar(45) DEFAULT NULL,
+  `W2ErrColName` varchar(45) DEFAULT NULL,
+  `W3ColName` varchar(45) DEFAULT NULL,
+  `W3ErrColName` varchar(45) DEFAULT NULL,
+  `W4ColName` varchar(45) DEFAULT NULL,
+  `W4ErrColName` varchar(45) DEFAULT NULL,
+  `myisam_packed` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tcs_helper_catalogue_tables_info`
+--
+
+LOCK TABLES `tcs_helper_catalogue_tables_info` WRITE;
+/*!40000 ALTER TABLE `tcs_helper_catalogue_tables_info` DISABLE KEYS */;
+INSERT INTO `tcs_helper_catalogue_tables_info` VALUES
+(1,'tcs_cat_2mass_psc_final','2MASS PSC','http://www.ipac.caltech.edu/2mass/releases/allsky/',470992970,'http://www.ipac.caltech.edu/2mass/releases/allsky/#moreinfo','2MASS webpages','This is the All-Sky Data Release from the Two Micron All Sky Survey, covering 99.998% of the sky observed from both the northern 2MASS facility at Mt. Hopkins, AZ, and the southern 2MASS facility at Cerro Tololo, Chile. The release data products include 4,121,439 Atlas Images (full-fidelity, 512 × 1024 pixel2, 1\"/pixel) in the three survey bands, derived from the 59,731 scans of the 8.5´ × 6° Survey Tiles, and Catalogs containing positional and photometric information for 470,992,970 Point sources and 1,647,599 Extended sources.','http://vizier.u-strasbg.fr/viz-bin/VizieR-3?-source=II/246/out',1,'stars','final','2003-03-25 00:00:00',0,'tcs_2mass_psc_cat','ra','decl',NULL,'designation',NULL,NULL,5,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'j_m','j_msigcom','h_m','h_msigcom','k_m','k_msigcom',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(2,'tcs_cat_2mass_xsc_final','2MASS XSC','http://www.ipac.caltech.edu/2mass/releases/allsky/',1647599,'http://www.ipac.caltech.edu/2mass/releases/allsky/#moreinfo','2MASS webpages','This is the All-Sky Data Release from the Two Micron All Sky Survey, covering 99.998% of the sky observed from both the northern 2MASS facility at Mt. Hopkins, AZ, and the southern 2MASS facility at Cerro Tololo, Chile. The release data products include 4,121,439 Atlas Images (full-fidelity, 512 × 1024 pixel2, 1\"/pixel) in the three survey bands, derived from the 59,731 scans of the 8.5´ × 6° Survey Tiles, and Catalogs containing positional and photometric information for 470,992,970 Point sources and 1,647,599 Extended sources.','http://vizier.u-strasbg.fr/viz-bin/VizieR-3?-source=VII/233/xsc',1,'galaxies','final','2003-03-25 00:00:00',0,'tcs_2mass_xsc_cat','ra','decl',NULL,'designation',NULL,NULL,7,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'j_m_ext','j_msig_ext','h_m_ext','h_msig_ext','k_m_ext','k_msig_ext',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(3,'tcs_cat_guide_star_catalogue_v2_3','GSC v2.3','http://gsss.stsci.edu/Catalogs/GSC/GSC2/gsc23/gsc23_release_notes.htm',945569477,'http://gsss.stsci.edu/Catalogs/GSC/GSC2/gsc23/gsc23_release_notes.htm','STScI, 2006','Will contain many galaxies','http://cdsarc.u-strasbg.fr/viz-bin/VizieR?-source=I/305',0,'stars','2.3','2006-01-01 00:00:00',0,'tcs_guide_star_cat','raDeg','decDeg','classification','hstID',NULL,NULL,3,'semiMajorAxis',1.4,0,NULL,NULL,'UMag','UMagErr','BMag','BmagErr','VMag','VMagErr','RMag','RMagErr','IMag','IMagErr','JMag','JMagErr','HMag','HMagErr','KMag','KMagErr',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(47,'tcs_cat_sdss_photo_stars_galaxies_dr12','SDSS DR12 PhotoObjAll Table','http://www.sdss.org/dr12/',474039669,'http://arxiv.org/abs/1501.00963','Alam et al. 2015','Data Release 12 (DR12) is the final data release of the SDSS-III, containing all SDSS observations through July 2014. It includes the complete dataset of the BOSS and APOGEE surveys, and also newly includes stellar radial velocity measurements from MARVELS.','0',0,'stars, galaxies','dr12','2014-07-01 00:00:00',0,'tcs_cat_sdss_dr12_photo_stars_galaxies','ra','dec_','type','objID',NULL,NULL,7,NULL,NULL,0,'z_','zErr',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'petroMag_u','petroMagErr_u','petroMag_g','petroMagErr_g','petroMag_r','petroMagErr_r','petroMag_i','petroMagErr_i','petroMag_z','petroMagErr_z',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(48,'tcs_cat_sdss_spect_galaxies_qsos_dr12','SDSS DR12 SpecObjAll Table','http://www.sdss.org/dr12/',3050811,'http://arxiv.org/abs/1501.00963','Alam et al. 2015','Data Release 12 (DR12) is the final data release of the SDSS-III, containing all SDSS observations through July 2014. It includes the complete dataset of the BOSS and APOGEE surveys, and also newly includes stellar radial velocity measurements from MARVELS.','0',0,'galaxies, QSOs','dr12','2014-07-01 00:00:00',0,'tcs_cat_sdss_dr12_spect_galaxies_qsos','ra','dec_','type','objID','z_',NULL,8,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'petroMag_u','petroMagErr_u','petroMag_g','petroMagErr_g','petroMag_r','petroMagErr_r','petroMag_i','petroMagErr_i','petroMag_z','petroMagErr_z',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(42,'tcs_cat_kepler_k2','Kepler Galaxy Catalogue','http://keplerscience.arc.nasa.gov/K2/',11905,'-','-','Campaign 3','0',0,'galaxies','1','2015-01-01 00:00:00',0,'tcs_cat_kepler_k2','ra_deg','dec_deg','sourtyp','id','redsft',NULL,7,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'gsdss',NULL,'rsdss',NULL,'isdss',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(44,'tcs_cat_ritter_cataclysmic_binaries_v7_21','Ritter Cataclysmic Binaries Catalog v7.21','https://heasarc.gsfc.nasa.gov/W3Browse/all/rittercv.html',1721,'http://www.mpa-garching.mpg.de/RKcat/Ritter_CVs_2013_01.pdf','Ritter H., Kolb U. 2014','This HEASARC database table contains information on cataclysmic binaries only, as taken from the Catalog of Cataclysmic Binaries, Low-Mass X-ray Binaries, and Related Objects (7th Edition, Release 7.21, March 2014) of Ritter & Kolb. The complete catalog lists coordinates, apparent magnitudes, orbital parameters, stellar parameters of the components, and other characteristic properties of 1166 cataclysmic binaries, 105 low-mass X-ray binaries, and 500 related objects with known or suspected orbital periods. The HEASARC has for simplicity split this catalog into three Browse database tables, one for each class of objects: the present table (RITTERCV) containing the cataclysmic binaries\' data, a second one (RITTERLMXB) containing the low-mass X-ray binaries\' data, and a third one (RITTERRBIN) containing the related binaries\' data. The literature published before 1 January 2014 has, as far as possible, been taken into account.\nCataclysmic binaries are semi-detached binaries consisting of a white dwarf (or a white dwarf precursor) primary and a low-mass secondary which is filling its critical Roche lobe. The secondary is not necessarily unevolved, it may even be a highly evolved star, as, for example, in the case of the AM CVn-type stars.','http://vizier.u-strasbg.fr/viz-bin/VizieR?-source=B%2Fcb',0,'CVs, LMXB','7.2','2013-07-01 00:00:00',0,'tcs_cat_cataclysmic_binaries_ritter2014','raDeg','decDeg','type','name',NULL,NULL,10,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(45,'tcs_cat_downes_cataclysmic_variables_final','Downes Catalog of CVs','https://archive.stsci.edu/prepds/cvcat/',1830,'http://arxiv.org/abs/astro-ph/0102302','Downeset al. 2001','The General Catalogue of Variable Stars (GCVS, 4th edition; Kholopov et al. 1985a, Kholopov et al. 1985b, Kholopov et al. 1987) is the primary source of information on variable stars. However, not unexpectedly in a catalog of such size, there are errors present, such as misclassified objects (not necessarily the fault of the editors!) and improper references. The accuracy of the coordinates, while generally sufficient for the ground-based observations the catalog was meant to support, are not of sufficient accuracy to support space-based observations with observatories such as the HST, and many of the references cited (particularly for the finding charts) are in journals not easily accessible to some astronomers. We have been collecting the numerous references associated with a particular class of variable stars --- the cataclysmic variables (CVs) --- with the goal of producing an improved catalog and atlas for the cataclysmic variables. Duerbeck (1987, Sp. Sci. Rev., 45, 1) has provided just such an improved catalog for novae, but that catalog does not include the novalike variables or the dwarf novae. We did produce such a catalog containing all types of CVs (Downes and Shara 1993, PASP, 105, 127; Downes Webbink, and Shara 1997, PASP, 109, 345; hereafter DWS), and we present here an updated, on-line version of our catalog, containing additional/revised information on objects in the second edition, as well as information on objects found (or their reference uncovered) since DWS; the catalog was frozen on February 1, 2006. The catalog includes all objects which, to our knowledge, have been classified as a CV at some point in time; those which are no longer thought to be CVs are given the type NON-CV','http://vizier.u-strasbg.fr/viz-bin/VizieR?-source=V/123',0,'CVs','Final','2001-02-01 00:00:00',0,'tcs_cat_cvs_downes2006','raDeg','decDeg','variability_type','catalogue_id',NULL,NULL,10,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(80,'tcs_cat_ps1_dr1','PanSTARRS DR1','https://panstarrs.stsci.edu/',2847109395,'https://arxiv.org/abs/1612.05243','PanSTARRS at MAST',NULL,'0',0,'stars, galaxies','dr1','2017-03-17 00:00:00',0,'tcs_cat_ps1_dr1','raAve','decAve',NULL,'objID',NULL,NULL,7,'KronRad',2,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'gKronMag','gKronMagErr','rKronMag','rKronMagErr','iKronMag','iKronMagErr','zKronMag','zKronMagErr','yKronMag','yKronMagErr',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),
+(67,'tcs_cat_veron_v13','Veron-Cett AGN Catalogue v13','https://heasarc.gsfc.nasa.gov/W3Browse/all/veroncat.html',168944,'http://adsabs.harvard.edu/cgi-bin/bib_query?2010A&A...518A..10V','Veron & Veron 2010','133336 quasars, 1374 BL Lac objects and 34231 active galaxies (including 15627 Seyfert 1 galaxies), for a grand total of 168941 objects','http://vizier.u-strasbg.fr/viz-bin/VizieR-3?-source=VII/258/vv10',0,'QSOs, AGN, BL Lac','13','2009-07-01 00:00:00',0,'tcs_cat_veron_v13','raDeg','decDeg','spectral_classification','name','redshift',NULL,9,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'magnitude',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(68,'tcs_cat_ned_stream','NED','https://ned.ipac.caltech.edu/',150494343,'https://ned.ipac.caltech.edu/','NED Webpages','Many sources','0',1,'multiple','stream','2025-10-29 13:48:35',0,'tcs_cat_ned_stream','raDeg','decDeg','object_type','ned_name','redshift',NULL,9,'major_diameter_arcmin',60,0,'photoz','redshift_err',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'magnitude',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(78,'tcs_cat_glade_v2_3','The GLADE Catalogue v2.3','http://aquarius.elte.hu/glade',3262882,'http://aquarius.elte.hu/glade','GLADE webpages','Galaxy List for the Advanced Detector Era','http://vizier.u-strasbg.fr/viz-bin/VizieR?-source=VII/275',0,'galaxies, QSOs, globular clusters','2.3','2018-03-16 13:08:30',0,'tcs_cat_glade_v2_3','raDeg','decDeg','object_type','best_name','redshift','dist_lum_mpc',8,NULL,NULL,0,NULL,NULL,NULL,NULL,'b_mag','b_mag_err',NULL,NULL,NULL,NULL,NULL,NULL,'j_mag','j_mag_err','h_mag','h_mag_err','k_mag','k_mag_err',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(81,'tcs_cat_lasr_galaxies_v1','LASr 100 Mpc Galaxy Catalogue v1.0','https://academic.oup.com/mnras/article-abstract/494/2/1784/5809379',49546,'https://academic.oup.com/mnras/article-abstract/494/2/1784/5809379','MNRAS paper','A human merged and curated list of galaxies within 100 Mpc','0',1,'galaxies, agn','1.0','2020-08-20 21:27:54',0,'tcs_cat_lasr_galaxies_v1','raDeg','decDeg','AGN','name','redshift',NULL,9,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'W1_mag','W1_err_mag',NULL,NULL,NULL,NULL,NULL,NULL,1),
+(82,'tcs_cat_ned_d_v17_1_2','NED-D Galaxy Catalogue v17.1.2','https://ned.ipac.caltech.edu/Library/Distances/index.html',272635,'https://ned.ipac.caltech.edu/Library/Distances/index.html','NED-D Page','compilation of redshift-independent extragalactic distances found in an extensive search of the recently published literature. Version 10.2.0 (July 2015) of NED-D provides 27451 distances to 6800 galaxies based on primary methods, using standard candles such as Cepheids and Type Ia supernova, or standard rulers such as globular cluster radii and masers. Also provided are 67504 distances for 21218 galaxies based on secondary methods (the Tully-Fisher or Fundamental Plane relations, etc.). In total, NED-D V10.2.0 provides 94959 redshift-independent extragalactic distances for 26989 galaxies.','0',0,'galaxies','17.1.2','2023-09-21 10:55:22',0,'tcs_cat_ned_d_v17_1_2','raDeg','decDeg','object_type','primary_ned_id','redshift','dist_mpc_median',9,'major_diameter_arcmin',60,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'magnitude',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(83,'tcs_cat_gaia_dr3','Gaia DR3','https://www.cosmos.esa.int/web/gaia/dr3',1811709771,'https://www.aanda.org/articles/aa/full_html/2023/06/aa43940-22/aa43940-22.html','Gaia Data Release 3',NULL,'0',0,'stars, galaxies, QSOs','dr3','2025-04-01 14:49:00',0,'tcs_cat_gaia_dr3','ra','dec',NULL,'source_id',NULL,NULL,7,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'phot_g_mean_mag',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),
+(84,'tcs_cat_desi_legacy_dr10','DESI Legacy Survey DR10','https://www.legacysurvey.org/dr10/description/',2700233312,'https://ui.adsabs.harvard.edu/abs/2019AJ....157..168D/abstract','DESI Legacy Imaging Surveys','The DESI Legacy Imaging Surveys are a combination of three public projects (the Dark Energy Camera Legacy Survey, the Beijing-Arizona Sky Survey, and the Mayall z-band Legacy Survey)','0',0,'stars, galaxies','dr10','2025-04-01 14:49:00',0,'tcs_cat_desi_legacy_dr10','RA','DECL','TYPE','OBJID',NULL,NULL,8,'SHAPE_R',2,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'MAG_G','MAG_G_ERR','MAG_R','MAG_R_ERR','MAG_I','MAG_I_ERR','MAG_Z','MAG_Z_ERR',NULL,NULL,NULL,NULL,NULL,NULL,'MAG_W1','MAG_W2_ERR','MAG_W2','MAG_W2_ERR','MAG_W3','MAG_W3_ERR','MAG_W4','MAG_W4_ERR',0),
+(85,'tcs_cat_milliquas_v8_0','Million Quasars (MILLIQUAS) Catalog v8.0','https://heasarc.gsfc.nasa.gov/W3Browse/all/milliquas.html',1021800,'http://quasars.org/milliquas.htm','MILLIQUAS webpage','a compendium of all type-I QSOs and AGN, and BL Lac objects, complete from the literature through June 2023','0',0,'QSOs, AGN, BL Lac','8.0','2025-06-16 14:49:00',0,'tcs_cat_milliquas_v8.0','raDeg','decDeg','type','name','z',NULL,9,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
+(86,'tcs_cat_milliquas_v5_2',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
+/*!40000 ALTER TABLE `tcs_helper_catalogue_tables_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tcs_helper_catalogue_views_info`
+--
+
+DROP TABLE IF EXISTS `tcs_helper_catalogue_views_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tcs_helper_catalogue_views_info` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `view_name` varchar(100) DEFAULT NULL,
+  `number_of_rows` bigint(20) DEFAULT NULL,
+  `object_type` varchar(100) DEFAULT NULL,
+  `legacy_view` tinyint(4) DEFAULT 0,
+  `old_view_name` varchar(100) DEFAULT NULL,
+  `table_id` int(11) DEFAULT NULL,
+  `finalised` tinyint(4) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_view_name` (`view_name`)
+) ENGINE=MyISAM AUTO_INCREMENT=175 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tcs_helper_catalogue_views_info`
+--
+
+LOCK TABLES `tcs_helper_catalogue_views_info` WRITE;
+/*!40000 ALTER TABLE `tcs_helper_catalogue_views_info` DISABLE KEYS */;
+INSERT INTO `tcs_helper_catalogue_views_info` VALUES
+(10,'tcs_view_galaxy_2mass_xsc_final',1647599,'galaxy',0,'tcs_view_galaxy_2mass_xsc_final',2,0),
+(11,'tcs_view_galaxy_kepler_k2',11905,'galaxy',1,'tcs_view_galaxy_kepler_k2',42,0),
+(12,'tcs_view_galaxy_ned_d_v10_2_0',24745,'galaxy',1,'tcs_view_galaxy_ned_d_v10_2_0',61,0),
+(13,'tcs_view_galaxy_sdss_photo_stars_galaxies_dr12',267148450,'galaxy',0,'tcs_view_galaxy_sdss_photo_stars_galaxies_dr12',47,0),
+(14,'tcs_view_galaxy_sdss_spect_galaxies_qsos_dr12',2273977,'galaxy',0,'tcs_view_galaxy_sdss_spect_galaxies_qsos_dr12',48,0),
+(15,'tcs_view_qso_sdss_spect_galaxies_qsos_dr12',462410,'agn',1,'tcs_view_qso_sdss_spect_galaxies_qsos_dr12',48,0),
+(20,'tcs_view_star_2mass_psc_final',453385,'star',0,'tcs_view_star_2mass_psc_final',1,0),
+(21,'tcs_view_star_guide_star_catalogue_v2_3',738886936,'star',0,'tcs_view_star_guide_star_catalogue_v2_3',3,0),
+(22,'tcs_view_star_ps1_ubercal_stars_v1',706861417,'star',1,'tcs_view_star_ps1_ubercal_stars_v1',43,0),
+(23,'tcs_view_star_sdss_photo_stars_galaxies_dr12',206891217,'star',0,'tcs_view_star_sdss_photo_stars_galaxies_dr12',47,0),
+(2,'tcs_view_agn_veron_v13',168944,'agn',1,'tcs_view_agn_veron_v13',67,0),
+(3,'tcs_view_cb_ritter_cataclysmic_binaries_v7_21',1721,'cv',1,'tcs_view_cb_ritter_cataclysmic_binaries_v7_21',44,0),
+(4,'tcs_view_cv_downes_cataclysmic_variables_final',1830,'cv',0,'tcs_view_cv_downes_cataclysmic_variables_final',45,0),
+(1,'tcs_view_agn_milliquas_v4_5',1153111,'agn',1,'tcs_view_agn_milliquas_v4_5',60,0),
+(28,'tcs_view_agn_ned_stream',92124,'agn',0,'tcs_view_agn_ned_stream',68,0),
+(29,'tcs_view_galaxy_ned_stream',38348662,'galaxy',0,'tcs_view_galaxy_ned_stream',68,0),
+(30,'tcs_view_other_ned_stream',804991,'unclear',2,'tcs_view_other_ned_stream',68,0),
+(31,'tcs_view_star_ned_stream',25354280,'star',0,'tcs_view_star_ned_stream',68,0),
+(32,'tcs_view_galaxy_ifs_stream',4421,'galaxy',1,'tcs_view_galaxy_ifs_stream',69,0),
+(34,'tcs_view_stars_ps1_ubercal_stars_v1',706861417,'stars',1,'tcs_view_stars_ps1_ubercal_stars_v1',43,0),
+(35,'tcs_view_galaxy_ned_d_v13_1_0',74978,'galaxy',1,'tcs_view_galaxy_ned_d_v13_1_0',73,0),
+(36,'tcs_view_star_gaia_dr1',1142679769,'star',1,'tcs_view_star_gaia_dr1',71,0),
+(37,'tcs_view_agn_milliquas_v4_8',1422219,'agn',1,'tcs_view_agn_milliquas_v4_8',72,0),
+(38,'tcs_view_unknown_guide_star_catalogue_v2_3',738886936,'unclear',1,'tcs_view_unknown_guide_star_catalogue_v2_3',3,0),
+(39,'tcs_view_galaxy_like_ned_stream',15666876,'galaxy',0,'tcs_view_galaxy_like_ned_stream',68,0),
+(40,'tcs_view_galaxy_iras_revised_bright_galaxy_sample_final',629,'galaxy',1,'tcs_view_galaxy_iras_revised_bright_galaxy_sample_final',74,0),
+(41,'tcs_view_agn_milliquas_v5_2',1998467,'agn',1,'tcs_view_agn_milliquas_v5_2',76,0),
+(42,'tcs_view_star_ppmxl_final',910357727,'star',1,'tcs_view_star_ppmxl_final',77,0),
+(43,'tcs_view_agn_glade_v2_3',297014,'agn',1,'tcs_view_agn_glade_v2_3',78,0),
+(44,'tcs_view_galaxy_glade_v2_3',2965718,'galaxy',1,'tcs_view_galaxy_glade_v2_3',78,0),
+(45,'tcs_view_unclear_gaia_dr2',666185679,'unclear',1,'tcs_view_unclear_gaia_dr2',79,0),
+(46,'tcs_view_star_gaia_dr2',1026733456,'star',1,'tcs_view_star_gaia_dr2',79,0),
+(47,'tcs_view_unclear_ps1_dr1',1364154920,'unclear',0,'tcs_view_unclear_ps1_dr1',80,0),
+(48,'tcs_view_star_ps1_dr1',728932910,'star',0,'tcs_view_star_ps1_dr1',80,0),
+(49,'tcs_view_galaxy_ps1_dr1',744449582,'galaxy',0,'tcs_view_galaxy_ps1_dr1',80,0),
+(50,'tcs_view_agn_lasr_v1',4309,'agn',0,'tcs_view_agn_lasr_v1',81,0),
+(51,'tcs_view_galaxy_lasr_v1',45237,'galaxy',0,'tcs_view_galaxy_lasr_v1',81,0),
+(52,'tcs_view_galaxy_ned_d_v17_1_2',147365,'galaxy',0,'tcs_view_galaxy_ned_d_v17_1_2',82,0),
+(53,'tcs_view_galaxy_gaia_dr3',4842342,'galaxy',0,'tcs_view_galaxy_gaia_dr3',83,0),
+(54,'tcs_view_qso_gaia_dr3',6649162,'agn',1,'tcs_view_qso_gaia_dr3',83,0),
+(55,'tcs_view_star_gaia_dr3',1800392413,'star',0,'tcs_view_star_gaia_dr3',83,0),
+(56,'tcs_view_agn_milliquas_v8_0',1021800,'agn',0,'tcs_view_agn_milliquas_v8_0',85,0),
+(57,'tcs_view_star_desi_legacy_dr10',NULL,'star',0,'tcs_view_star_desi_legacy_dr10',84,0),
+(58,'tcs_view_galaxy_desi_legacy_dr10',NULL,'galaxy',0,'tcs_view_galaxy_desi_legacy_dr10',84,0),
+(59,'tcs_view_unclear_desi_legacy_dr10',NULL,'unclear',0,'tcs_view_unclear_desi_legacy_dr10',84,0),
+(60,'tcs_view_unclear_sdss_photo_stars_galaxies_dr12',NULL,'unclear',0,'tcs_view_unclear_sdss_photo_stars_galaxies_dr12',47,0),
+(151,'tcs_view_unclear_2mass_psc_final',NULL,'unclear',0,'tcs_view_unclear_2mass_psc_final',1,0),
+(152,'tcs_view_unclear_gaia_dr3',NULL,'unclear',0,'tcs_view_unclear_gaia_dr3',83,0),
+(153,'tcs_view_unclear_guide_star_catalogue_v2_3',NULL,'unclear',0,'tcs_view_unclear_guide_star_catalogue_v2_3',3,0),
+(154,'tcs_view_unclear_ned_stream',NULL,'unclear',0,'tcs_view_unclear_ned_stream',68,0),
+(155,'tcs_view_bright_star_ps1_dr1',NULL,'star',0,'tcs_view_bright_star_ps1_dr1',80,0),
+(156,'tcs_view_bright_star_2mass_psc_final',NULL,'star',0,'tcs_view_bright_star_2mass_psc_final',1,0),
+(157,'tcs_view_bright_star_desi_legacy_dr10',NULL,'star',0,'tcs_view_bright_star_desi_legacy_dr10',84,0),
+(158,'tcs_view_bright_star_gaia_dr3',NULL,'star',0,'tcs_view_bright_star_gaia_dr3',83,0),
+(159,'tcs_view_bright_star_guide_star_catalogue_v2_3',NULL,'star',0,'tcs_view_bright_star_guide_star_catalogue_v2_3',3,0),
+(160,'tcs_view_bright_star_sdss_photo_stars_galaxies_dr12',NULL,'star',0,'tcs_view_bright_star_sdss_photo_stars_galaxies_dr12',47,0),
+(161,'tcs_view_big_galaxy_ps1_dr1',NULL,'galaxy',0,'tcs_view_big_galaxy_ps1_dr1',80,0),
+(162,'tcs_view_big_galaxy_desi_legacy_dr10',NULL,'galaxy',0,'tcs_view_big_galaxy_desi_legacy_dr10',84,0),
+(163,'tcs_view_big_galaxy_guide_star_catalogue_v2_3',NULL,'galaxy',0,'tcs_view_big_galaxy_guide_star_catalogue_v2_3',3,0),
+(164,'tcs_view_big_galaxy_sdss_photo_stars_galaxies_dr12',NULL,'galaxy',0,'tcs_view_big_galaxy_sdss_photo_stars_galaxies_dr12',47,0),
+(165,'tcs_view_big_galaxy_ned_d_v17_1_2',NULL,'galaxy',0,'tcs_view_big_galaxy_ned_d_v17_1_2',82,0),
+(166,'tcs_view_big_galaxy_ned_stream',NULL,'galaxy',0,'tcs_view_big_galaxy_ned_stream',68,0),
+(167,'tcs_view_big_galaxy_2mass_xsc_final',NULL,'galaxy',0,'tcs_view_big_galaxy_2mass_xsc_final',2,0),
+(168,'tcs_view_galaxy_guide_star_catalogue_v2_3',NULL,'galaxy',0,'tcs_view_galaxy_guide_star_catalogue_v2_3',3,0),
+(169,'tcs_view_agn_sdss_spect_galaxies_qsos_dr12',NULL,'agn',0,'tcs_view_agn_sdss_spect_galaxies_qsos_dr12',48,0),
+(170,'tcs_view_agn_gaia_dr3',NULL,'agn',0,'tcs_view_agn_gaia_dr3',83,0),
+(171,'tcs_view_cv_ritter_cataclysmic_binaries_v7_21',NULL,'cv',0,'tcs_view_cv_ritter_cataclysmic_binaries_v7_21',44,0),
+(172,'tcs_view_super_big_galaxy_ned_d_v17_1_2',NULL,'galaxy',0,'tcs_view_super_big_galaxy_ned_d_v17_1_2',82,0),
+(173,'tcs_view_super_big_galaxy_ned_stream',NULL,'galaxy',0,'tcs_view_super_big_galaxy_ned_stream',68,0),
+(174,'tcs_view_hpm_stars_gaia_dr3',NULL,'star',0,'tcs_view_agn_gaia_dr3',83,0);
+/*!40000 ALTER TABLE `tcs_helper_catalogue_views_info` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-12-17 13:54:26
