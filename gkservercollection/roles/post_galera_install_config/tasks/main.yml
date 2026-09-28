@@ -1,0 +1,67 @@
+---
+# Claude wrote this (collab mode, unreviewed) — 2026-09-28
+
+- name: Check whether /etc/mysql/my.cnf is already a symlink
+  ansible.builtin.stat:
+    path: /etc/mysql/my.cnf
+  register: my_cnf_stat
+
+- name: Migrate my.cnf to the standard mariadb.cnf + includedir layout
+  become: true
+  when: my_cnf_stat.stat.exists and not my_cnf_stat.stat.islnk
+  block:
+
+    - name: Ensure /etc/mysql/mariadb.conf.d exists
+      ansible.builtin.file:
+        path: /etc/mysql/mariadb.conf.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy existing my.cnf to mariadb.conf.d/99-lasair.cnf
+      ansible.builtin.copy:
+        src: /etc/mysql/my.cnf
+        dest: /etc/mysql/mariadb.conf.d/99-lasair.cnf
+        remote_src: true
+        owner: mysql
+        group: mysql
+        mode: '0644'
+
+    - name: Find other *.cnf files in mariadb.conf.d
+      ansible.builtin.find:
+        paths: /etc/mysql/mariadb.conf.d
+        patterns: '*.cnf'
+        excludes: '99-lasair.cnf'
+      register: other_mariadb_conf_files
+
+    - name: Comment out all entries in other mariadb.conf.d files
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: '(?m)^(?!\s*#)(?!\s*$)(.*)$'
+        replace: '#\1'
+        backup: true
+      loop: "{{ other_mariadb_conf_files.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Check whether /etc/mysql/mariadb.cnf exists
+      ansible.builtin.stat:
+        path: /etc/mysql/mariadb.cnf
+      register: mariadb_cnf_stat
+
+    - name: Create /etc/mysql/mariadb.cnf with the standard includedir stanza
+      ansible.builtin.template:
+        src: mariadb.cnf.j2
+        dest: /etc/mysql/mariadb.cnf
+        owner: root
+        group: root
+        mode: '0644'
+      when: not mariadb_cnf_stat.stat.exists
+
+    - name: Symlink /etc/mysql/my.cnf to /etc/mysql/mariadb.cnf
+      ansible.builtin.file:
+        src: /etc/mysql/mariadb.cnf
+        dest: /etc/mysql/my.cnf
+        state: link
+        force: true

@@ -1,0 +1,8 @@
+## RUN THIS PLAYBOOK WITH
+## > ansible-playbook setup-mariadb-galera-post-install.yml
+---
+- name: Restore standard mariadb.cnf + includedir layout after ClusterControl Galera deploy
+  hosts: backend_db1,backend_db2,frontend_db1
+  become: true
+  roles:
+    - gkansible.gkservercollection.post_galera_install_config
