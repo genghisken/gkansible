@@ -1,5 +1,5 @@
 ---
-# Claude wrote this (collab mode, unreviewed) — 2026-09-28
+# Claude wrote this — 2026-09-28 KWS Reviewed. All good. Not yet tested.
 
 - name: Check whether /etc/mysql/my.cnf is already a symlink
   ansible.builtin.stat:
