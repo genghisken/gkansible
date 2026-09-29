@@ -1,9 +1,12 @@
 ## RUN THIS PLAYBOOK WITH
-## > ansible-playbook setup-mariadb-galera-post-install.yml
+## > ansible-playbook setup-mariadb-galera-post-install.yml -K
+## Run on ONE GALERA NODE AT A TIME. Do not do many servers simultaneously.
+## Wait until the restarted server has rejoined the cluster before moving to
+## the next one.
 ## Written by claud, reviewed by KWS.
 ---
 - name: Restore standard mariadb.cnf + includedir layout after ClusterControl Galera deploy
-  hosts: backend_db1,backend_db2,frontend_db1
+  hosts: frontend_db
   become: true
   roles:
     - gkansible.gkservercollection.post_galera_install_config
